@@ -39,36 +39,7 @@ function initCards() {
     return result;
 }
 
-function cutCards(coloda, playters, setCutedColoda, curdsAmount) {
-    let cutedColoda = coloda;
-    let playerCards = []
-
-    playters.forEach(set => {
-        set(cutedColoda.slice(-curdsAmount))
-        cutedColoda = cutedColoda.slice(0, cutedColoda.length - curdsAmount);
-        }
-    )
-
-    setCutedColoda(cutedColoda);
-    playerCards.forEach((e, i) => playters[i](e))
-}
-
-function findCoverCardForComputer(cardToCover, computerCards, setComputerCards, roundCards, setRoundCards) {
-    const sortedComputerCards = computerCards.sort((f,s) => f.level - s.level)
-    let foundHigherCard = sortedComputerCards.find(card => card.level > cardToCover.level && card.suit === cardToCover.suit);
-
-    if (!foundHigherCard) {
-        setComputerCards([...computerCards, cardToCover, ...roundCards]);
-        setRoundCards([])
-        return;
-    }
-
-    setComputerCards(sortedComputerCards.filter(card => card !== foundHigherCard));
-    setRoundCards([...roundCards, cardToCover, foundHigherCard]);
-
-    console.log(cardToCover, foundHigherCard);
-    console.log(computerCards)
-}
+const maxCardsAmountPerGame = 6;
 
 function App() {
     const [coloda, setColoda] = useState(initCards);
@@ -76,25 +47,67 @@ function App() {
     const [computerCards, setComputerCards] = useState([])
     const [userCards, setUserCards] = useState([])
     const [showStartGameButton, setShowStartGameButton] = useState(true);
+    const [message, setMessage] = useState("Ops. I can't bit it.")
 
     function startGame() {
-        cutCards(coloda, [setComputerCards, setUserCards], setColoda, 6)
+        givePlayersCards([setComputerCards, setUserCards])
         setShowStartGameButton(false);
     }
 
     function sendCard(cardToCover) {
         return () => {
             setUserCards(userCards.filter(pc => pc !== cardToCover))
-            findCoverCardForComputer(cardToCover, computerCards, setComputerCards, roundCards, setRoundCards)
+            findCoverCardForComputer(cardToCover)
         }
+    }
+
+    function findCoverCardForComputer(cardToCover) {
+        const sortedComputerCards = computerCards.sort((f, s) => f.level - s.level)
+        let foundHigherCard = sortedComputerCards.find(card => card.level > cardToCover.level && card.suit === cardToCover.suit);
+
+        if (!foundHigherCard) {
+            setComputerCards([...computerCards, cardToCover, ...roundCards]);
+            setRoundCards([])
+
+            return;
+        }
+
+        setComputerCards(sortedComputerCards.filter(card => card !== foundHigherCard));
+        setRoundCards([...roundCards, cardToCover, foundHigherCard]);
+    }
+
+    function givePlayersCards() {
+        let players = [
+            {cards: computerCards, setCards: setComputerCards},
+            {cards: userCards, setCards: setUserCards},
+        ];
+
+
+        let _coloda = coloda;
+        let playerCards = []
+
+        players.forEach(player => {
+            let curdsAmount = maxCardsAmountPerGame - player.cards.length ;
+
+            if (curdsAmount > 0) {
+                // Copy cards from the end of cards arrays.
+                player.setCards(_coloda.slice(-curdsAmount));
+                // Copy cards from start. We took cards, we update coloda to avoid duplication.
+                _coloda = _coloda.slice(0, _coloda.length - curdsAmount);
+            }
+        })
+
+        // Update coloda array after we gave cards for players.
+        setColoda(_coloda);
     }
 
     return (
         <div className="App">
             {showStartGameButton && <button onClick={startGame}>Start Game</button>}
-            <CardGroup cards={computerCards} />
-            <Table cards={roundCards} />
-            <CardGroup cards={userCards} handleClick={sendCard} />
+            <CardGroup cards={computerCards}/>
+            <Table cards={roundCards}/>
+            <CardGroup cards={userCards} handleClick={sendCard}/>
+            <div>{message}</div>
         </div>
     );
 }
