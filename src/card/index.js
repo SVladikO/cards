@@ -1,8 +1,8 @@
 
 function Card({suit, rang}) {
     return (
-        <div>
-            {suit} & {rang}
+        <div style={{color: suit.color}}>
+            {rang}{suit.value}
         </div>
     );
 }
