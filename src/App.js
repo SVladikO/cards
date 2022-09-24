@@ -1,46 +1,106 @@
 import './App.css';
 
 import Card from './card';
+import {useState} from "react";
 
-const rangs = [
-    {rang: 6, value: 6},
-    {rang: 7, value: 7},
-    {rang: 8, value: 8},
-    {rang: 9, value: 9},
-    {rang: 10, value: 10},
-    {rang: 11, value: 'V'},
-    {rang: 12, value: 'D'},
-    {rang: 13, value: 'K'},
-    {rang: 14, value: 'T'},
+const cards = [
+    {level: 6, title: 6},
+    {level: 7, title: 7},
+    {level: 8, title: 8},
+    {level: 9, title: 9},
+    {level: 10, title: 10},
+    {level: 11, title: 'V'},
+    {level: 12, title: 'D'},
+    {level: 13, title: 'K'},
+    {level: 14, title: 'T'},
 ];
 
 const suits = [
-    {color: 'red', value: '♥'},
-    {color: 'red', value: '♦'},
-    {color: 'black', value: '♣'},
-    {color: 'black', value: '♠'},
-]
+    {color: 'red', suit: '♥'},
+    {color: 'red', suit: '♦'},
+    {color: 'black', suit: '♣'},
+    {color: 'black', suit: '♠'},
+];
 
 // ♥/♡	♦/♢	♠/♤	♣/♧
-const cards = [];
+function initCards() {
+    const result = [];
 
-console.log({cards})
-
-
-rangs.forEach( r =>
-    suits.forEach( s =>
-        cards.push( <Card key={s.value + r.value} rang={r.value} suit={s}/> )
+    cards.forEach(card =>
+        suits.forEach(suit =>
+            result.push({...card, ...suit})
+        )
     )
-);
+
+    // Mix cards array
+    result.sort(() => Math.random() - 0.5);
+    return result;
+}
+
+function cutCards(coloda, playters, setCutedColoda, curdsAmount) {
+    let cutedColoda = coloda;
+    let playerCards = []
+
+    playters.forEach(set => {
+        set(cutedColoda.slice(-curdsAmount))
+        cutedColoda = cutedColoda.slice(0, cutedColoda.length - curdsAmount);
+        }
+    )
+
+    setCutedColoda(cutedColoda);
+    playerCards.forEach((e, i) => playters[i](e))
+}
+
+function findCoverCardForComputer(cardToCover, computerCards, setComputerCards, roundCards, setRoundCards) {
+    const sortedComputerCards = computerCards.sort((f,s) => f.level - s.level)
+    let foundHigherCard = sortedComputerCards.find(card => card.level > cardToCover.level && card.suit === cardToCover.suit);
+
+    if (!foundHigherCard) {
+        setComputerCards([...computerCards, cardToCover, ...roundCards]);
+        setRoundCards([])
+        return;
+    }
+
+    setComputerCards(sortedComputerCards.filter(card => card !== foundHigherCard));
+    setRoundCards([...roundCards, cardToCover, foundHigherCard]);
+
+    console.log(cardToCover, foundHigherCard);
+    console.log(computerCards)
+}
 
 function App() {
-  return (
-    <div className="App">
-        {cards}
-        {}
-        {}
-    </div>
-  );
+    const [coloda, setColoda] = useState(initCards);
+    const [roundCards, setRoundCards] = useState([]);
+    const [computerCards, setComputerCards] = useState([])
+    const [userCards, setUserCards] = useState([])
+    const [showStartGameButton, setShowStartGameButton] = useState(true);
+
+    function startGame() {
+        cutCards(coloda, [setComputerCards, setUserCards], setColoda, 6)
+        setShowStartGameButton(false);
+    }
+
+    function sendCard(cardToCover, playerCards, setPlayerCards) {
+        return () => {
+            setPlayerCards(playerCards.filter(pc => pc !== cardToCover))
+            findCoverCardForComputer(cardToCover, computerCards, setComputerCards, roundCards, setRoundCards)
+        }
+    }
+
+
+    return (
+        <div className="App">
+            {showStartGameButton && <button onClick={startGame}>Start Game</button>}
+            <div className="card_group"> {computerCards.map(card => <Card key={card.title + card.suit} card={card} />)}</div>
+            <div className="table card_group">
+                {roundCards.map(card => <Card key={card.title + card.suit} card={card} handleClick={sendCard(card)} />)}
+            </div>
+            <div className="card_group"> {userCards.map(card => <Card key={card.title + card.suit} card={card} handleClick={sendCard(card, userCards, setUserCards)} />)}</div>
+            <br/>
+
+
+        </div>
+    );
 }
 
 export default App;
