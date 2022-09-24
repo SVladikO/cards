@@ -1,31 +1,9 @@
 .App {
   text-align: center;
   display: flex;
-  width: 200px;
+  min-width: 200px;
   flex-wrap: wrap;
   border: solid 1px red;
-}
-
-.card_group {
-  border: solid 1px blue;
-  display: flex;
-  width: 300px;
-  flex-wrap: wrap;
-  height: 30px;
-
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently*/
-}
-
-.table {
-  height: 60px;
-  flex-direction: column;
-  align-content: flex-start;
-  background: green;
 }
 
 .App-logo {

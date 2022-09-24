@@ -1,7 +1,9 @@
+import {useState} from "react";
+
 import './App.css';
 
-import Card from './card';
-import {useState} from "react";
+import Table from "./table";
+import CardGroup from './card_group';
 
 const cards = [
     {level: 6, title: 6},
@@ -80,25 +82,19 @@ function App() {
         setShowStartGameButton(false);
     }
 
-    function sendCard(cardToCover, playerCards, setPlayerCards) {
+    function sendCard(cardToCover) {
         return () => {
-            setPlayerCards(playerCards.filter(pc => pc !== cardToCover))
+            setUserCards(userCards.filter(pc => pc !== cardToCover))
             findCoverCardForComputer(cardToCover, computerCards, setComputerCards, roundCards, setRoundCards)
         }
     }
 
-
     return (
         <div className="App">
             {showStartGameButton && <button onClick={startGame}>Start Game</button>}
-            <div className="card_group"> {computerCards.map(card => <Card key={card.title + card.suit} card={card} />)}</div>
-            <div className="table card_group">
-                {roundCards.map(card => <Card key={card.title + card.suit} card={card} handleClick={sendCard(card)} />)}
-            </div>
-            <div className="card_group"> {userCards.map(card => <Card key={card.title + card.suit} card={card} handleClick={sendCard(card, userCards, setUserCards)} />)}</div>
-            <br/>
-
-
+            <CardGroup cards={computerCards} />
+            <Table cards={roundCards} />
+            <CardGroup cards={userCards} handleClick={sendCard} />
         </div>
     );
 }
