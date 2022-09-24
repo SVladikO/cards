@@ -8,6 +8,11 @@ const getStyle = card => ({
 })
 
 function Card({card, handleClick = () => {}}) {
+
+    if (card.hide) {
+        return;
+    }
+
     return (
         <div onClick={handleClick}
              style={getStyle(card)}>

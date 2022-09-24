@@ -1,7 +1,6 @@
 .App {
   text-align: center;
-  display: flex;
-  width: 200px;
+  width: 600px;
   flex-wrap: wrap;
   border: solid 1px red;
 }
