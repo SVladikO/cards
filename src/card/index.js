@@ -4,14 +4,10 @@ const getStyle = card => ({
     border: "solid 1px red",
     borderRadius: '3px',
     color: card.color,
-    background: 'white',
+    background: card.hide ? 'yellow':'white',
 })
 
 function Card({card, handleClick = () => {}}) {
-
-    if (card.hide) {
-        return;
-    }
 
     return (
         <div onClick={handleClick}

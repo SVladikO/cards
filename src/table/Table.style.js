@@ -31,3 +31,8 @@ export const Count = styled.div`
   top: 0;
   right: 6px;
 `;
+export const Button = styled.button`
+  position: absolute;
+  bottom: 0;
+  right: 6px;
+`;
