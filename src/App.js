@@ -94,6 +94,16 @@ function sort(cards) {
     return cards.sort((f, s) => f.level - s.level)
 }
 
+function canCardBeAdded(cards, candidateToAdd) {
+    return cards.find(card => card.level === candidateToAdd.level)
+}
+
+function turnOffWarningFrom(cards, setCards) {
+    setTimeout(() => {
+        setCards(cards.map(card => ({...card, warning: false})))
+    }, 2000)
+}
+
 const getSuit = card => card.title + card.suit;
 
 const maxCardsAmountPerRound = 4;
@@ -158,12 +168,10 @@ function App() {
                 cardToCover.hide = true;
             }
 
-            if (roundCards.length > 0 && !roundCards.find(card => card.length === cardToCover)) {
+            if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover)) {
                 setUserCards(userCards.map(card => card === cardToCover ? {...card, warning: true} : card))
 
-                setTimeout(() => {
-                    setUserCards(userCards.map(card => card === cardToCover ? {...card, warning: false} : card))
-                }, 2000)
+                turnOffWarningFrom(userCards, setUserCards);
 
                 return;
             }
