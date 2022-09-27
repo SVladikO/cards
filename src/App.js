@@ -62,13 +62,26 @@ const suits = [
     {color: 'black', suit: '♠'},
 ];
 
+const CARD_STATYS = {
+    COLODA: 'COLODA',
+    USER: 'USER',
+    COMPUTER: 'COMPUTER',
+    BIN: 'BIN',
+    ROUND: 'ROUND'
+}
+
+const TURN = {
+    USER: 'USER',
+    COMPUTER: 'COMPUTER'
+}
+
 // ♥/♡	♦/♢	♠/♤	♣/♧
 function initCards() {
     const result = [];
 
     cards.forEach(card =>
         suits.forEach(suit =>
-            result.push({...card, ...suit})
+            result.push({...card, ...suit, status: 'coloda'})
         )
     )
 
@@ -81,13 +94,13 @@ function sort(cards) {
     return cards.sort((f, s) => f.level - s.level)
 }
 
-
 const getSuit = card => card.title + card.suit;
 
 const maxCardsAmountPerRound = 4;
 
 function App() {
     const [coloda, setColoda] = useState(initCards);
+    const [turn, setTurn] = useState('');
     const [roundCards, setRoundCards] = useState([]);
     const [trash, setTrash] = useState([]);
     const [computerCards, setComputerCards] = useState([])
@@ -106,13 +119,56 @@ function App() {
     }
 
     function startGame() {
-        givePlayersCards()
+        giveCardsAfterRound()
         setShowStartGameButton(false);
+    }
+
+    const card = {
+        addTo: {
+            computer: {},
+            user: {}
+        },
+        send: {
+            on: {
+                table: {
+                    computer: {
+                        SIMPLE_COMPUTER: () => {
+                        },
+                        HARD_COMPUTER: () => {
+                        },
+                    },
+                    user: {}
+                }
+            }
+        },
+        bit: {
+            computer: {
+                SIMPLE_COMPUTER: () => {
+                },
+                HARD_COMPUTER: () => {
+                },
+            }
+        }
     }
 
     function sendCard(cardToCover) {
         return () => {
-            cardToCover.hide = true;
+
+            if (roundCards.length === 0) {
+                cardToCover.hide = true;
+            }
+
+            if (roundCards.length > 0 && !roundCards.find(card => card.length === cardToCover)) {
+                setUserCards(userCards.map(card => card === cardToCover ? {...card, warning: true} : card))
+
+                setTimeout(() => {
+                    setUserCards(userCards.map(card => card === cardToCover ? {...card, warning: false} : card))
+                }, 2000)
+
+                return;
+            }
+
+
             let higherCard = computerCards.find(card =>
                 card.suit === cardToCover.suit &&
                 card.level > cardToCover.level &&
@@ -121,7 +177,7 @@ function App() {
 
             // If higherCard doesn't exist
             if (!higherCard) {
-                return givePlayersCards(COMPUTER_TAKE);
+                return giveCardsAfterRound(COMPUTER_TAKE);
             }
 
             higherCard.hide = true;
@@ -130,7 +186,7 @@ function App() {
     }
 
 
-    function givePlayersCards(status) {
+    function giveCardsAfterRound(status) {
         let players = [];
 
         let leftRoundCards = [];
@@ -206,7 +262,7 @@ function App() {
         // Update coloda array after we gave cards for players.
         setColoda(_coloda);
         setUserCards(leftUserCards)
-        setComputerCards(leftComputerCards)
+        setComputerCards(sort(leftComputerCards))
         setRoundCards([]);
 
         if (MOVE_ROUND_TO_TRASH === status) {
@@ -220,7 +276,7 @@ function App() {
             <CardGroup cards={computerCards}/>
             <CardGroup cards={coloda}/>
             <CardGroup cards={trash}/>
-            <Table cards={roundCards} handlePass={() => givePlayersCards(MOVE_ROUND_TO_TRASH)}/>
+            <Table cards={roundCards} handlePass={() => giveCardsAfterRound(MOVE_ROUND_TO_TRASH)}/>
             <Footer>
                 <CardGroup cards={userCards} handleClick={sendCard}/>
             </Footer>
