@@ -15,10 +15,10 @@ const cards = [
     {level: 4, title: 4},
     {level: 5, title: 5},
     {level: 6, title: 6},
-    {level: 7, title: 7},
-    {level: 8, title: 8},
-    {level: 9, title: 9},
-    {level: 10, title: 10},
+    // {level: 7, title: 7},
+    // {level: 8, title: 8},
+    // {level: 9, title: 9},
+    // {level: 10, title: 10},
     // {level: 11, title: 11},
     // {level: 12, title: 12},
     // {level: 13, title: 13},
@@ -163,7 +163,8 @@ function App() {
                 card.hide = false;
                 return card;
             })
-        } else if (USER_TAKE === status) {
+        }
+        if (USER_TAKE === status) {
             leftUserCards = [...leftUserCards, ...leftRoundCards]
         }
 
