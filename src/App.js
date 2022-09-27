@@ -90,6 +90,14 @@ function initCards() {
     return result;
 }
 
+function getCozur() {
+    return    ['♥', '♦', '♣', '♠'][getRandomInt(4)]
+}
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
 function sort(cards) {
     return cards.sort((f, s) => f.level - s.level)
 }
@@ -109,6 +117,7 @@ const getSuit = card => card.title + card.suit;
 const maxCardsAmountPerRound = 4;
 
 function App() {
+    const [cozur, setCozur] = useState('');
     const [coloda, setColoda] = useState(initCards);
     const [turn, setTurn] = useState('');
     const [roundCards, setRoundCards] = useState([]);
@@ -130,6 +139,7 @@ function App() {
 
     function startGame() {
         giveCardsAfterRound()
+        setCozur(getCozur())
         setShowStartGameButton(false);
     }
 
@@ -284,6 +294,7 @@ function App() {
             <CardGroup cards={computerCards}/>
             <CardGroup cards={coloda}/>
             <CardGroup cards={trash}/>
+            {cozur}
             <Table cards={roundCards} handlePass={() => giveCardsAfterRound(MOVE_ROUND_TO_TRASH)}/>
             <Footer>
                 <CardGroup cards={userCards} handleClick={sendCard}/>
