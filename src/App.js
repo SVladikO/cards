@@ -6,76 +6,10 @@ import {Footer} from "./App.style";
 import Table from "./table";
 import CardGroup from './card_group';
 
+import {suits, cards} from "./cards";
+
 const log = console.log;
 
-const cards = [
-    // {level: 1, title: 1},
-    // {level: 2, title: 2},
-    // {level: 3, title: 3},
-    // {level: 4, title: 4},
-    // {level: 5, title: 5},
-    {level: 6, title: 6},
-    {level: 7, title: 7},
-    {level: 8, title: 8},
-    {level: 9, title: 9},
-    {level: 10, title: 10},
-    // {level: 11, title: 11},
-    // {level: 12, title: 12},
-    // {level: 13, title: 13},
-    // {level: 14, title: 14},
-    // {level: 15, title: 15},
-    // {level: 16, title: 16},
-    // {level: 17, title: 17},
-    // {level: 18, title: 18},
-    // {level: 19, title: 19},
-    // {level: 20, title: 20},
-    // {level: 21, title: 21},
-    // {level: 22, title: 22},
-    // {level: 23, title: 23},
-    // {level: 24, title: 24},
-    // {level: 25, title: 25},
-    // {level: 26, title: 26},
-    // {level: 27, title: 27},
-    // {level: 28, title: 28},
-    // {level: 29, title: 29},
-    // {level: 30, title: 30},
-    // {level: 31, title: 31},
-    // {level: 32, title: 32},
-    // {level: 33, title: 33},
-    // {level: 34, title: 34},
-    // {level: 35, title: 35},
-    // {level: 36, title: 36},
-    // {level: 11, title: 'V'},
-    // {level: 12, title: 'D'},
-    // {level: 13, title: 'K'},
-    // {level: 14, title: 'T'},
-];
-
-const USER_TAKE = 'USER_TAKE';
-const COMPUTER_TAKE = 'COMPUTER_TAKE';
-const MOVE_ROUND_TO_TRASH = 'MOVE_ROUND_TO_TRASH';
-
-const suits = [
-    {color: 'red', suit: '♥'},
-    {color: 'red', suit: '♦'},
-    {color: 'black', suit: '♣'},
-    {color: 'black', suit: '♠'},
-];
-
-const CARD_STATYS = {
-    COLODA: 'COLODA',
-    USER: 'USER',
-    COMPUTER: 'COMPUTER',
-    BIN: 'BIN',
-    ROUND: 'ROUND'
-}
-
-const TURN = {
-    USER: 'USER',
-    COMPUTER: 'COMPUTER'
-}
-
-// ♥/♡	♦/♢	♠/♤	♣/♧
 function initCards() {
     const result = [];
 
@@ -91,7 +25,7 @@ function initCards() {
 }
 
 function getCozur() {
-    return ['♥', '♦', '♣', '♠'][getRandomInt(4)]
+    return suits.map(s => s.suit)[getRandomInt(4)]
 }
 
 function getRandomInt(max) {
@@ -148,34 +82,6 @@ function App() {
         giveCardsAfterRound()
         setCozur(getCozur())
         setShowStartGameButton(false);
-    }
-
-    const card = {
-        addTo: {
-            computer: {},
-            user: {}
-        },
-        send: {
-            on: {
-                table: {
-                    computer: {
-                        SIMPLE_COMPUTER: () => {
-                        },
-                        HARD_COMPUTER: () => {
-                        },
-                    },
-                    user: {}
-                }
-            }
-        },
-        bit: {
-            computer: {
-                SIMPLE_COMPUTER: () => {
-                },
-                HARD_COMPUTER: () => {
-                },
-            }
-        }
     }
 
     function sendCard(cardToCover) {
