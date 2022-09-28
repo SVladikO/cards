@@ -45,10 +45,10 @@ const cards = [
     // {level: 34, title: 34},
     // {level: 35, title: 35},
     // {level: 36, title: 36},
-    {level: 11, title: 'V'},
-    {level: 12, title: 'D'},
-    {level: 13, title: 'K'},
-    {level: 14, title: 'T'},
+    // {level: 11, title: 'V'},
+    // {level: 12, title: 'D'},
+    // {level: 13, title: 'K'},
+    // {level: 14, title: 'T'},
 ];
 
 const USER_TAKE = 'USER_TAKE';
@@ -191,6 +191,8 @@ function App() {
                 return turnOffWarningFrom(userCards, setUserCards);
             }
 
+            cardToCover.hide = true;
+
             let higherCard = computerCards.find(card =>
                 card.suit === cardToCover.suit &&
                 card.level > cardToCover.level &&
@@ -199,12 +201,12 @@ function App() {
 
             // If higherCard doesn't exist
             if (!higherCard) {
+                setRoundCards([...roundCards, cardToCover]);
                 return giveCardsAfterRound(COMPUTER_TAKE);
             }
 
             higherCard.hide = true;
             setRoundCards([...roundCards, cardToCover, higherCard]);
-
 
             const endColoda = coloda.length === 0;
 
