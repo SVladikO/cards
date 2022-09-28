@@ -121,7 +121,7 @@ const MESSAGE = {
 
 const getSuit = card => card.title + card.suit;
 
-const maxCardsAmountPerRound = 4;
+const maxCardsAmountPerRound = 6;
 
 function App() {
     const [cozur, setCozur] = useState('');
@@ -231,14 +231,9 @@ function App() {
 
 
     function giveCardsAfterRound(status) {
-        let players = [];
-
         let leftRoundCards = [];
         let leftComputerCards = [];
         let leftUserCards = [];
-
-        let cardsCanBeAddedToComputer = 0;
-        let cardsCanBeAddedToUser = 0;
 
         computerCards.forEach(card => {
             if (!card.hide) {
@@ -265,42 +260,36 @@ function App() {
             })
         }
         if (USER_TAKE === status) {
-            leftUserCards = [...leftUserCards, ...leftRoundCards]
-        }
-
-        if (leftComputerCards < maxCardsAmountPerRound) {
-            players.push({
-                cards: leftComputerCards,
-                setCards: cards => setComputerCards(cards)
+            leftUserCards = [...leftUserCards, ...leftRoundCards].map(card => {
+                card.hide = false;
+                return card;
             })
         }
 
-        if (leftUserCards < maxCardsAmountPerRound) {
-            players.push({cards: leftUserCards, setCards: setUserCards})
-        }
+        let players = [
+            {cards: leftUserCards, set: cards => leftUserCards = cards},
+            {cards: leftComputerCards, set: cards => leftComputerCards = cards},
+        ];
 
         let _coloda = coloda;
 
         if (coloda.length > 0) {
+            players.forEach(player => {
+                // Find cards amount which we can add after round
+                let cardsCanBeAdded = maxCardsAmountPerRound - player.cards.length;
 
-            // Find cards amount which we can add after round
-            cardsCanBeAddedToUser = maxCardsAmountPerRound - leftUserCards.length;
+                if (cardsCanBeAdded > 0 && _coloda.length > 0) {
+                    // Move cards from coloda to player
+                    player.set([...player.cards, ..._coloda.slice(-cardsCanBeAdded)]);
 
-            if (cardsCanBeAddedToUser > 0) {
-                // Copy cards from the end of coloda arrays.
-                leftUserCards = [...leftUserCards, ..._coloda.slice(-cardsCanBeAddedToUser)];
-                // Copy cards from start. We took cards for user, we update coloda. The way to avoid duplication.
-                _coloda = _coloda.slice(0, _coloda.length - cardsCanBeAddedToUser);
-            }
-
-            cardsCanBeAddedToComputer = maxCardsAmountPerRound - leftComputerCards.length;
-
-            if (cardsCanBeAddedToComputer > 0) {
-                // Copy cards from the end of coloda arrays.
-                leftComputerCards = [...leftComputerCards, ..._coloda.slice(-cardsCanBeAddedToComputer)];
-                // Copy cards from start. We took cards for user, we update coloda. The way to avoid duplication.
-                _coloda = _coloda.slice(0, _coloda.length - cardsCanBeAddedToComputer);
-            }
+                    if (cardsCanBeAdded > _coloda.length) {
+                        _coloda = [];
+                    } else {
+                        // Copy cards from start. We took cards for user, we update coloda. The way to avoid duplication.
+                        _coloda = _coloda.slice(0, _coloda.length - cardsCanBeAdded);
+                    }
+                }
+            })
         }
 
         // Update coloda array after we gave cards for players.
