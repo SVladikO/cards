@@ -1,17 +1,17 @@
 export const CARD_STATYS = {
-    COLODA: 'COLODA',
-    USER: 'USER',
-    COMPUTER: 'COMPUTER',
-    BIN: 'BIN',
-    ROUND: 'ROUND'
+    COLODA: "COLODA",
+    USER: "USER",
+    COMPUTER: "COMPUTER",
+    BIN: "BIN",
+    ROUND: "ROUND"
 }
 
-export const USER_TURN = 'USER_TURN';
-export const COMPUTER_TURN = 'COMPUTER_TURN';
+export const USER_TURN_ATTACK = "USER_TURN_ATTACK";
+export const COMPUTER_TURN_ATTACK = "COMPUTER_TURN_ATTACK";
 
-export const USER_TAKE = 'USER_TAKE';
-export const COMPUTER_TAKE = 'COMPUTER_TAKE';
-export const MOVE_ROUND_TO_TRASH = 'MOVE_ROUND_TO_TRASH';
+export const USER_LOST_ROUND = "USER_LOST_ROUND";
+export const COMPUTER_LOST_ROUND = "COMPUTER_LOST_ROUND";
+export const MOVE_ROUND_TO_TRASH = "MOVE_ROUND_TO_TRASH";
 
 export const card = {
     addTo: {

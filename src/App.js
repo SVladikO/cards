@@ -7,7 +7,13 @@ import Table from "./table";
 import CardGroup from './card_group';
 
 import {suits, cards} from "./cards";
-import {USER_TAKE, COMPUTER_TAKE, MOVE_ROUND_TO_TRASH, USER_TURN, COMPUTER_TURN} from './constants'
+import {
+    USER_LOST_ROUND,
+    COMPUTER_LOST_ROUND,
+    MOVE_ROUND_TO_TRASH,
+    USER_TURN_ATTACK,
+    COMPUTER_TURN_ATTACK
+} from './constants'
 
 const log = console.log;
 
@@ -24,6 +30,8 @@ function initCards() {
     result.sort(() => Math.random() - 0.5);
     return result;
 }
+
+let st = true;
 
 function getTrump() {
     return suits.map(s => s.suit)[getRandomInt(4)]
@@ -49,6 +57,26 @@ function turnOffWarningFrom(cards, setCards) {
     }, 400)
 }
 
+function findHigherCard(cards, cardToCover) {
+    return cards.find(card =>
+        card.suit === cardToCover.suit &&
+        card.level > cardToCover.level &&
+        !card.hide
+    );
+}
+
+function findHigherTrumpCard(cards, cardToCover, trump) {
+    return cards
+        ?.filter(card => card.suit === trump && !card.hide)
+        ?.sort(sortCallback)
+        ?.find(
+            card =>
+                (card.suit !== cardToCover.suit) ||
+
+                (card.suit === cardToCover.suit && card.level > cardToCover.level)
+        );
+}
+
 const MESSAGE = {
     USER_WON: 'User won.',
     COMPUTER_WON: 'Computer won!',
@@ -70,9 +98,9 @@ function App() {
     const [trump, setTrump] = useState('');
     const [coloda, setColoda] = useState(initCards);
 
-    const [turn, setTurn] = useState('');
+    const [turnAttack, setTurnAttack] = useState(getRandomInt(2) === 0 ? USER_TURN_ATTACK : COMPUTER_TURN_ATTACK);
     const [trash, setTrash] = useState([]);
-    const [showStartGameButton, setShowStartGameButton] = useState(true);
+    const [showMenu, setShowMenu] = useState(true);
     const [message, setMessage] = useState()
 
     function deleteCardFromUser(card) {
@@ -85,128 +113,108 @@ function App() {
     }
 
     function startGame() {
-        giveCardsAfterRound()
-        setShowStartGameButton(false);
+        // TODO: ADD SPINNER FOR TURN
+        setTrump(getTrump())
+        setShowMenu(false);
+        endRound()
     }
 
-
-    function getMaxTrump(cards, trump) {
-        let max = Math.max(cards?.filter(card => card.suit === trump)?.map(card => card.level));
-
-        max = max ? max+trump : max;
-        console.log(max);
-        return max;
-    }
-    function changeTurn() {
-        setTurn(USER_TURN === turn
-            ? COMPUTER_TURN
-            : USER_TURN
+    function changeTurnAttack() {
+        log('changeTurn')
+        setTurnAttack(USER_TURN_ATTACK === turnAttack
+            ? COMPUTER_TURN_ATTACK
+            : USER_TURN_ATTACK
         )
     }
 
+    function showEndGameMessage() {
+        const endColoda = coloda.length === 0;
 
+        if (!endColoda) {
+            return;
+        }
+
+        const endUserCards = userCards.filter(c => !c.hide).length === 0;
+        const endComputerCards = computerCards.filter(c => !c.hide).length === 0;
+
+        if (endComputerCards && endUserCards) {
+            return setMessage(MESSAGE.DRAW);
+        }
+
+        if (endComputerCards) {
+            return setMessage(MESSAGE.COMPUTER_WON)
+        }
+
+        if (endUserCards) {
+            return setMessage(MESSAGE.USER_WON)
+        }
+    }
 
     function sendCard(cardToCover) {
         return () => {
-
-            if (roundCards.length === 0) {
-                cardToCover.hide = true;
-            }
-
             // Show warning if user want to add wrong card
             if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover)) {
                 setUserCards(userCards.map(card => card === cardToCover ? {...card, warning: true} : card))
                 return turnOffWarningFrom(userCards, setUserCards);
             }
 
+            //.hide mean it was used before
             cardToCover.hide = true;
 
-            let higherCard = computerCards.find(card =>
-                card.suit === cardToCover.suit &&
-                card.level > cardToCover.level &&
-                !card.hide
-            );
 
-            //Beat by trump
-            higherCard = higherCard ||
-                computerCards
-                    ?.filter(card => card.suit === trump && !card.hide)
-                    ?.sort(sortCallback)
-                    ?.find(
-                        card =>
-                            (card.suit !== cardToCover.suit) ||
 
-                            (card.suit === cardToCover.suit && card.level > cardToCover.level)
-                    );
+            switch (turnAttack) {
+                case USER_TURN_ATTACK:
+                    let computerHigherCard = findHigherCard(computerCards, cardToCover)
+                    //Beat by trump
+                    computerHigherCard = computerHigherCard || findHigherTrumpCard(computerCards, cardToCover, trump)
 
-            // If higherCard doesn't exist
-            if (!higherCard || roundCards.length >= maxRoundCards) {
-                setRoundCards([...roundCards, cardToCover]);
-                changeTurn()
-                return giveCardsAfterRound(COMPUTER_TAKE);
+                    // If higherCard doesn't exist
+                    if (!computerHigherCard || roundCards.length >= maxRoundCards) {
+                        setRoundCards([...roundCards, cardToCover]);
+                        return endRound(COMPUTER_LOST_ROUND);
+                    }
+
+                    computerHigherCard.hide = true;
+                    setRoundCards([...roundCards, cardToCover, computerHigherCard]);
+
+                    break;
+                case COMPUTER_TURN_ATTACK:
+                    let userHigherCard = findHigherCard(userCards, cardToCover)
+                    //Beat by trump
+                    userHigherCard = userHigherCard || findHigherTrumpCard(userCards, cardToCover, trump)
+                    setRoundCards([...roundCards, cardToCover, userHigherCard]);
+
+                    break;
             }
 
-            higherCard.hide = true;
-            setRoundCards([...roundCards, cardToCover, higherCard]);
-
-            const endColoda = coloda.length === 0;
-
-            if (!endColoda) {
-                return;
-            }
-
-            const endUserCards = userCards.filter(c => !c.hide).length === 0;
-            const endComputerCards = computerCards.filter(c => !c.hide).length === 0;
-
-            if (endComputerCards && endUserCards) {
-                return setMessage(MESSAGE.DRAW);
-            }
-
-            if (endComputerCards) {
-                return setMessage(MESSAGE.COMPUTER_WON)
-            }
-
-            if (endUserCards) {
-                return setMessage(MESSAGE.USER_WON)
-            }
+            showEndGameMessage()
         }
     }
 
 
-    function giveCardsAfterRound(status) {
+    function endRound(status) {
+
+        let leftUserCards = [];
         let leftRoundCards = [];
         let leftComputerCards = [];
-        let leftUserCards = [];
 
-        computerCards.forEach(card => {
-            if (!card.hide) {
-                leftComputerCards.push(card)
-            } else {
-                leftRoundCards.push(card)
-            }
-        });
-
-        userCards.forEach(card => {
-            if (!card.hide) {
-                leftUserCards.push(card)
-            } else {
-                leftRoundCards.push(card)
-            }
-        });
+        //Split used cards
+        userCards.forEach(c => c.hide ? leftRoundCards.push(c) : leftUserCards.push(c));
+        computerCards.forEach(c => c.hide ? leftRoundCards.push(c) : leftComputerCards.push(c));
 
         log('length', leftRoundCards.length, leftComputerCards.length, leftUserCards.length)
 
-        if (COMPUTER_TAKE === status) {
-            leftComputerCards = [...leftComputerCards, ...leftRoundCards].map(card => {
-                card.hide = false;
-                return card;
-            })
-        }
-        if (USER_TAKE === status) {
-            leftUserCards = [...leftUserCards, ...leftRoundCards].map(card => {
-                card.hide = false;
-                return card;
-            })
+        switch (status) {
+            case COMPUTER_LOST_ROUND:
+                leftComputerCards = [...leftComputerCards, ...leftRoundCards];
+                break;
+            case USER_LOST_ROUND:
+                leftUserCards = [...leftUserCards, ...leftRoundCards];
+                break;
+            case MOVE_ROUND_TO_TRASH:
+                setTrash([...trash, ...leftRoundCards])
+                break;
         }
 
         let players = [
@@ -218,12 +226,16 @@ function App() {
 
         if (coloda.length > 0) {
             players.forEach(player => {
+
                 // Find cards amount which we can add after round
                 let cardsCanBeAdded = maxUserCardsPerRound - player.cards.length;
 
                 if (cardsCanBeAdded > 0 && _coloda.length > 0) {
                     // Move cards from coloda to player
-                    player.set([...player.cards, ..._coloda.slice(-cardsCanBeAdded)]);
+                    let updatedCards = [...player.cards, ..._coloda.slice(-cardsCanBeAdded)]
+                    //If user lost round we need to update hide param to let it use later.
+                    updatedCards.forEach(card => card.hide = false);
+                    player.set(updatedCards);
 
                     if (cardsCanBeAdded > _coloda.length) {
                         _coloda = [];
@@ -238,40 +250,43 @@ function App() {
         leftUserCards = sort(leftUserCards)
         leftComputerCards = sort(leftComputerCards)
 
-        // Initialization of turn before start
-        if (showStartGameButton) {
-            const initTrump = getTrump()
-            setTrump(initTrump)
-
-            const highestUserTrump = getMaxTrump(leftUserCards, initTrump);
-            const highestComputerTrump = getMaxTrump(leftComputerCards, initTrump);
-            // TODO ADD SPINNER TO FIND TURN
-
-            //                                                      if uers don't have cards we use random
-            const turn = highestUserTrump > highestComputerTrump || getRandomInt(2) === 0 ? USER_TURN : COMPUTER_TURN;
-            setTurn(turn);
-        }
-
         // Update coloda array after we gave cards for players.
         setColoda(_coloda);
         setUserCards(leftUserCards)
         setComputerCards(leftComputerCards)
         setRoundCards([]);
 
-        if (MOVE_ROUND_TO_TRASH === status) {
-            setTrash([...trash, ...leftRoundCards])
-        }
+        setInterval(() => {
+
+            log({st}, COMPUTER_TURN_ATTACK, turnAttack, roundCards.length, computerCards)
+            st = !st;
+            if (COMPUTER_TURN_ATTACK !== turnAttack) return;
+
+            if (roundCards.length === 0) {
+                const firstCard = computerCards[0];
+                firstCard.hide = true;
+                setRoundCards([firstCard])
+            }
+        }, 2000)
+
+        changeTurnAttack();
+
+    }
+
+
+    function passRound() {
+        endRound(MOVE_ROUND_TO_TRASH);
     }
 
     return (
         <div className="App">
-            {showStartGameButton && <button onClick={startGame}>Start Game</button>}
+            {showMenu && <button onClick={startGame}>Start Game</button>}
             <CardGroup cards={computerCards}/>
             <CardGroup cards={coloda}/>
             <CardGroup cards={trash}/>
             {trump}
-            <Table cards={roundCards} handlePass={() => giveCardsAfterRound(MOVE_ROUND_TO_TRASH)}/>
-            {turn}
+            <Table cards={roundCards} handlePass={passRound}/>
+            {turnAttack}
             <Footer>
                 <CardGroup cards={userCards} handleClick={sendCard}/>
             </Footer>
