@@ -11,11 +11,11 @@ export const TURN = {
     COMPUTER: 'COMPUTER'
 }
 
-const USER_TAKE = 'USER_TAKE';
-const COMPUTER_TAKE = 'COMPUTER_TAKE';
-const MOVE_ROUND_TO_TRASH = 'MOVE_ROUND_TO_TRASH';
+export const USER_TAKE = 'USER_TAKE';
+export const COMPUTER_TAKE = 'COMPUTER_TAKE';
+export const MOVE_ROUND_TO_TRASH = 'MOVE_ROUND_TO_TRASH';
 
-const card = {
+export const card = {
     addTo: {
         computer: {},
         user: {}

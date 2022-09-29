@@ -7,6 +7,7 @@ import Table from "./table";
 import CardGroup from './card_group';
 
 import {suits, cards} from "./cards";
+import {USER_TAKE, COMPUTER_TAKE, MOVE_ROUND_TO_TRASH} from './constants'
 
 const log = console.log;
 
@@ -67,7 +68,6 @@ function App() {
     const [userCards, setUserCards] = useState([])
     const [showStartGameButton, setShowStartGameButton] = useState(true);
     const [message, setMessage] = useState()
-    const [showMessage, setShowMessage] = useState(false)
 
     function deleteCardFromUser(card) {
         const filtered = userCards.filter(c => getSuit(c) !== getSuit(card))
