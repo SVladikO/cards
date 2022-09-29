@@ -6,10 +6,8 @@ export const CARD_STATYS = {
     ROUND: 'ROUND'
 }
 
-export const TURN = {
-    USER: 'USER',
-    COMPUTER: 'COMPUTER'
-}
+export const USER_TURN = 'USER_TURN';
+export const COMPUTER_TURN = 'COMPUTER_TURN';
 
 export const USER_TAKE = 'USER_TAKE';
 export const COMPUTER_TAKE = 'COMPUTER_TAKE';

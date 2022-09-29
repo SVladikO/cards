@@ -7,7 +7,7 @@ import Table from "./table";
 import CardGroup from './card_group';
 
 import {suits, cards} from "./cards";
-import {USER_TAKE, COMPUTER_TAKE, MOVE_ROUND_TO_TRASH} from './constants'
+import {USER_TAKE, COMPUTER_TAKE, MOVE_ROUND_TO_TRASH, USER_TURN, COMPUTER_TURN} from './constants'
 
 const log = console.log;
 
@@ -58,16 +58,20 @@ const MESSAGE = {
 
 const getSuit = card => card.title + card.suit;
 
-const maxCardsAmountPerRound = 6;
+const maxRoundCards = 12;
+const maxUserCardsPerRound = 6;
 
 function App() {
-    const [trump, setTrump] = useState('');
-    const [coloda, setColoda] = useState(initCards);
-    const [turn, setTurn] = useState('');
+
     const [roundCards, setRoundCards] = useState([]);
-    const [trash, setTrash] = useState([]);
     const [computerCards, setComputerCards] = useState([])
     const [userCards, setUserCards] = useState([])
+
+    const [trump, setTrump] = useState('');
+    const [coloda, setColoda] = useState(initCards);
+
+    const [turn, setTurn] = useState('');
+    const [trash, setTrash] = useState([]);
     const [showStartGameButton, setShowStartGameButton] = useState(true);
     const [message, setMessage] = useState()
 
@@ -82,9 +86,25 @@ function App() {
 
     function startGame() {
         giveCardsAfterRound()
-        setTrump(getTrump())
         setShowStartGameButton(false);
     }
+
+
+    function getMaxTrump(cards, trump) {
+        let max = Math.max(cards?.filter(card => card.suit === trump)?.map(card => card.level));
+
+        max = max ? max+trump : max;
+        console.log(max);
+        return max;
+    }
+    function changeTurn() {
+        setTurn(USER_TURN === turn
+            ? COMPUTER_TURN
+            : USER_TURN
+        )
+    }
+
+
 
     function sendCard(cardToCover) {
         return () => {
@@ -120,8 +140,9 @@ function App() {
                     );
 
             // If higherCard doesn't exist
-            if (!higherCard) {
+            if (!higherCard || roundCards.length >= maxRoundCards) {
                 setRoundCards([...roundCards, cardToCover]);
+                changeTurn()
                 return giveCardsAfterRound(COMPUTER_TAKE);
             }
 
@@ -198,7 +219,7 @@ function App() {
         if (coloda.length > 0) {
             players.forEach(player => {
                 // Find cards amount which we can add after round
-                let cardsCanBeAdded = maxCardsAmountPerRound - player.cards.length;
+                let cardsCanBeAdded = maxUserCardsPerRound - player.cards.length;
 
                 if (cardsCanBeAdded > 0 && _coloda.length > 0) {
                     // Move cards from coloda to player
@@ -214,10 +235,27 @@ function App() {
             })
         }
 
+        leftUserCards = sort(leftUserCards)
+        leftComputerCards = sort(leftComputerCards)
+
+        // Initialization of turn before start
+        if (showStartGameButton) {
+            const initTrump = getTrump()
+            setTrump(initTrump)
+
+            const highestUserTrump = getMaxTrump(leftUserCards, initTrump);
+            const highestComputerTrump = getMaxTrump(leftComputerCards, initTrump);
+            // TODO ADD SPINNER TO FIND TURN
+
+            //                                                      if uers don't have cards we use random
+            const turn = highestUserTrump > highestComputerTrump || getRandomInt(2) === 0 ? USER_TURN : COMPUTER_TURN;
+            setTurn(turn);
+        }
+
         // Update coloda array after we gave cards for players.
         setColoda(_coloda);
         setUserCards(leftUserCards)
-        setComputerCards(sort(leftComputerCards))
+        setComputerCards(leftComputerCards)
         setRoundCards([]);
 
         if (MOVE_ROUND_TO_TRASH === status) {
@@ -233,6 +271,7 @@ function App() {
             <CardGroup cards={trash}/>
             {trump}
             <Table cards={roundCards} handlePass={() => giveCardsAfterRound(MOVE_ROUND_TO_TRASH)}/>
+            {turn}
             <Footer>
                 <CardGroup cards={userCards} handleClick={sendCard}/>
             </Footer>
