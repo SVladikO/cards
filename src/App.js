@@ -25,13 +25,15 @@ function initCards() {
     return result;
 }
 
-function getCozur() {
+function getTrump() {
     return suits.map(s => s.suit)[getRandomInt(4)]
 }
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
+
+const sortCallback = (f, s) => f.level - s.level;
 
 function sort(cards) {
     return cards.sort((f, s) => f.level - s.level)
@@ -59,7 +61,7 @@ const getSuit = card => card.title + card.suit;
 const maxCardsAmountPerRound = 6;
 
 function App() {
-    const [cozur, setCozur] = useState('');
+    const [trump, setTrump] = useState('');
     const [coloda, setColoda] = useState(initCards);
     const [turn, setTurn] = useState('');
     const [roundCards, setRoundCards] = useState([]);
@@ -80,7 +82,7 @@ function App() {
 
     function startGame() {
         giveCardsAfterRound()
-        setCozur(getCozur())
+        setTrump(getTrump())
         setShowStartGameButton(false);
     }
 
@@ -104,6 +106,18 @@ function App() {
                 card.level > cardToCover.level &&
                 !card.hide
             );
+
+            //Beat by trump
+            higherCard = higherCard ||
+                computerCards
+                    ?.filter(card => card.suit === trump && !card.hide)
+                    ?.sort(sortCallback)
+                    ?.find(
+                        card =>
+                            (card.suit !== cardToCover.suit) ||
+
+                            (card.suit === cardToCover.suit && card.level > cardToCover.level)
+                    );
 
             // If higherCard doesn't exist
             if (!higherCard) {
@@ -217,7 +231,7 @@ function App() {
             <CardGroup cards={computerCards}/>
             <CardGroup cards={coloda}/>
             <CardGroup cards={trash}/>
-            {cozur}
+            {trump}
             <Table cards={roundCards} handlePass={() => giveCardsAfterRound(MOVE_ROUND_TO_TRASH)}/>
             <Footer>
                 <CardGroup cards={userCards} handleClick={sendCard}/>
