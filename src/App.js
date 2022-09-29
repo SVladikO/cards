@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 import './App.css';
 import {Footer} from "./App.style";
@@ -31,7 +31,7 @@ function initCards() {
     return result;
 }
 
-let st = true;
+let st = 0;
 
 function getTrump() {
     return suits.map(s => s.suit)[getRandomInt(4)]
@@ -119,6 +119,10 @@ function App() {
         endRound()
     }
 
+    function disableCardsHide(cards) {
+        return cards.map(c => ({...c, hide: false}))
+    }
+
     function changeTurnAttack() {
         log('changeTurn')
         setTurnAttack(USER_TURN_ATTACK === turnAttack
@@ -152,16 +156,17 @@ function App() {
 
     function sendCard(cardToCover) {
         return () => {
+
+            if (cardToCover.hide) return;
+
             // Show warning if user want to add wrong card
-            if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover)) {
+            if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover) && COMPUTER_TURN_ATTACK !== turnAttack) {
                 setUserCards(userCards.map(card => card === cardToCover ? {...card, warning: true} : card))
                 return turnOffWarningFrom(userCards, setUserCards);
             }
 
             //.hide mean it was used before
             cardToCover.hide = true;
-
-
 
             switch (turnAttack) {
                 case USER_TURN_ATTACK:
@@ -171,7 +176,7 @@ function App() {
 
                     // If higherCard doesn't exist
                     if (!computerHigherCard || roundCards.length >= maxRoundCards) {
-                        setRoundCards([...roundCards, cardToCover]);
+                        setRoundCards(disableCardsHide([...roundCards, cardToCover]));
                         return endRound(COMPUTER_LOST_ROUND);
                     }
 
@@ -182,9 +187,16 @@ function App() {
                 case COMPUTER_TURN_ATTACK:
                     let userHigherCard = findHigherCard(userCards, cardToCover)
                     //Beat by trump
-                    userHigherCard = userHigherCard || findHigherTrumpCard(userCards, cardToCover, trump)
-                    setRoundCards([...roundCards, cardToCover, userHigherCard]);
+                    userHigherCard = userHigherCard || findHigherTrumpCard(userCards, cardToCover, trump);
 
+                    if (userHigherCard) {
+                        userHigherCard.hide = true;
+                        setRoundCards([...roundCards, userHigherCard]);
+                        return;
+                    }
+
+                    setRoundCards([])
+                    setUserCards(disableCardsHide([...userCards, ...roundCards]));
                     break;
             }
 
@@ -256,26 +268,25 @@ function App() {
         setComputerCards(leftComputerCards)
         setRoundCards([]);
 
-        setInterval(() => {
+        if (COMPUTER_LOST_ROUND !== status) {
+            if (COMPUTER_TURN_ATTACK !== turnAttack) {
+                const firstCard = leftComputerCards[0];
 
-            log({st}, COMPUTER_TURN_ATTACK, turnAttack, roundCards.length, computerCards)
-            st = !st;
-            if (COMPUTER_TURN_ATTACK !== turnAttack) return;
-
-            if (roundCards.length === 0) {
-                const firstCard = computerCards[0];
                 firstCard.hide = true;
                 setRoundCards([firstCard])
             }
-        }, 2000)
 
-        changeTurnAttack();
-
+            changeTurnAttack();
+        }
     }
 
 
     function passRound() {
-        endRound(MOVE_ROUND_TO_TRASH);
+        if (roundCards.length % 2 === 0 && roundCards.length >= 2) {
+            endRound(MOVE_ROUND_TO_TRASH);
+        } else {
+            log('oops')
+        }
     }
 
     return (
