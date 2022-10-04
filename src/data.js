@@ -6,7 +6,7 @@ export const suits = [
     {color: 'black', suit: '♠'},
 ];
 
-export const cards = [
+export const data = [
     // {level: 1, title: 1},
     // {level: 2, title: 2},
     // {level: 3, title: 3},
