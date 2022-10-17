@@ -1,8 +1,8 @@
-export const CARD_STATYS = {
+export const CARD_STATUS = {
     COLODA: "COLODA",
     USER: "USER",
     COMPUTER: "COMPUTER",
-    BIN: "BIN",
+    TRASH: "BIN",
     ROUND: "ROUND"
 }
 
