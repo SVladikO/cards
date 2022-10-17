@@ -1,7 +1,7 @@
 import React from "react";
 import {useSelector, useDispatch} from "react-redux";
-import {init as initUserCards} from './userCardsSlice';
-import {addCard as addCardToRound} from '../round_cards/roundCardsSlice';
+import {initUserCards} from './userCardsSlice';
+import {addCardToRound} from '../round_cards/roundCardsSlice';
 import CardGroup from "../../card_group";
 import {COMPUTER_LOST_ROUND, TURN, maxRoundCards} from "../../constants";
 import {canCardBeAddedToRound} from "../../utils";

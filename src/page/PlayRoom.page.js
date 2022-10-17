@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {init as updateUserCards} from '../features/user_cards/userCardsSlice';
-import {addCard as addCardToRound} from '../features/round_cards/roundCardsSlice';
+import {initUserCards} from '../features/user_cards/userCardsSlice';
+import {addCardToRound} from '../features/round_cards/roundCardsSlice';
 import {setComputerTurnAttack, setUserTurnAttack, changeTurnAttack} from "../features/game_details/gameDetailsSlice";
 
 import Table from "../table";
@@ -234,7 +234,7 @@ function App() {
         // Update coloda array after we gave data for players.
         coloda = _coloda;
         userCards = leftUserCards
-        dispatch(updateUserCards(leftUserCards))
+        dispatch(initUserCards(leftUserCards))
         computerCards = leftComputerCards
         roundCards = [];
 
