@@ -1,9 +1,10 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-import {TURN_ATTACK} from "../../constants";
+import {TURN} from "../../constants";
 
 const initialState = {
     turnAttack: '',
+    turnWalk: '',
 }
 
 export const gameDetailsSlice = createSlice({
@@ -11,15 +12,26 @@ export const gameDetailsSlice = createSlice({
     initialState,
     reducers: {
         setUserTurnAttack: (state) => {
-            state.turnAttack = TURN_ATTACK.USER;
+            state.turnAttack = TURN.USER.ATTACK;
         },
         setComputerTurnAttack: (state) => {
-            state.turnAttack = TURN_ATTACK.COMPUTER;
+            state.turnAttack = TURN.COMPUTER.ATTACK;
+        },
+        setUserTurnWalk: (state) => {
+            state.turnWalk = TURN.USER.WALK;
+        },
+        setComputerTurnWalk: (state) => {
+            state.turnWalk = TURN.COMPUTER.WALK;
         },
         changeTurnAttack: (state) => {
-            state.turnAttack = state.turnAttack === TURN_ATTACK.USER
-                    ? TURN_ATTACK.COMPUTER
-                    : TURN_ATTACK.USER
+            state.turnAttack = state.turnAttack === TURN.USER.ATTACK
+                    ? TURN.COMPUTER.ATTACK
+                    : TURN.USER.ATTACK
+        },
+        changeTurnWalk: (state) => {
+            state.turnWalk = state.turnWalk === TURN.USER.WALK
+                    ? TURN.COMPUTER.WALK
+                    : TURN.USER.WALK
         }
     }
 })

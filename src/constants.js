@@ -9,9 +9,22 @@ export const CARD_STATUS = {
 export const maxRoundCards = 12;
 export const maxUserCardsPerRound = 6;
 
-export const TURN_ATTACK = {
-    USER: "USER_TURN_ATTACK",
-    COMPUTER: "COMPUTER_TURN_ATTACK"
+// This variable answer the question which turn to attack fool round
+export const TURN = {
+    USER: {
+        ATTACK: "TURN_USER_ATTACK",
+        WALK: "TURN_USER_WALK",
+    },
+    COMPUTER: {
+        ATTACK: "TURN_COMPUTER_ATTACK",
+        WALK: "TURN_COMPUTER_WALK",
+    },
+};
+
+// This variable answer the question which turn to attack fool round
+export const TURN_TO_WALK = {
+    USER: "USER_TURN_TO_WALK",
+    COMPUTER: "COMPUTER_TURN_TO_WALK"
 };
 
 

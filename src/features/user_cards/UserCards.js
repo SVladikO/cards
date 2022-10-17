@@ -3,7 +3,7 @@ import {useSelector, useDispatch} from "react-redux";
 import {init as initUserCards} from './userCardsSlice';
 import {addCard as addCardToRound} from '../round_cards/roundCardsSlice';
 import CardGroup from "../../card_group";
-import {COMPUTER_LOST_ROUND, TURN_ATTACK, maxRoundCards} from "../../constants";
+import {COMPUTER_LOST_ROUND, TURN, maxRoundCards} from "../../constants";
 import {canCardBeAddedToRound} from "../../utils";
 
 export function UserCards() {
@@ -17,7 +17,7 @@ export function UserCards() {
     function sendCard(cardToSend) {
         return () => {
 
-            if (cardToSend.hide || TURN_ATTACK.COMPUTER === turnAttack) {
+            if (cardToSend.hide || TURN.COMPUTER.ATTACK === turnAttack) {
                 return;
             }
 

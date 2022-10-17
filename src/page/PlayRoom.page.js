@@ -12,7 +12,7 @@ import {
     USER_LOST_ROUND,
     COMPUTER_LOST_ROUND,
     MOVE_ROUND_TO_TRASH,
-    TURN_ATTACK,
+    TURN,
     MESSAGE,
     maxRoundCards,
     maxUserCardsPerRound
@@ -129,7 +129,7 @@ function App() {
             if (cardToCover.hide) return;
 
             // Show warning if user want to add wrong card
-            // if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover) && COMPUTER_TURN_ATTACK !== turnAttack) {
+            // if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover) && TURN.COMPUTER.ATTACK !== turnAttack) {
             //     userCards = userCards.map(card => card === cardToCover ? {...card, warning: true} : card)
             //
             //     return turnOffWarningFrom(userCards, cards => userCards = cards);
@@ -139,7 +139,7 @@ function App() {
             cardToCover.hide = true;
 
             switch (turnAttack) {
-                case TURN_ATTACK.USER:
+                case TURN.USER.ATTACK:
                     let computerHigherCard = findHigherCard(computerCards, cardToCover)
                     //Beat by trump
                     computerHigherCard = computerHigherCard || findHigherTrumpCard(computerCards, cardToCover, trump)
@@ -154,7 +154,7 @@ function App() {
                     roundCards = [...roundCards, cardToCover, computerHigherCard];
 
                     break;
-                case TURN_ATTACK.COMPUTER:
+                case TURN.COMPUTER.ATTACK:
                     let userHigherCard = findHigherCard(userCards, cardToCover)
                     //Beat by trump
                     userHigherCard = userHigherCard || findHigherTrumpCard(userCards, cardToCover, trump);
@@ -239,7 +239,7 @@ function App() {
         roundCards = [];
 
         if (COMPUTER_LOST_ROUND !== status) {
-            if (TURN_ATTACK.COMPUTER !== turnAttack) {
+            if (TURN.COMPUTER.ATTACK !== turnAttack) {
                 const firstCard = leftComputerCards[0];
 
                 firstCard.hide = true;
