@@ -2,7 +2,13 @@ import {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {initUserCards} from '../features/user_cards/userCardsSlice';
 import {addCardToRound} from '../features/round_cards/roundCardsSlice';
-import {setComputerTurnAttack, setUserTurnAttack, changeTurnAttack} from "../features/game_details/gameDetailsSlice";
+import {
+    setUserTurnWalk,
+    setUserTurnAttack,
+    setComputerTurnAttack,
+    setComputerTurnWalk,
+    changeTurnAttack,
+    changeTurnWalk} from "../features/game_details/gameDetailsSlice";
 
 import CardGroup from '../card_group';
 
@@ -16,6 +22,7 @@ import {
     maxRoundCards,
     maxUserCardsPerRound
 } from '../constants'
+
 import {UserCards} from "../features/user_cards/UserCards";
 import {RoundCards} from "../features/round_cards/RoundCards";
 import {ComputerCards} from "../features/computer_cards/ComputerCards";
@@ -79,6 +86,7 @@ let trash = []
 
 function App() {
     const turnAttack = useSelector(state => state.gameDetails.turnAttack);
+    const turnWalk = useSelector(state => state.gameDetails.turnWalk);
     const computerCards = useSelector(state => state.computerCards.value);
     const dispatch = useDispatch();
 
@@ -90,9 +98,14 @@ function App() {
         setShowMenu(false);
 
         // Set which turn to attack
-        getRandomInt(2) === 0
-            ? dispatch(setComputerTurnAttack())
-            : dispatch(setUserTurnAttack);
+        if (getRandomInt(2) === 0) {
+            dispatch(setComputerTurnAttack());
+            dispatch(setComputerTurnWalk());
+        } else {
+            dispatch(setUserTurnAttack);
+            dispatch(setUserTurnWalk);
+
+        }
 
         endRound()
     }
@@ -248,10 +261,9 @@ function App() {
                 dispatch(addCardToRound(firstCard))
             }
 
-            dispatch(changeTurnAttack());
+            dispatch(changeTurnWalk());
         }
     }
-
 
     function passRound() {
         if (roundCards.length % 2 === 0 && roundCards.length >= 2) {
@@ -264,7 +276,7 @@ function App() {
     return (
         <div className="App">
             {showMenu && <button onClick={startGame}>Start Game</button>}
-            <ComputerCards />
+            <ComputerCards/>
             {/*<CardGroup cards={computerCards}/>*/}
             <CardGroup cards={coloda}/>
             <CardGroup cards={trash}/>
@@ -272,8 +284,9 @@ function App() {
             <RoundCards/>
             {/*<Table cards={roundCards} handlePass={passRound}/>*/}
             {turnAttack}
-                <UserCards/>
-                {/*<CardGroup cards={userCards} handleClick={sendCard}/>*/}
+            {turnWalk}
+            <UserCards/>
+            {/*<CardGroup cards={userCards} handleClick={sendCard}/>*/}
             <div>{message}</div>
         </div>
     );

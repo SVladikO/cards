@@ -36,6 +36,13 @@ export const gameDetailsSlice = createSlice({
     }
 })
 
-export const {setUserTurnAttack, setComputerTurnAttack, changeTurnAttack} = gameDetailsSlice.actions;
+export const {
+    setUserTurnWalk,
+    setUserTurnAttack,
+    setComputerTurnAttack,
+    setComputerTurnWalk,
+    changeTurnAttack,
+    changeTurnWalk
+} = gameDetailsSlice.actions;
 
 export default gameDetailsSlice.reducer

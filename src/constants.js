@@ -10,6 +10,9 @@ export const maxRoundCards = 12;
 export const maxUserCardsPerRound = 6;
 
 // This variable answer the question which turn to attack fool round
+// In one case your turn to attack & walk
+// In another case your turn to defence & walk
+// It's a big difference
 export const TURN = {
     USER: {
         ATTACK: "TURN_USER_ATTACK",
