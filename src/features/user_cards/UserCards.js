@@ -1,65 +1,77 @@
 import React from "react";
 import {useSelector, useDispatch} from "react-redux";
-import {updateCards} from './userCardsSlice';
+import {init as initUserCards} from './userCardsSlice';
+import {addCard as addCardToRound} from '../round_cards/roundCardsSlice';
 import CardGroup from "../../card_group";
-import {COMPUTER_LOST_ROUND, COMPUTER_TURN_ATTACK, maxRoundCards, USER_TURN_ATTACK} from "../../constants";
+import {COMPUTER_LOST_ROUND, TURN_ATTACK, maxRoundCards} from "../../constants";
+import {canCardBeAddedToRound} from "../../utils";
 
 export function UserCards() {
-    const cards = useSelector((state) => state.userCards.value);
+    const turnAttack = useSelector((state) => state.gameDetails.value);
+    const roundCards = useSelector((state) => state.roundCards.value);
+    const userCards = useSelector((state) => state.userCards.value);
     const dispatch = useDispatch();
 
-    console.log({cards})
+    console.log({userCards})
 
-    function sendCard(cardToCover) {
+    function sendCard(cardToSend) {
         return () => {
 
-            if (cardToCover.hide) return;
+            if (cardToSend.hide || TURN_ATTACK.COMPUTER === turnAttack) {
+                return;
+            }
+
+            if (canCardBeAddedToRound(roundCards, cardToSend)) {
+                dispatch(addCardToRound(cardToSend))
+                const filteredUserCards = userCards.filter(card => card !== cardToSend)
+                dispatch(initUserCards(filteredUserCards))
+                return;
+            }
 
             // Show warning if user want to add wrong card
-            if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover) && COMPUTER_TURN_ATTACK !== turnAttack) {
-                userCards = userCards.map(card => card === cardToCover ? {...card, warning: true} : card)
+            // if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover)) {
+                // userCards = userCards.map(card => card === cardToCover ? {...card} : card)
 
-                return turnOffWarningFrom(userCards, cards => userCards = cards);
-            }
+                // return turnOffWarningFrom(userCards, cards => userCards = cards);
+            // }
 
-            //.hide mean it was used before
-            cardToCover.hide = true;
+            // //.hide mean it was used before
+            // cardToCover.hide = true;
 
-            switch (turnAttack) {
-                case USER_TURN_ATTACK:
-                    let computerHigherCard = findHigherCard(computerCards, cardToCover)
-                    //Beat by trump
-                    computerHigherCard = computerHigherCard || findHigherTrumpCard(computerCards, cardToCover, trump)
+            // switch (turnAttack) {
+            //     case USER_TURN_ATTACK:
+            //         let computerHigherCard = findHigherCard(computerCards, cardToSend)
+            //         //Beat by trump
+            //         computerHigherCard = computerHigherCard || findHigherTrumpCard(computerCards, cardToSend, trump)
+            //
+            //         // If higherCard doesn't exist
+            //         if (!computerHigherCard || roundCards.length >= maxRoundCards) {
+            //             roundCards = disableCardsHide([...roundCards, cardToSend]);
+            //             return endRound(COMPUTER_LOST_ROUND);
+            //         }
+            //
+            //         computerHigherCard.hide = true;
+            //         roundCards = [...roundCards, cardToSend, computerHigherCard];
 
-                    // If higherCard doesn't exist
-                    if (!computerHigherCard || roundCards.length >= maxRoundCards) {
-                        roundCards = disableCardsHide([...roundCards, cardToCover]);
-                        return endRound(COMPUTER_LOST_ROUND);
-                    }
+                // case COMPUTER_TURN_ATTACK:
+                //     let userHigherCard = findHigherCard(userCards, cardToCover)
+                //     //Beat by trump
+                //     userHigherCard = userHigherCard || findHigherTrumpCard(userCards, cardToCover, trump);
+                //
+                //     if (userHigherCard) {
+                //         userHigherCard.hide = true;
+                //         roundCards = [...roundCards, userHigherCard];
+                //         return;
+                //     }
+                //
+                //     roundCards = [];
+                //     userCards = disableCardsHide([...userCards, ...roundCards]);
+                //     break;
+            // }
 
-                    computerHigherCard.hide = true;
-                    roundCards = [...roundCards, cardToCover, computerHigherCard];
-
-                    break;
-                case COMPUTER_TURN_ATTACK:
-                    let userHigherCard = findHigherCard(userCards, cardToCover)
-                    //Beat by trump
-                    userHigherCard = userHigherCard || findHigherTrumpCard(userCards, cardToCover, trump);
-
-                    if (userHigherCard) {
-                        userHigherCard.hide = true;
-                        roundCards = [...roundCards, userHigherCard];
-                        return;
-                    }
-
-                    roundCards = [];
-                    userCards = disableCardsHide([...userCards, ...roundCards]);
-                    break;
-            }
-
-            showEndGameMessage()
+            // showEndGameMessage()
         }
     }
 
-    return <CardGroup cards={cards}/>;
+    return <CardGroup cards={userCards} handleClick={sendCard}/>;
 }

@@ -8,12 +8,15 @@ export const roundCardsSlice = createSlice({
     name: 'roundCards',
     initialState,
     reducers: {
-        updateCards: (state, action) => {
+        init: (state, action) => {
             state.value = action.payload;
+        },
+        addCard: (state, action) => {
+            state.value.push(action.payload);
         }
     }
 })
 
-export const {updateCards} = roundCardsSlice.actions;
+export const {init, addCard} = roundCardsSlice.actions;
 
 export default roundCardsSlice.reducer

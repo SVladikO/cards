@@ -9,8 +9,11 @@ export const CARD_STATUS = {
 export const maxRoundCards = 12;
 export const maxUserCardsPerRound = 6;
 
-export const USER_TURN_ATTACK = "USER_TURN_ATTACK";
-export const COMPUTER_TURN_ATTACK = "COMPUTER_TURN_ATTACK";
+export const TURN_ATTACK = {
+    USER: "USER_TURN_ATTACK",
+    COMPUTER: "COMPUTER_TURN_ATTACK"
+};
+
 
 export const USER_LOST_ROUND = "USER_LOST_ROUND";
 export const COMPUTER_LOST_ROUND = "COMPUTER_LOST_ROUND";

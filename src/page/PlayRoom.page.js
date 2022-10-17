@@ -1,7 +1,8 @@
 import {useState} from 'react';
-import {useDispatch} from "react-redux";
-import {updateCards as updateUserCards} from '../features/user_cards/userCardsSlice';
-
+import {useDispatch, useSelector} from "react-redux";
+import {init as updateUserCards} from '../features/user_cards/userCardsSlice';
+import {addCard as addCardToRound} from '../features/round_cards/roundCardsSlice';
+import {setComputerTurnAttack, setUserTurnAttack, changeTurnAttack} from "../features/game_details/gameDetailsSlice";
 
 import Table from "../table";
 import CardGroup from '../card_group';
@@ -11,8 +12,7 @@ import {
     USER_LOST_ROUND,
     COMPUTER_LOST_ROUND,
     MOVE_ROUND_TO_TRASH,
-    USER_TURN_ATTACK,
-    COMPUTER_TURN_ATTACK,
+    TURN_ATTACK,
     MESSAGE,
     maxRoundCards,
     maxUserCardsPerRound
@@ -27,7 +27,7 @@ function initCards() {
 
     data.forEach(card =>
         suits.forEach(suit =>
-            result.push({...card, ...suit, status: 'coloda'})
+            result.push({...card, ...suit})
         )
     )
 
@@ -40,7 +40,6 @@ const sort = cards => cards.sort((f, s) => f.level - s.level);
 const getTrump = () => suits.map(s => s.suit)[getRandomInt(4)];
 const sortCallback = (f, s) => f.level - s.level;
 const getRandomInt = max => Math.floor(Math.random() * max);
-const canCardBeAdded = (cards, candidateToAdd) => cards.find(card => card.level === candidateToAdd.level)
 
 function turnOffWarningFrom(cards, setCards) {
     setTimeout(() => {
@@ -76,10 +75,10 @@ let computerCards = []
 
 let trump = getTrump();
 let coloda = initCards();
-let turnAttack = getRandomInt(2) === 0 ? USER_TURN_ATTACK : COMPUTER_TURN_ATTACK;
 let trash = []
 
 function App() {
+    const turnAttack = useSelector(state => state.gameDetails.turnAttack);
     const dispatch = useDispatch();
 
     const [showMenu, setShowMenu] = useState(true);
@@ -88,18 +87,17 @@ function App() {
     function startGame() {
         // TODO: ADD SPINNER FOR TURN
         setShowMenu(false);
+
+        // Set which turn to attack
+        getRandomInt(2) === 0
+            ? dispatch(setComputerTurnAttack())
+            : dispatch(setUserTurnAttack);
+
         endRound()
     }
 
     function disableCardsHide(cards) {
         return cards.map(c => ({...c, hide: false}))
-    }
-
-    function changeTurnAttack() {
-        log('changeTurn')
-        turnAttack = USER_TURN_ATTACK === turnAttack
-            ? COMPUTER_TURN_ATTACK
-            : USER_TURN_ATTACK
     }
 
     function showEndGameMessage() {
@@ -131,17 +129,17 @@ function App() {
             if (cardToCover.hide) return;
 
             // Show warning if user want to add wrong card
-            if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover) && COMPUTER_TURN_ATTACK !== turnAttack) {
-                userCards = userCards.map(card => card === cardToCover ? {...card, warning: true} : card)
-
-                return turnOffWarningFrom(userCards, cards => userCards = cards);
-            }
+            // if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover) && COMPUTER_TURN_ATTACK !== turnAttack) {
+            //     userCards = userCards.map(card => card === cardToCover ? {...card, warning: true} : card)
+            //
+            //     return turnOffWarningFrom(userCards, cards => userCards = cards);
+            // }
 
             //.hide mean it was used before
             cardToCover.hide = true;
 
             switch (turnAttack) {
-                case USER_TURN_ATTACK:
+                case TURN_ATTACK.USER:
                     let computerHigherCard = findHigherCard(computerCards, cardToCover)
                     //Beat by trump
                     computerHigherCard = computerHigherCard || findHigherTrumpCard(computerCards, cardToCover, trump)
@@ -156,7 +154,7 @@ function App() {
                     roundCards = [...roundCards, cardToCover, computerHigherCard];
 
                     break;
-                case COMPUTER_TURN_ATTACK:
+                case TURN_ATTACK.COMPUTER:
                     let userHigherCard = findHigherCard(userCards, cardToCover)
                     //Beat by trump
                     userHigherCard = userHigherCard || findHigherTrumpCard(userCards, cardToCover, trump);
@@ -241,14 +239,14 @@ function App() {
         roundCards = [];
 
         if (COMPUTER_LOST_ROUND !== status) {
-            if (COMPUTER_TURN_ATTACK !== turnAttack) {
+            if (TURN_ATTACK.COMPUTER !== turnAttack) {
                 const firstCard = leftComputerCards[0];
 
                 firstCard.hide = true;
-                roundCards = [firstCard]
+                dispatch(addCardToRound(firstCard))
             }
 
-            changeTurnAttack();
+            dispatch(changeTurnAttack());
         }
     }
 
