@@ -1,15 +1,15 @@
 import {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {initUserCards} from '../features/user_cards/userCardsSlice';
-import {addCardToRound} from '../features/round_cards/roundCardsSlice';
+import {initRoundCards, addCardToRound} from '../features/round_cards/roundCardsSlice';
 import {
-    setUserTurnWalk,
-    setUserTurnAttack,
-    setComputerTurnAttack,
-    setComputerTurnWalk,
+    setIsComputerTurnAttack,
+    setIsComputerTurnWalk,
     changeTurnAttack,
-    changeTurnWalk} from "../features/game_details/gameDetailsSlice";
+    changeTurnWalk
+} from "../features/game_details/gameDetailsSlice";
 
+import {findHigherCard, addCardsTo} from '../utils'
 import CardGroup from '../card_group';
 
 import {suits, data} from "../data";
@@ -17,10 +17,7 @@ import {
     USER_LOST_ROUND,
     COMPUTER_LOST_ROUND,
     MOVE_ROUND_TO_TRASH,
-    TURN,
     MESSAGE,
-    maxRoundCards,
-    maxUserCardsPerRound
 } from '../constants'
 
 import {UserCards} from "../features/user_cards/UserCards";
@@ -55,13 +52,6 @@ function turnOffWarningFrom(cards, setCards) {
     }, 400)
 }
 
-function findHigherCard(cards, cardToCover) {
-    return cards.find(card =>
-        card.suit === cardToCover.suit &&
-        card.level > cardToCover.level &&
-        !card.hide
-    );
-}
 
 function findHigherTrumpCard(cards, cardToCover, trump) {
     return cards
@@ -70,7 +60,6 @@ function findHigherTrumpCard(cards, cardToCover, trump) {
         ?.find(
             card =>
                 (card.suit !== cardToCover.suit) ||
-
                 (card.suit === cardToCover.suit && card.level > cardToCover.level)
         );
 }
@@ -85,10 +74,17 @@ let coloda = initCards();
 let trash = []
 
 function App() {
-    const turnAttack = useSelector(state => state.gameDetails.turnAttack);
-    const turnWalk = useSelector(state => state.gameDetails.turnWalk);
+    const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
+    const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
     const computerCards = useSelector(state => state.computerCards.value);
     const dispatch = useDispatch();
+
+    const addCardsToPlayer = (to) => {
+        const [_updatedCards, cutedColoda] = addCardsTo(to, coloda)
+        coloda = cutedColoda;
+
+        return _updatedCards;
+    }
 
     const [showMenu, setShowMenu] = useState(true);
     const [message, setMessage] = useState()
@@ -98,16 +94,41 @@ function App() {
         setShowMenu(false);
 
         // Set which turn to attack
-        if (getRandomInt(2) === 0) {
-            dispatch(setComputerTurnAttack());
-            dispatch(setComputerTurnWalk());
-        } else {
-            dispatch(setUserTurnAttack);
-            dispatch(setUserTurnWalk);
+        const isComputerTurn = getRandomInt(2) === 0;
+        dispatch(setIsComputerTurnAttack(isComputerTurn));
+        dispatch(setIsComputerTurnWalk(isComputerTurn));
 
-        }
+        addCardsAfterRound()
+        computerWalkInterval();
+    }
 
-        endRound()
+    function manageCard(cardToMove) {
+        const filteredUserCards = userCards.filter(card => card !== cardToMove)
+
+        dispatch(initUserCards(filteredUserCards))
+        dispatch(addCardToRound(cardToMove))
+        dispatch(changeTurnWalk())
+    }
+
+    function computerWalkInterval() {
+        setInterval(() => {
+            console.log('Opppa', isComputerAttack, isComputerWalk)
+            if (isComputerAttack && isComputerWalk) {
+
+                const cardToSend = computerCards[0];
+                manageCard(cardToSend)
+
+            }
+
+            // Attack
+            // Defence
+            if (!isComputerAttack && isComputerWalk) {
+                const cardToSend = computerCards[0];
+                manageCard(cardToSend)
+
+            }
+        }, 2000);
+
     }
 
     function disableCardsHide(cards) {
@@ -137,139 +158,31 @@ function App() {
         }
     }
 
-    function sendCard(cardToCover) {
-        return () => {
-
-            if (cardToCover.hide) return;
-
-            // Show warning if user want to add wrong card
-            // if (roundCards.length > 0 && !canCardBeAdded(roundCards, cardToCover) && TURN.COMPUTER.ATTACK !== turnAttack) {
-            //     userCards = userCards.map(card => card === cardToCover ? {...card, warning: true} : card)
-            //
-            //     return turnOffWarningFrom(userCards, cards => userCards = cards);
-            // }
-
-            //.hide mean it was used before
-            cardToCover.hide = true;
-
-            switch (turnAttack) {
-                case TURN.USER.ATTACK:
-                    let computerHigherCard = findHigherCard(computerCards, cardToCover)
-                    //Beat by trump
-                    computerHigherCard = computerHigherCard || findHigherTrumpCard(computerCards, cardToCover, trump)
-
-                    // If higherCard doesn't exist
-                    if (!computerHigherCard || roundCards.length >= maxRoundCards) {
-                        roundCards = disableCardsHide([...roundCards, cardToCover]);
-                        return endRound(COMPUTER_LOST_ROUND);
-                    }
-
-                    computerHigherCard.hide = true;
-                    roundCards = [...roundCards, cardToCover, computerHigherCard];
-
-                    break;
-                case TURN.COMPUTER.ATTACK:
-                    let userHigherCard = findHigherCard(userCards, cardToCover)
-                    //Beat by trump
-                    userHigherCard = userHigherCard || findHigherTrumpCard(userCards, cardToCover, trump);
-
-                    if (userHigherCard) {
-                        userHigherCard.hide = true;
-                        roundCards = [...roundCards, userHigherCard];
-                        return;
-                    }
-
-                    roundCards = [];
-                    userCards = disableCardsHide([...userCards, ...roundCards]);
-                    break;
-            }
-
-            showEndGameMessage()
+    function moveRoundTo(status) {
+        switch (status) {
+            case COMPUTER_LOST_ROUND:
+                dispatch(initComputerCards([...computerCards, ...roundCards]));
+                break;
+            case USER_LOST_ROUND:
+                dispatch(initUserCards([...userCards, ...roundCards]));
+                break;
+            case MOVE_ROUND_TO_TRASH:
+                trash = [...trash, ...roundCards];
+                break;
         }
     }
 
-    function endRound(status) {
-
-        let leftUserCards = [];
-        let leftRoundCards = [];
-        let leftComputerCards = [];
-
-        //Split used data
-        userCards.forEach(c => c.hide ? leftRoundCards.push(c) : leftUserCards.push(c));
-        computerCards.forEach(c => c.hide ? leftRoundCards.push(c) : leftComputerCards.push(c));
-
-        log('length', leftRoundCards.length, leftComputerCards.length, leftUserCards.length)
-
-        switch (status) {
-            case COMPUTER_LOST_ROUND:
-                leftComputerCards = [...leftComputerCards, ...leftRoundCards];
-                break;
-            case USER_LOST_ROUND:
-                leftUserCards = [...leftUserCards, ...leftRoundCards];
-                break;
-            case MOVE_ROUND_TO_TRASH:
-                trash = [...trash, ...leftRoundCards];
-                break;
-        }
-
-        let players = [
-            {cards: leftUserCards, set: cards => leftUserCards = cards},
-            {cards: leftComputerCards, set: cards => leftComputerCards = cards},
-        ];
-
-        let _coloda = coloda;
-
-        if (coloda.length > 0) {
-            players.forEach(player => {
-
-                // Find data amount which we can add after round
-                let cardsCanBeAdded = maxUserCardsPerRound - player.cards.length;
-
-                if (cardsCanBeAdded > 0 && _coloda.length > 0) {
-                    // Move data from coloda to player
-                    let updatedCards = [...player.cards, ..._coloda.slice(-cardsCanBeAdded)]
-                    //If user lost round we need to update hide param to let it use later.
-                    updatedCards.forEach(card => card.hide = false);
-                    player.set(updatedCards);
-
-                    if (cardsCanBeAdded > _coloda.length) {
-                        _coloda = [];
-                    } else {
-                        // Copy data from start. We took data for user, we update coloda. The way to avoid duplication.
-                        _coloda = _coloda.slice(0, _coloda.length - cardsCanBeAdded);
-                    }
-                }
-            })
-        }
-
-        leftUserCards = sort(leftUserCards)
-        leftComputerCards = sort(leftComputerCards)
-
-        // Update coloda array after we gave data for players.
-        coloda = _coloda;
-        userCards = leftUserCards
-        dispatch(initUserCards(leftUserCards))
-        dispatch(initComputerCards(leftComputerCards));
+    function addCardsAfterRound(status) {
+        dispatch(initRoundCards([]));
+        dispatch(initUserCards(sort(addCardsToPlayer(userCards))))
+        dispatch(initComputerCards(sort(addCardsToPlayer(computerCards))));
         roundCards = [];
-
-        if (COMPUTER_LOST_ROUND !== status) {
-            if (TURN.COMPUTER.ATTACK !== turnAttack) {
-                const firstCard = leftComputerCards[0];
-                const filteredComputerCards = leftComputerCards.filter(card => card !== firstCard);
-
-                dispatch(initComputerCards(filteredComputerCards));
-                dispatch(addCardToRound(firstCard))
-            }
-
-            dispatch(changeTurnWalk());
-        }
     }
 
     function passRound() {
         if (roundCards.length % 2 === 0 && roundCards.length >= 2) {
-            endRound(MOVE_ROUND_TO_TRASH);
-        } else {
-            log('oops')
+            moveRoundTo(MOVE_ROUND_TO_TRASH);
+            addCardsAfterRound()
         }
     }
 
@@ -283,8 +196,8 @@ function App() {
             {trump}
             <RoundCards/>
             {/*<Table cards={roundCards} handlePass={passRound}/>*/}
-            {turnAttack}
-            {turnWalk}
+            {isComputerAttack ? "CompAAA     " : 'UserAA    '}
+            {isComputerWalk ? "CompWWW   " : 'UserWWW  '}
             <UserCards/>
             {/*<CardGroup cards={userCards} handleClick={sendCard}/>*/}
             <div>{message}</div>

@@ -6,7 +6,5 @@ export function RoundCards() {
     const cards = useSelector((state) => state.roundCards.value);
     const dispatch = useDispatch();
 
-    console.log({cards})
-
     return <Table cards={cards}/>
 }
