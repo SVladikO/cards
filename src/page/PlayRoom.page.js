@@ -4,7 +4,6 @@ import {initUserCards} from '../features/user_cards/userCardsSlice';
 import {addCardToRound} from '../features/round_cards/roundCardsSlice';
 import {setComputerTurnAttack, setUserTurnAttack, changeTurnAttack} from "../features/game_details/gameDetailsSlice";
 
-import Table from "../table";
 import CardGroup from '../card_group';
 
 import {suits, data} from "../data";
@@ -19,6 +18,8 @@ import {
 } from '../constants'
 import {UserCards} from "../features/user_cards/UserCards";
 import {RoundCards} from "../features/round_cards/RoundCards";
+import {ComputerCards} from "../features/computer_cards/ComputerCards";
+import {initComputerCards} from "../features/computer_cards/computerCardsSlice";
 
 const log = console.log;
 
@@ -71,7 +72,6 @@ const getSuit = card => card.title + card.suit;
 
 let roundCards = [];
 let userCards = []
-let computerCards = []
 
 let trump = getTrump();
 let coloda = initCards();
@@ -79,6 +79,7 @@ let trash = []
 
 function App() {
     const turnAttack = useSelector(state => state.gameDetails.turnAttack);
+    const computerCards = useSelector(state => state.computerCards.value);
     const dispatch = useDispatch();
 
     const [showMenu, setShowMenu] = useState(true);
@@ -235,14 +236,15 @@ function App() {
         coloda = _coloda;
         userCards = leftUserCards
         dispatch(initUserCards(leftUserCards))
-        computerCards = leftComputerCards
+        dispatch(initComputerCards(leftComputerCards));
         roundCards = [];
 
         if (COMPUTER_LOST_ROUND !== status) {
             if (TURN.COMPUTER.ATTACK !== turnAttack) {
                 const firstCard = leftComputerCards[0];
+                const filteredComputerCards = leftComputerCards.filter(card => card !== firstCard);
 
-                firstCard.hide = true;
+                dispatch(initComputerCards(filteredComputerCards));
                 dispatch(addCardToRound(firstCard))
             }
 
@@ -262,7 +264,8 @@ function App() {
     return (
         <div className="App">
             {showMenu && <button onClick={startGame}>Start Game</button>}
-            <CardGroup cards={computerCards}/>
+            <ComputerCards />
+            {/*<CardGroup cards={computerCards}/>*/}
             <CardGroup cards={coloda}/>
             <CardGroup cards={trash}/>
             {trump}
