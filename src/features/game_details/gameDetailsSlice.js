@@ -3,39 +3,36 @@ import {createSlice} from "@reduxjs/toolkit";
 import {TURN} from "../../constants";
 
 const initialState = {
-    turnAttack: '',
-    turnWalk: '',
+    // true - computer attack, false - user attack
+    isComputerAttack: '',
+    // true - computer walk, false - user walk
+    isComputerWalk: '',
 }
 
 export const gameDetailsSlice = createSlice({
     name: 'gameDetails',
     initialState,
     reducers: {
-        setUserTurnAttack: (state) => {
-            state.turnAttack = TURN.USER.ATTACK;
+        setIsComputerTurnAttack: (state, action) => {
+            state.isComputerAttack = action.payload;
         },
-        setComputerTurnAttack: (state) => {
-            state.turnAttack = TURN.COMPUTER.ATTACK;
-        },
-        setUserTurnWalk: (state) => {
-            state.turnWalk = TURN.USER.WALK;
-        },
-        setComputerTurnWalk: (state) => {
-            state.turnWalk = TURN.COMPUTER.WALK;
+        setIsComputerTurnWalk: (state, action) => {
+            state.isComputerWalk = action.payload;
         },
         changeTurnAttack: (state) => {
-            state.turnAttack = state.turnAttack === TURN.USER.ATTACK
-                    ? TURN.COMPUTER.ATTACK
-                    : TURN.USER.ATTACK
+            state.isComputerAttack = !state.isComputerAttack
         },
         changeTurnWalk: (state) => {
-            state.turnWalk = state.turnWalk === TURN.USER.WALK
-                    ? TURN.COMPUTER.WALK
-                    : TURN.USER.WALK
+            state.isComputerWalk = !state.isComputerWalk
         }
     }
 })
 
-export const {setUserTurnAttack, setComputerTurnAttack, changeTurnAttack} = gameDetailsSlice.actions;
+export const {
+    setIsComputerTurnAttack,
+    setIsComputerTurnWalk,
+    changeTurnAttack,
+    changeTurnWalk,
+} = gameDetailsSlice.actions;
 
 export default gameDetailsSlice.reducer

@@ -1,31 +1,53 @@
 import React from "react";
 import {useSelector, useDispatch} from "react-redux";
+
+import CardGroup from "../../card_group";
+
 import {initUserCards} from './userCardsSlice';
 import {addCardToRound} from '../round_cards/roundCardsSlice';
-import CardGroup from "../../card_group";
-import {COMPUTER_LOST_ROUND, TURN, maxRoundCards} from "../../constants";
-import {canCardBeAddedToRound} from "../../utils";
+
+import {canCardBeAddedToRound, findHigherCard} from "../../utils";
+import {changeTurnAttack, changeTurnWalk} from "../game_details/gameDetailsSlice";
 
 export function UserCards() {
-    const turnAttack = useSelector((state) => state.gameDetails.value);
+    const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
+    const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
     const roundCards = useSelector((state) => state.roundCards.value);
     const userCards = useSelector((state) => state.userCards.value);
     const dispatch = useDispatch();
 
-    console.log({userCards})
+    function manageCard(cardToMove) {
+        const filteredUserCards = userCards.filter(card => card !== cardToMove)
 
-    function sendCard(cardToSend) {
+        dispatch(initUserCards(filteredUserCards))
+        dispatch(addCardToRound(cardToMove))
+        dispatch(changeTurnWalk())
+    }
+
+    function sendCard(clickedCard) {
         return () => {
-
-            if (cardToSend.hide || TURN.COMPUTER.ATTACK === turnAttack) {
+            if (isComputerWalk) {
                 return;
             }
 
-            if (canCardBeAddedToRound(roundCards, cardToSend)) {
-                dispatch(addCardToRound(cardToSend))
-                const filteredUserCards = userCards.filter(card => card !== cardToSend)
-                dispatch(initUserCards(filteredUserCards))
+            // User send first card on a table
+            if (!roundCards.length) {
+                manageCard(clickedCard)
                 return;
+            }
+
+            //User defence
+            // We take last card from computer and check "Does user have higher card?"
+            let cardToBit = roundCards[roundCards.length-1]
+            let higherCard = findHigherCard(userCards, cardToBit)
+
+            if (isComputerAttack && higherCard) {
+                return manageCard(higherCard)
+            }
+
+            //User attack
+            if (isComputerAttack && canCardBeAddedToRound(clickedCard)) {
+                return manageCard(clickedCard)
             }
 
             // Show warning if user want to add wrong card
@@ -38,7 +60,7 @@ export function UserCards() {
             // //.hide mean it was used before
             // cardToCover.hide = true;
 
-            // switch (turnAttack) {
+            // switch (isComputerAttack) {
             //     case USER_TURN_ATTACK:
             //         let computerHigherCard = findHigherCard(computerCards, cardToSend)
             //         //Beat by trump
