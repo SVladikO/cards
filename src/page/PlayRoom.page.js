@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {initUserCards} from '../features/user_cards/userCardsSlice';
 import {initRoundCards, addCardToRound} from '../features/round_cards/roundCardsSlice';
@@ -99,25 +99,15 @@ function App() {
         dispatch(setIsComputerTurnWalk(isComputerTurn));
 
         addCardsAfterRound()
-        computerWalkInterval();
+
     }
 
-    function manageCard(cardToMove) {
-        const filteredUserCards = userCards.filter(card => card !== cardToMove)
-
-        dispatch(initUserCards(filteredUserCards))
-        dispatch(addCardToRound(cardToMove))
-        dispatch(changeTurnWalk())
-    }
-
-    function computerWalkInterval() {
-        setInterval(() => {
+    useEffect(() => {
+        const timer = window.setInterval(() => {
             console.log('Opppa', isComputerAttack, isComputerWalk)
             if (isComputerAttack && isComputerWalk) {
-
                 const cardToSend = computerCards[0];
                 manageCard(cardToSend)
-
             }
 
             // Attack
@@ -129,7 +119,20 @@ function App() {
             }
         }, 2000);
 
+
+        return () => {
+            window.clearInterval(timer);
+        };
+    }, [])
+
+    function manageCard(cardToMove) {
+        const filtered = computerCards.filter(card => card !== cardToMove)
+
+        dispatch(initComputerCards(filtered))
+        dispatch(addCardToRound(cardToMove))
+        dispatch(changeTurnWalk())
     }
+
 
     function disableCardsHide(cards) {
         return cards.map(c => ({...c, hide: false}))
