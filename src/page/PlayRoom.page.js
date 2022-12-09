@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {initUserCards} from '../features/user_cards/userCardsSlice';
 import {initRoundCards, addCardToRound} from '../features/round_cards/roundCardsSlice';
@@ -8,11 +8,12 @@ import {
     changeTurnAttack,
     changeTurnWalk
 } from "../features/game_details/gameDetailsSlice";
-
+import {useInterval} from '../hooks'
 import {Table} from './PlayRoom.style';
 
-import {findHigherCard, addCardsTo} from '../utils'
+import {findHigherCard, isTrumpCard, findHigherTrumpCard, addCardsTo} from '../utils'
 import CardGroup from '../card_group';
+
 
 import {suits, data} from "../data";
 import {
@@ -28,6 +29,8 @@ import {ComputerCards} from "../features/computer_cards/ComputerCards";
 import {initComputerCards} from "../features/computer_cards/computerCardsSlice";
 
 const log = console.log;
+
+
 
 function initCards() {
     const result = [];
@@ -45,25 +48,12 @@ function initCards() {
 
 const sort = cards => cards.sort((f, s) => f.level - s.level);
 const getTrump = () => suits.map(s => s.suit)[getRandomInt(4)];
-const sortCallback = (f, s) => f.level - s.level;
 const getRandomInt = max => Math.floor(Math.random() * max);
 
 function turnOffWarningFrom(cards, setCards) {
     setTimeout(() => {
         setCards(cards.map(card => ({...card, warning: false})))
     }, 400)
-}
-
-
-function findHigherTrumpCard(cards, cardToCover, trump) {
-    return cards
-        ?.filter(card => card.suit === trump && !card.hide)
-        ?.sort(sortCallback)
-        ?.find(
-            card =>
-                (card.suit !== cardToCover.suit) ||
-                (card.suit === cardToCover.suit && card.level > cardToCover.level)
-        );
 }
 
 const getSuit = card => card.title + card.suit;
@@ -79,6 +69,7 @@ function App() {
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
     const computerCards = useSelector(state => state.computerCards.value);
+    const realRoundCards = useSelector((state) => state.roundCards.value);
     const dispatch = useDispatch();
 
     const addCardsToPlayer = (to) => {
@@ -104,31 +95,44 @@ function App() {
 
     }
 
-    useEffect(() => {
-        const timer = window.setInterval(() => {
-            console.log('Opppa', isComputerAttack, isComputerWalk);
+    const getIs = () => isComputerWalk
+
+    useInterval(() => {
+            console.log('Opppa', getIs(), isComputerAttack, isComputerWalk);
 
             //Computer will attack
             if (isComputerWalk) {
                 if (isComputerAttack) {
                     console.log('Computer attack')
-                    const cardToSend = computerCards[0];
-                    manageCard(cardToSend)
+                    computerAttack()
                 }
 
                 //Computer will defence
                 if (!isComputerAttack) {
                     console.log('Computer defence')
-                    const cardToSend = computerCards[0];
-                    manageCard(cardToSend)
+                    computerDefence()
 
                 }
             }
 
-        }, 2000);
+        }, 2000)
 
-        return () => window.clearInterval(timer);
-    }, [])
+    function getLastRoundCard() {
+        return realRoundCards[realRoundCards.length - 1];
+    }
+
+    function computerAttack() {
+
+        // manageCard(cardToSend)
+
+    }
+    function computerDefence() {
+        const cardToCover = getLastRoundCard();
+        const higherCard = findHigherCard(computerCards, cardToCover)
+        // isTrumpCard
+        // findHigherTrumpCard
+        manageCard(higherCard)
+    }
 
     function manageCard(cardToMove) {
         const filtered = computerCards.filter(card => card !== cardToMove)
@@ -138,10 +142,6 @@ function App() {
         dispatch(changeTurnWalk())
     }
 
-
-    function disableCardsHide(cards) {
-        return cards.map(c => ({...c, hide: false}))
-    }
 
     function showEndGameMessage() {
         const endColoda = coloda.length === 0;
