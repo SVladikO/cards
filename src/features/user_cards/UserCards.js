@@ -26,12 +26,17 @@ export function UserCards() {
 
     function sendCard(clickedCard) {
         return () => {
+            console.log('inside user cards click')
+            console.log('canCardBeAddedToRound: ', canCardBeAddedToRound(roundCards, clickedCard))
+            console.log('isComputerAttack', isComputerAttack)
             if (isComputerWalk) {
+                alert('Computer walk.')
                 return;
             }
 
             // User send first card on a table
             if (!roundCards.length) {
+                alert('User send first card on a table')
                 manageCard(clickedCard)
                 return;
             }
@@ -42,11 +47,13 @@ export function UserCards() {
             let higherCard = findHigherCard(userCards, cardToBit)
 
             if (isComputerAttack && higherCard) {
+                alert('if (isComputerAttack && higherCard) {')
                 return manageCard(higherCard)
             }
 
             //User attack
-            if (isComputerAttack && canCardBeAddedToRound(clickedCard)) {
+            if (!isComputerAttack && canCardBeAddedToRound(roundCards, clickedCard)) {
+                alert('isComputerAttack && canCardBeAddedToRound(clickedCard)')
                 return manageCard(clickedCard)
             }
 

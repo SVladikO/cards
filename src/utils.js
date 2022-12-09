@@ -1,7 +1,6 @@
 import {maxCardsPerRound} from "./constants";
 
-export const canCardBeAddedToRound = (roundCards, candidateToAdd) =>
-    !roundCards.length || roundCards.find(card => card.level === candidateToAdd.level)
+export const canCardBeAddedToRound = (roundCards= [], candidateToAdd) => roundCards?.find(card => card.level === candidateToAdd.level)
 
 export function findHigherCard(cards, cardToCover) {
     return cards.find(card =>

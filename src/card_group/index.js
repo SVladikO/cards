@@ -2,10 +2,8 @@ import {Wrapper, Owner, Count} from './CardGroup.style'
 
 import Card from "../card";
 
-function CardGroup({
-                       cards, handleClick = () => {
-    }, ownerName
-                   }) {
+function CardGroup({cards, handleClick = () => {}, ownerName}) {
+    console.log('Rerender CardGroup')
     return (
         <Wrapper>
             <Owner>{ownerName}:</Owner>
