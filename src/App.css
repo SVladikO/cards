@@ -5,7 +5,6 @@ html, body, root {
 
 .App {
   text-align: center;
-  width: 600px;
   flex-wrap: wrap;
   border: solid 1px red;
 }

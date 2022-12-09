@@ -2,8 +2,6 @@ import styled from "styled-components";
 
 export const Table = styled.div`
   position: relative;
-
-  height: 350px;
   width: 500px;
   padding: 20px;
 

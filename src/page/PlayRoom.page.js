@@ -106,25 +106,28 @@ function App() {
 
     useEffect(() => {
         const timer = window.setInterval(() => {
-            console.log('Opppa', isComputerAttack, isComputerWalk)
-            if (isComputerAttack && isComputerWalk) {
-                const cardToSend = computerCards[0];
-                manageCard(cardToSend)
+            console.log('Opppa', isComputerAttack, isComputerWalk);
+
+            //Computer will attack
+            if (isComputerWalk) {
+                if (isComputerAttack) {
+                    console.log('Computer attack')
+                    const cardToSend = computerCards[0];
+                    manageCard(cardToSend)
+                }
+
+                //Computer will defence
+                if (!isComputerAttack) {
+                    console.log('Computer defence')
+                    const cardToSend = computerCards[0];
+                    manageCard(cardToSend)
+
+                }
             }
 
-            // Attack
-            // Defence
-            if (!isComputerAttack && isComputerWalk) {
-                const cardToSend = computerCards[0];
-                manageCard(cardToSend)
-
-            }
         }, 2000);
 
-
-        return () => {
-            window.clearInterval(timer);
-        };
+        return () => window.clearInterval(timer);
     }, [])
 
     function manageCard(cardToMove) {

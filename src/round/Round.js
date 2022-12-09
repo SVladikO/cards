@@ -1,14 +1,15 @@
-import {Wrapper, Count, Button} from './Round.style'
+import {Wrapper, Count, Title, Button} from './Round.style'
 
 import Card from "../card";
 
 function Round({cards, handlePass}) {
     return (
-        <div>
+        <Wrapper>
             {cards.map(c => <Card key={c.title + c.suit} card={c} />)}
-            <div>{cards.length}</div>
-            <div onClick={handlePass}>Pass</div>
-        </div>
+            <Count>{cards.length}</Count>
+            <Title>Round cards</Title>
+            <Button onClick={handlePass}>Pass</Button>
+        </Wrapper>
     );
 }
 
