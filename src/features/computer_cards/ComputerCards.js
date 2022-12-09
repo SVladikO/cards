@@ -5,5 +5,5 @@ import CardGroup from "../../card_group";
 export function ComputerCards() {
     const computerCards = useSelector((state) => state.computerCards.value);
 
-    return <CardGroup cards={computerCards}/>;
+    return <CardGroup cards={computerCards} ownerName="Computer cards"/>;
 }

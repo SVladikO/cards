@@ -9,6 +9,8 @@ import {
     changeTurnWalk
 } from "../features/game_details/gameDetailsSlice";
 
+import {Table} from './PlayRoom.style';
+
 import {findHigherCard, addCardsTo} from '../utils'
 import CardGroup from '../card_group';
 
@@ -190,21 +192,20 @@ function App() {
     }
 
     return (
-        <div className="App">
+        <Table>
             {showMenu && <button onClick={startGame}>Start Game</button>}
             <ComputerCards/>
-            {/*<CardGroup cards={computerCards}/>*/}
-            <CardGroup cards={coloda}/>
-            <CardGroup cards={trash}/>
-            {trump}
+            <CardGroup ownerName='Coloda' cards={coloda}/>
+            <CardGroup ownerName='Trush' cards={trash}/>
+            <div>Trump: {trump}</div>
             <RoundCards/>
             {/*<Table cards={roundCards} handlePass={passRound}/>*/}
-            {isComputerAttack ? "CompAAA     " : 'UserAA    '}
-            {isComputerWalk ? "CompWWW   " : 'UserWWW  '}
+            {isComputerAttack ? "Computer attack  /" : 'User attack  /'}
+            {isComputerWalk ? "Computer walk   " : 'User walk  '}
             <UserCards/>
             {/*<CardGroup cards={userCards} handleClick={sendCard}/>*/}
             <div>{message}</div>
-        </div>
+        </Table>
     );
 }
 

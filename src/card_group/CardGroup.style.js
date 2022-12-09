@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
+  margin: 2px 0;
   position: relative;
-  padding: 20px 20px 0 0;
-  border: solid 1px blue;
+  padding: 30px 20px 0 0;
+  border: solid 1px #0f6c1b;
   display: flex;
+
   //width: 300px;
   flex-wrap: wrap;
   //height: 30px;
@@ -23,4 +25,10 @@ export const Count = styled.div`
   position: absolute;
   top: 0;
   right: 6px;
+`;
+
+export const Owner = styled.div`
+  position: absolute;
+  top: 0;
+  left: 6px;
 `;

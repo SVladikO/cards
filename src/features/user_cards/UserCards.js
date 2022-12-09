@@ -95,5 +95,5 @@ export function UserCards() {
         }
     }
 
-    return <CardGroup cards={userCards} handleClick={sendCard}/>;
+    return <CardGroup cards={userCards} handleClick={sendCard} ownerName="User cards"/>;
 }

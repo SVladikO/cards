@@ -1,11 +1,15 @@
-import {Count, Wrapper} from './CardGroup.style'
+import {Wrapper, Owner, Count} from './CardGroup.style'
 
 import Card from "../card";
 
-function CardGroup({cards, handleClick = () => {}}) {
+function CardGroup({
+                       cards, handleClick = () => {
+    }, ownerName
+                   }) {
     return (
         <Wrapper>
-            { cards.map(c => <Card key={c.title + c.suit} card={c} handleClick={handleClick(c)}/>) }
+            <Owner>{ownerName}:</Owner>
+            {cards.map(c => <Card key={c.title + c.suit} card={c} handleClick={handleClick(c)}/>)}
             <Count>{cards.length}</Count>
         </Wrapper>
     );
