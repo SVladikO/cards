@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   position: relative;
-  width: 700px;
+  width: 900px;
   padding: 20px;
 
   display: flex;
@@ -24,6 +24,9 @@ export const Wrapper = styled.div`
 
 export const Table = styled.div`
   margin: 0 20px;
+`;
+export const Trump = styled.div`
+  font-size: 20px;  
 `;
 export const Count = styled.div`
   position: absolute;

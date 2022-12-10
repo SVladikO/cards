@@ -1,12 +1,13 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-  height: 75px;
+  min-height: 75px;
+  max-height: 75px;
   width: 50px;
-  border: solid 1px #1ad464;
+  border: solid 1px ;
   border-radius: 3px;
   position: relative;
-  background: ${p => p.background || 'white'};
+  background: ${p => p.isTrump ? 'blue' : 'white'};
 `;
 export const Title = styled.div`
   font-size: 20px;

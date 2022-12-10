@@ -1,9 +1,9 @@
 // ♥/♡	♦/♢	♠/♤	♣/♧
 export const suits = [
-    {background: 'black', color: 'red', suit: '♡'},
-    {background: 'white', color: 'blue', suit: '♦'},
-    {background: 'yellow', color: 'green', suit: '♣'},
-    {background: 'black', color: 'yellow', suit: '♤'},
+    {background: 'white', color: 'red', suit: '♥'},
+    {background: 'white', color: 'orange', suit: '♦'},
+    {background: 'white', color: 'green', suit: '♣'},
+    {background: 'white', color: 'black', suit: '♠'},
 ];
 
 export const data = [
@@ -16,10 +16,10 @@ export const data = [
     {level: 7, title: 7},
     {level: 8, title: 8},
     {level: 9, title: 9},
-    {level: 10, title: 10},
-    {level: 11, title: 'V'},
-    {level: 12, title: 'D'},
-    {level: 13, title: 'K'},
-    {level: 14, title: 'T'},
+    // {level: 10, title: 10},
+    // {level: 11, title: 'V'},
+    // {level: 12, title: 'D'},
+    // {level: 13, title: 'K'},
+    // {level: 14, title: 'T'},
 ];
 

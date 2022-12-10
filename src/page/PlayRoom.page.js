@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
-import {Wrapper, Table} from './PlayRoom.style';
+import {Wrapper, Table, Trump} from './PlayRoom.style';
 
 import {
     setIsComputerTurnAttack,
@@ -196,9 +196,10 @@ function App() {
             }
         }
 
-    }, 2000)
+    }, 4000)
 
-
+    const attackMessage = isComputerAttack ? "Computer" : 'User';
+    const walkMessage = isComputerWalk ? "Computer" : 'User';
     return (
         <Wrapper>
             <CardGroup ownerName='Trush' cards={trash}/>
@@ -206,11 +207,16 @@ function App() {
                 {showMenu && <button onClick={startGame}>Start Game</button>}
                 <ComputerCards/>
 
-                <div>Trump: {trump}</div>
-                <Round cards={roundCards} handlePass={passRound} handleTake={takeCards}/>
-                {isComputerAttack ? "Computer attack  /" : 'User attack  /'}
-                {isComputerWalk ? "Computer walk   " : 'User walk  '}
-                <UserCards/>
+                <Round
+                    cards={roundCards}
+                    handlePass={passRound}
+                    handleTake={takeCards}
+                    attackMessage={attackMessage}
+                    walkMessage={walkMessage}
+                />
+
+                <Trump>Trump: {trump}</Trump>
+                <UserCards />
                 <div>{message}</div>
             </Table>
             <CardGroup ownerName='Coloda' cards={coloda}/>

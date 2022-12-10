@@ -72,5 +72,10 @@ export function UserCards() {
         }
     }
 
-    return <CardGroup cards={userCards} handleClick={sendCard} ownerName="User cards"/>;
+    return <CardGroup
+        cards={userCards}
+        handleClick={sendCard}
+        ownerName="User cards"
+        trump={trump}
+    />;
 }
