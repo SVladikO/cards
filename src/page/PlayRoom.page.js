@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {initUserCards} from '../features/user_cards/userCardsSlice';
 import {initRoundCards, addCardToRound} from '../features/round_cards/roundCardsSlice';
@@ -24,9 +24,9 @@ import {
 } from '../constants'
 
 import {UserCards} from "../features/user_cards/UserCards";
-import {RoundCards} from "../features/round_cards/RoundCards";
 import {ComputerCards} from "../features/computer_cards/ComputerCards";
 import {initComputerCards} from "../features/computer_cards/computerCardsSlice";
+import Round from "../round/Round";
 
 const log = console.log;
 
@@ -97,42 +97,12 @@ function App() {
 
     const getIs = () => isComputerWalk
 
-    useInterval(() => {
-            console.log('Opppa', getIs(), isComputerAttack, isComputerWalk);
-
-            //Computer will attack
-            if (isComputerWalk) {
-                if (isComputerAttack) {
-                    console.log('Computer attack')
-                    computerAttack()
-                }
-
-                //Computer will defence
-                if (!isComputerAttack) {
-                    console.log('Computer defence')
-                    computerDefence()
-
-                }
-            }
-
-        }, 2000)
 
     function getLastRoundCard() {
         return realRoundCards[realRoundCards.length - 1];
     }
 
-    function computerAttack() {
 
-        // manageCard(cardToSend)
-
-    }
-    function computerDefence() {
-        const cardToCover = getLastRoundCard();
-        const higherCard = findHigherCard(computerCards, cardToCover)
-        // isTrumpCard
-        // findHigherTrumpCard
-        manageCard(higherCard)
-    }
 
     function manageCard(cardToMove) {
         const filtered = computerCards.filter(card => card !== cardToMove)
@@ -167,6 +137,8 @@ function App() {
     }
 
     function moveRoundTo(status) {
+        alert(COMPUTER_LOST_ROUND)
+
         switch (status) {
             case COMPUTER_LOST_ROUND:
                 dispatch(initComputerCards([...computerCards, ...roundCards]));
@@ -194,6 +166,43 @@ function App() {
         }
     }
 
+    function computerAttack() {
+
+        // manageCard(cardToSend)
+
+    }
+    function computerDefence() {
+        const cardToCover = getLastRoundCard();
+        const higherCard = findHigherCard(computerCards, cardToCover)
+
+        if (!higherCard) {
+           return moveRoundTo(COMPUTER_LOST_ROUND)
+        }
+
+        manageCard(higherCard)
+    }
+
+    useInterval(() => {
+        console.log('Opppa', getIs(), isComputerAttack, isComputerWalk);
+
+        //Computer will attack
+        if (isComputerWalk) {
+            if (isComputerAttack) {
+                console.log('Computer attack')
+                computerAttack()
+            }
+
+            //Computer will defence
+            if (!isComputerAttack) {
+                console.log('Computer defence')
+                computerDefence()
+
+            }
+        }
+
+    }, 2000)
+
+
     return (
         <Table>
             {showMenu && <button onClick={startGame}>Start Game</button>}
@@ -201,7 +210,7 @@ function App() {
             <CardGroup ownerName='Coloda' cards={coloda}/>
             <CardGroup ownerName='Trush' cards={trash}/>
             <div>Trump: {trump}</div>
-            <RoundCards/>
+            <Round cards={realRoundCards} handlePass={() => moveRoundTo(MOVE_ROUND_TO_TRASH)}/>
             {/*<Table cards={roundCards} handlePass={passRound}/>*/}
             {isComputerAttack ? "Computer attack  /" : 'User attack  /'}
             {isComputerWalk ? "Computer walk   " : 'User walk  '}
