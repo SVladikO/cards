@@ -5,12 +5,15 @@ import {
     setIsComputerTurnAttack,
     setIsComputerTurnWalk,
     changeTurnAttack,
-    changeTurnWalk
+    changeTurnWalk,
+    setTrump,
 } from "../redux/gameDetailsSlice";
 import {useInterval} from '../hooks'
 import {Table} from './PlayRoom.style';
 
-import {findHigherCard, prepareCardsTo, canCardBeAddedToRound} from '../utils'
+import {
+    findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard
+} from '../utils'
 import CardGroup from '../components/card_group';
 
 
@@ -40,7 +43,8 @@ function initCards() {
 }
 
 const sort = cards => cards.sort((f, s) => f.level - s.level);
-const getTrump = () => suits.map(s => s.suit)[getRandomInt(4)];
+
+const generateTrump = () => suits.map(s => s.suit)[getRandomInt(4)];
 const getRandomInt = max => Math.floor(Math.random() * max);
 
 function turnOffWarningFrom(cards, setCards) {
@@ -51,11 +55,8 @@ function turnOffWarningFrom(cards, setCards) {
 
 const getSuit = card => card.title + card.suit;
 
-let userCards = []
-
-let trump = getTrump();
-
 function App() {
+    const trump = useSelector(state => state.gameDetails.trump);
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
     const computerCards = useSelector(state => state[StoreNames.COMPUTER_CARDS].value);
@@ -68,11 +69,23 @@ function App() {
     const [showMenu, setShowMenu] = useState(true);
     const [message, setMessage] = useState()
 
+    function startGame() {
+        // TODO: ADD SPINNER FOR TURN
+        setShowMenu(false);
+
+        // Set which turn to attack
+        const isComputerTurn = getRandomInt(2) === 0;
+        dispatch(setIsComputerTurnAttack(true)) //isComputerTurn));
+        dispatch(setIsComputerTurnWalk(true)) //isComputerTurn));
+        dispatch(setTrump(generateTrump())) //isComputerTurn));
+
+        //Init cards.
+        addCardsToPlayers(SituationTypes.START_GAME)
+    }
+
     useEffect(() => {
         dispatch(Action.Coloda.init(initCards()))
     }, [])
-    const getLastRoundCard = () => roundCards[roundCards.length - 1];
-
 
     const addCardsToPlayers = status => {
         let newCardsToUser = []
@@ -97,20 +110,6 @@ function App() {
         dispatch(Action.User.addCards(newCardsToUser))
         dispatch(Action.Coloda.init(cutedColoda))
         dispatch(Action.Computer.addCards(sort(newCardsToComputer)));
-    }
-
-
-    function startGame() {
-        // TODO: ADD SPINNER FOR TURN
-        setShowMenu(false);
-
-        // Set which turn to attack
-        const isComputerTurn = getRandomInt(2) === 0;
-        dispatch(setIsComputerTurnAttack(true)) //isComputerTurn));
-        dispatch(setIsComputerTurnWalk(true)) //isComputerTurn));
-
-        //Init cards.
-        addCardsToPlayers(SituationTypes.START_GAME)
     }
 
 
@@ -151,6 +150,10 @@ function App() {
     }
 
     function takeCards() {
+        if (!isComputerAttack) {
+            console.log('yOU CAN"T TAKE CARDS WHEN YOU ATTACK')
+            return;
+        }
         moveRoundTo(SituationTypes.USER_LOST_ROUND)
         dispatch(changeTurnWalk())
     }
@@ -177,8 +180,8 @@ function App() {
     }
 
     function computerDefence() {
-        const cardToCover = getLastRoundCard();
-        const higherCard = findHigherCard(computerCards, cardToCover)
+        const cardToCover = getLastRoundCard(roundCards);
+        const higherCard = findHigherCard(computerCards, cardToCover, trump)
 
         if (!higherCard) {
             return moveRoundTo(SituationTypes.COMPUTER_LOST_ROUND)
