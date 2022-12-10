@@ -34,7 +34,7 @@ export function findHigherTrumpCard(cards, cardToCover, trump) {
  */
 export function prepareCardsTo(to, from) {
     if (to.length >= maxCardsPerRound || from.length === 0) {
-        return [to, from];
+        return [[], from];
     }
 
     let result = [];

@@ -97,7 +97,7 @@ function App() {
             case SituationTypes.START_GAME:
             case SituationTypes.MOVE_ROUND_TO_TRASH:
                 [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, coloda);
-                [newCardsToComputer, cutedColoda] = prepareCardsTo(userCards, cutedColoda)
+                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, cutedColoda)
                 break;
         }
 
