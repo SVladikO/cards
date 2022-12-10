@@ -10,7 +10,7 @@ import {
 import {useInterval} from '../hooks'
 import {Table} from './PlayRoom.style';
 
-import {findHigherCard, isTrumpCard, findHigherTrumpCard, prepareCardsTo} from '../utils'
+import {findHigherCard, prepareCardsTo, canCardBeAddedToRound} from '../utils'
 import CardGroup from '../components/card_group';
 
 
@@ -65,9 +65,14 @@ function App() {
     const trash = useSelector((state) => state[StoreNames.TRASH_CARDS].value);
     const dispatch = useDispatch();
 
+    const [showMenu, setShowMenu] = useState(true);
+    const [message, setMessage] = useState()
+
     useEffect(() => {
-        dispatch(Action.Coloda.init(initCards()));
+        dispatch(Action.Coloda.init(initCards()))
     }, [])
+    const getLastRoundCard = () => roundCards[roundCards.length - 1];
+
 
     const addCardsToPlayers = status => {
         let newCardsToUser = []
@@ -80,7 +85,7 @@ function App() {
                 [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, coloda);
                 break;
             case SituationTypes.USER_LOST_ROUND:
-                [newCardsToComputer, cutedColoda] = prepareCardsTo(userCards, coloda);
+                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, coloda);
                 break;
             case SituationTypes.START_GAME:
             case SituationTypes.MOVE_ROUND_TO_TRASH:
@@ -94,8 +99,6 @@ function App() {
         dispatch(Action.Computer.addCards(sort(newCardsToComputer)));
     }
 
-    const [showMenu, setShowMenu] = useState(true);
-    const [message, setMessage] = useState()
 
     function startGame() {
         // TODO: ADD SPINNER FOR TURN
@@ -103,18 +106,13 @@ function App() {
 
         // Set which turn to attack
         const isComputerTurn = getRandomInt(2) === 0;
-        dispatch(setIsComputerTurnAttack(false)) //isComputerTurn));
-        dispatch(setIsComputerTurnWalk(false)) //isComputerTurn));
+        dispatch(setIsComputerTurnAttack(true)) //isComputerTurn));
+        dispatch(setIsComputerTurnWalk(true)) //isComputerTurn));
 
         //Init cards.
         addCardsToPlayers(SituationTypes.START_GAME)
     }
 
-    const getIs = () => isComputerWalk
-
-    function getLastRoundCard() {
-        return roundCards[roundCards.length - 1];
-    }
 
     function manageCard(cardToMove) {
         const filtered = computerCards.filter(card => card !== cardToMove)
@@ -124,29 +122,6 @@ function App() {
         dispatch(changeTurnWalk())
     }
 
-
-    function showEndGameMessage() {
-        const endColoda = coloda.length === 0;
-
-        if (!endColoda) {
-            return;
-        }
-
-        const endUserCards = userCards.filter(c => !c.hide).length === 0;
-        const endComputerCards = computerCards.filter(c => !c.hide).length === 0;
-
-        if (endComputerCards && endUserCards) {
-            return setMessage(MESSAGE.DRAW);
-        }
-
-        if (endComputerCards) {
-            return setMessage(MESSAGE.COMPUTER_WON)
-        }
-
-        if (endUserCards) {
-            return setMessage(MESSAGE.USER_WON)
-        }
-    }
 
     function moveRoundTo(status) {
         switch (status) {
@@ -170,11 +145,35 @@ function App() {
     function passRound() {
         if (roundCards.length % 2 === 0 && roundCards.length >= 2) {
             moveRoundTo(SituationTypes.MOVE_ROUND_TO_TRASH);
+            dispatch(changeTurnAttack())
+            dispatch(changeTurnWalk())
         }
+    }
+
+    function takeCards() {
+        moveRoundTo(SituationTypes.USER_LOST_ROUND)
+        dispatch(changeTurnWalk())
     }
 
     function computerAttack() {
 
+        if (!computerCards.length) {
+            return console.log('Computer cant attack without cards')
+        }
+
+        // Start of attack
+        if (!roundCards.length) {
+            return manageCard(computerCards[0]);
+        }
+
+        const cardCandidate = computerCards.find(card => canCardBeAddedToRound(roundCards, card))
+        console.log('COMPUTER ATTACK. candidate', cardCandidate)
+        // If nothing to add computer will pass round
+        if (!cardCandidate) {
+            return passRound()
+        }
+
+        manageCard(cardCandidate)
     }
 
     function computerDefence() {
@@ -192,9 +191,8 @@ function App() {
         if (isComputerWalk) {
             if (isComputerAttack) {
                 computerAttack()
-            }
-
-            if (!isComputerAttack) {
+            } else {
+                console.log('Defence')
                 computerDefence()
             }
         }
@@ -209,7 +207,7 @@ function App() {
             <CardGroup ownerName='Coloda' cards={coloda}/>
             <CardGroup ownerName='Trush' cards={trash}/>
             <div>Trump: {trump}</div>
-            <Round cards={roundCards} handlePass={passRound}/>
+            <Round cards={roundCards} handlePass={passRound} handleTake={takeCards}/>
             {/*<Table cards={roundCards} handlePass={passRound}/>*/}
             {isComputerAttack ? "Computer attack  /" : 'User attack  /'}
             {isComputerWalk ? "Computer walk   " : 'User walk  '}
@@ -221,3 +219,27 @@ function App() {
 }
 
 export default App;
+
+
+// function showEndGameMessage() {
+//     const endColoda = coloda.length === 0;
+//
+//     if (!endColoda) {
+//         return;
+//     }
+//
+//     const endUserCards = userCards.filter(c => !c.hide).length === 0;
+//     const endComputerCards = computerCards.filter(c => !c.hide).length === 0;
+//
+//     if (endComputerCards && endUserCards) {
+//         return setMessage(MESSAGE.DRAW);
+//     }
+//
+//     if (endComputerCards) {
+//         return setMessage(MESSAGE.COMPUTER_WON)
+//     }
+//
+//     if (endUserCards) {
+//         return setMessage(MESSAGE.USER_WON)
+//     }
+// }
