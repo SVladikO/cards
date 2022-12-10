@@ -25,9 +25,6 @@ import {ComputerCards} from "../features/computer_cards/ComputerCards";
 import Round from "../components/round/Round";
 import {StoreNames} from "../redux/type";
 
-const log = console.log;
-
-
 function initCards() {
     const result = [];
 
@@ -71,15 +68,6 @@ function App() {
     useEffect(() => {
         dispatch(Action.Coloda.init(initCards()));
     }, [])
-
-    // const addCardsToUser = () => {
-    //     const [_newCards, _cutedColoda] = addCardsTo(userCards, coloda)
-    //
-    //     dispatch(Action.User.addCards(_newCards))
-    //     dispatch(Action.Coloda.init(_cutedColoda))
-    // }
-
-
 
     const addCardsToPlayers = status => {
         let newCardsToUser = []
@@ -201,18 +189,12 @@ function App() {
     }
 
     useInterval(() => {
-        console.log('Opppa', getIs(), isComputerAttack, isComputerWalk);
-
-        //Computer will attack
         if (isComputerWalk) {
             if (isComputerAttack) {
-                console.log('Computer attack')
                 computerAttack()
             }
 
-            //Computer will defence
             if (!isComputerAttack) {
-                console.log('Computer defence')
                 computerDefence()
             }
         }
