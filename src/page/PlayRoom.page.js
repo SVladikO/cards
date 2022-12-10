@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Action} from '../redux/common_card_slice';
+
+import {Wrapper, Table} from './PlayRoom.style';
+
 import {
     setIsComputerTurnAttack,
     setIsComputerTurnWalk,
@@ -9,24 +11,18 @@ import {
     setTrump,
 } from "../redux/gameDetailsSlice";
 import {useInterval} from '../hooks'
-import {Table} from './PlayRoom.style';
 
-import {
-    findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard
-} from '../utils'
-import CardGroup from '../components/card_group';
-
+import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard} from '../utils'
 
 import {suits, data} from "../data";
-import {
-    SituationTypes,
-    MESSAGE,
-} from '../constants'
+import {SituationTypes} from '../constants'
+import {StoreNames} from "../redux/type";
+import {Action} from '../redux/common_card_slice';
+import Round from "../components/round/Round";
+import CardGroup from '../components/card_group';
 
 import {UserCards} from "../features/user_cards/UserCards";
 import {ComputerCards} from "../features/computer_cards/ComputerCards";
-import Round from "../components/round/Round";
-import {StoreNames} from "../redux/type";
 
 function initCards() {
     const result = [];
@@ -204,45 +200,24 @@ function App() {
 
 
     return (
-        <Table>
-            {showMenu && <button onClick={startGame}>Start Game</button>}
-            <ComputerCards/>
-            <CardGroup ownerName='Coloda' cards={coloda}/>
+        <Wrapper>
             <CardGroup ownerName='Trush' cards={trash}/>
-            <div>Trump: {trump}</div>
-            <Round cards={roundCards} handlePass={passRound} handleTake={takeCards}/>
-            {/*<Table cards={roundCards} handlePass={passRound}/>*/}
-            {isComputerAttack ? "Computer attack  /" : 'User attack  /'}
-            {isComputerWalk ? "Computer walk   " : 'User walk  '}
-            <UserCards/>
-            {/*<CardGroup cards={userCards} handleClick={sendCard}/>*/}
-            <div>{message}</div>
-        </Table>
+            <Table>
+                {showMenu && <button onClick={startGame}>Start Game</button>}
+                <ComputerCards/>
+
+                <div>Trump: {trump}</div>
+                <Round cards={roundCards} handlePass={passRound} handleTake={takeCards}/>
+                {isComputerAttack ? "Computer attack  /" : 'User attack  /'}
+                {isComputerWalk ? "Computer walk   " : 'User walk  '}
+                <UserCards/>
+                <div>{message}</div>
+            </Table>
+            <CardGroup ownerName='Coloda' cards={coloda}/>
+
+        </Wrapper>
     );
 }
 
 export default App;
 
-
-// function showEndGameMessage() {
-//     const endColoda = coloda.length === 0;
-//
-//     if (!endColoda) {
-//         return;
-//     }
-//
-//     const endUserCards = userCards.filter(c => !c.hide).length === 0;
-//     const endComputerCards = computerCards.filter(c => !c.hide).length === 0;
-//
-//     if (endComputerCards && endUserCards) {
-//         return setMessage(MESSAGE.DRAW);
-//     }
-//
-//     if (endComputerCards) {
-//         return setMessage(MESSAGE.COMPUTER_WON)
-//     }
-//
-//     if (endUserCards) {
-//         return setMessage(MESSAGE.USER_WON)
-//     }
-// }

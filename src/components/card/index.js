@@ -1,19 +1,12 @@
-
-const getStyle = card => ({
-    width: '30px',
-    border: "solid 1px red",
-    borderRadius: '3px',
-    color: card.color,
-    background: card.hide ? 'yellow': card.warning ? 'red' : 'white',
-})
+import {Wrapper, Title, Suit} from "./Card,style";
 
 function Card({card, handleClick = () => {}}) {
-
+    console.log(card);
     return (
-        <div onClick={handleClick}
-             style={getStyle(card)}>
-            {card.title}{card.suit}
-        </div>
+        <Wrapper onClick={handleClick} background={card.background}>
+            <Title colorSuit={card.color}>{card.title}{card.suit}</Title>
+            <Suit colorSuit={card.color}>{card.suit}</Suit>
+        </Wrapper>
     );
 }
 

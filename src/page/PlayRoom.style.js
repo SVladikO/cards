@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
-export const Table = styled.div`
+export const Wrapper = styled.div`
   position: relative;
-  width: 500px;
+  width: 700px;
   padding: 20px;
 
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  align-content: flex-start;
+  //flex-wrap: wrap;
+  //flex-direction: column;
+  //align-content: flex-start;
 
   background: #389638;
   border: solid 1px black;
@@ -22,6 +22,9 @@ export const Table = styled.div`
   user-select: none; /* Non-prefixed version, currently*/
 `;
 
+export const Table = styled.div`
+  margin: 0 20px;
+`;
 export const Count = styled.div`
   position: absolute;
   top: 0;
