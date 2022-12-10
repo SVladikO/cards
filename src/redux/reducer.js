@@ -1,9 +1,11 @@
+import {StoreNames} from "../type";
+
 const initialState = {
-    deck: [],
-    computerCards: [],
-    userCards: [],
-    roundCards: [],
-    trashCards: [],
+    [StoreNames.DESK_CARDS]: [],
+    [StoreNames.USER_CARDS]: [],
+    [StoreNames.TRASH_CARDS]: [],
+    [StoreNames.COMPUTER_CARDS]: [],
+    [StoreNames.ROUND_CARDS]: [],
 }
 
 export const ACTION_TYPE = {
@@ -17,19 +19,19 @@ export const ACTION_TYPE = {
 export default function reducer(state = initialState, action) {
     switch (action.type) {
         case ACTION_TYPE.SET_CARDS_TO_DECK:
-            return {...state, deck: action.payload}
+            return {...state, [StoreNames.DESK_CARDS]: action.payload}
 
         case ACTION_TYPE.SET_CARDS_TO_COMPUTER:
-            return {...state, computerCards: action.payload};
+            return {...state, [StoreNames.COMPUTER_CARDS]: action.payload};
 
         case ACTION_TYPE.SET_CARDS_TO_USER:
-            return {...state, userCards: action.payload};
+            return {...state, [StoreNames.USER_CARDS]: action.payload};
 
         case ACTION_TYPE.SET_CARDS_TO_ROUND:
-            return {...state, roundCards: action.payload};
+            return {...state,  [StoreNames.ROUND_CARDS]: action.payload};
 
         case ACTION_TYPE.SET_CARDS_TO_TRASH:
-            return {...state, trashCards: action.payload};
+            return {...state,  [StoreNames.TRASH_CARDS]: action.payload};
 
         default:
             return state;

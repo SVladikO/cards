@@ -3,8 +3,7 @@ import {useSelector, useDispatch} from "react-redux";
 
 import CardGroup from "../../card_group";
 
-import {initUserCards} from './userCardsSlice';
-import {addCardToRound} from '../round_cards/roundCardsSlice';
+import {Action} from '../common_card_slice';
 
 import {canCardBeAddedToRound, findHigherCard} from "../../utils";
 import {changeTurnAttack, changeTurnWalk} from "../game_details/gameDetailsSlice";
@@ -18,17 +17,13 @@ export function UserCards() {
 
     function manageCard(cardToMove) {
         const filteredUserCards = userCards.filter(card => card !== cardToMove)
-
-        dispatch(initUserCards(filteredUserCards))
-        dispatch(addCardToRound(cardToMove))
+        dispatch(Action.User.init(filteredUserCards))
+        dispatch(Action.Round.addCard(cardToMove))
         dispatch(changeTurnWalk())
     }
 
     function sendCard(clickedCard) {
         return () => {
-            console.log('inside user cards click')
-            console.log('canCardBeAddedToRound: ', canCardBeAddedToRound(roundCards, clickedCard))
-            console.log('isComputerAttack', isComputerAttack)
             if (isComputerWalk) {
                 alert('Computer walk.')
                 return;
@@ -36,7 +31,6 @@ export function UserCards() {
 
             // User send first card on a table
             if (!roundCards.length) {
-                alert('User send first card on a table')
                 manageCard(clickedCard)
                 return;
             }
@@ -47,13 +41,11 @@ export function UserCards() {
             let higherCard = findHigherCard(userCards, cardToBit)
 
             if (isComputerAttack && higherCard) {
-                alert('if (isComputerAttack && higherCard) {')
                 return manageCard(higherCard)
             }
 
             //User attack
             if (!isComputerAttack && canCardBeAddedToRound(roundCards, clickedCard)) {
-                alert('isComputerAttack && canCardBeAddedToRound(clickedCard)')
                 return manageCard(clickedCard)
             }
 

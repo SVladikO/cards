@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {initUserCards} from '../features/user_cards/userCardsSlice';
-import {initRoundCards, addCardToRound} from '../features/round_cards/roundCardsSlice';
+import {Action} from '../features/common_card_slice';
 import {
     setIsComputerTurnAttack,
     setIsComputerTurnWalk,
@@ -25,7 +24,6 @@ import {
 
 import {UserCards} from "../features/user_cards/UserCards";
 import {ComputerCards} from "../features/computer_cards/ComputerCards";
-import {initComputerCards} from "../features/computer_cards/computerCardsSlice";
 import Round from "../round/Round";
 
 const log = console.log;
@@ -107,8 +105,8 @@ function App() {
     function manageCard(cardToMove) {
         const filtered = computerCards.filter(card => card !== cardToMove)
 
-        dispatch(initComputerCards(filtered))
-        dispatch(addCardToRound(cardToMove))
+        dispatch(Action.Computer.init(filtered))
+        dispatch(Action.Round.addCard(cardToMove))
         dispatch(changeTurnWalk())
     }
 
@@ -141,21 +139,23 @@ function App() {
 
         switch (status) {
             case COMPUTER_LOST_ROUND:
-                dispatch(initComputerCards([...computerCards, ...roundCards]));
+                dispatch(Action.Computer.init([...computerCards, ...roundCards]));
                 break;
             case USER_LOST_ROUND:
-                dispatch(initUserCards([...userCards, ...roundCards]));
+                dispatch(Action.User.init([...userCards, ...roundCards]));
                 break;
             case MOVE_ROUND_TO_TRASH:
                 trash = [...trash, ...roundCards];
                 break;
         }
+
+        dispatch(Action.Round.init([]))
     }
 
     function addCardsAfterRound(status) {
-        dispatch(initRoundCards([]));
-        dispatch(initUserCards(sort(addCardsToPlayer(userCards))))
-        dispatch(initComputerCards(sort(addCardsToPlayer(computerCards))));
+        dispatch(Action.Round.init([]));
+        dispatch(Action.User.init(sort(addCardsToPlayer(userCards))))
+        dispatch(Action.Computer.init(sort(addCardsToPlayer(computerCards))));
         roundCards = [];
     }
 

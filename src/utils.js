@@ -23,9 +23,6 @@ export function findHigherTrumpCard(cards, cardToCover, trump) {
                 (card.suit !== cardToCover.suit) ||
                 (card.suit === cardToCover.suit && card.level > cardToCover.level)
         );
-
-
-
 }
 
 
