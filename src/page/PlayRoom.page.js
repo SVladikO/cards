@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Action} from '../features/common_card_slice';
+import {Action} from '../redux/common_card_slice';
 import {
     setIsComputerTurnAttack,
     setIsComputerTurnWalk,
     changeTurnAttack,
     changeTurnWalk
-} from "../features/game_details/gameDetailsSlice";
+} from "../redux/gameDetailsSlice";
 import {useInterval} from '../hooks'
 import {Table} from './PlayRoom.style';
 
@@ -59,21 +59,28 @@ const getSuit = card => card.title + card.suit;
 let userCards = []
 
 let trump = getTrump();
-let coloda = initCards();
 let trash = []
 
 function App() {
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
     const computerCards = useSelector(state => state.computerCards.value);
+    const userCards = useSelector(state => state.userCards.value);
     const roundCards = useSelector((state) => state.roundCards.value);
+    const coloda = useSelector((state) => state.colodaCards.value);
     const dispatch = useDispatch();
 
-    const addCardsToPlayer = (to) => {
-        const [_updatedCards, cutedColoda] = addCardsTo(to, coloda)
-        coloda = cutedColoda;
+    useEffect(() => {
+        dispatch(Action.Coloda.init(initCards()));
+    }, [])
 
-        return _updatedCards;
+    const addCardsToPlayers = () => {
+        const [_updatedUserCards, cutedColodaFirstly] = addCardsTo(userCards, coloda)
+        const [_updatedComputerCards, cutedColodaSecondary] = addCardsTo(userCards, cutedColodaFirstly)
+
+        dispatch(Action.User.init(sort(_updatedUserCards)))
+        dispatch(Action.Coloda.init(sort(cutedColodaSecondary)))
+        dispatch(Action.Computer.init(sort(_updatedComputerCards)));
     }
 
     const [showMenu, setShowMenu] = useState(true);
@@ -85,11 +92,11 @@ function App() {
 
         // Set which turn to attack
         const isComputerTurn = getRandomInt(2) === 0;
-        dispatch(setIsComputerTurnAttack(isComputerTurn));
-        dispatch(setIsComputerTurnWalk(isComputerTurn));
+        dispatch(setIsComputerTurnAttack(false)) //isComputerTurn));
+        dispatch(setIsComputerTurnWalk(false)) //isComputerTurn));
 
-        addCardsAfterRound()
-
+        //Init cards.
+        addCardsToPlayers()
     }
 
     const getIs = () => isComputerWalk
@@ -104,7 +111,7 @@ function App() {
         dispatch(Action.Computer.init(filtered))
         dispatch(Action.Round.addCard(cardToMove))
         dispatch(changeTurnWalk())
-    }
+}
 
 
     function showEndGameMessage() {
@@ -136,6 +143,8 @@ function App() {
         switch (status) {
             case COMPUTER_LOST_ROUND:
                 dispatch(Action.Computer.init([...computerCards, ...roundCards]));
+                // It gives possibility to user attack in the next round.
+                dispatch(changeTurnWalk())
                 break;
             case USER_LOST_ROUND:
                 dispatch(Action.User.init([...userCards, ...roundCards]));
@@ -146,25 +155,16 @@ function App() {
         }
 
         dispatch(Action.Round.init([]))
-    }
-
-    function addCardsAfterRound(status) {
-        dispatch(Action.Round.init([]));
-        dispatch(Action.User.init(sort(addCardsToPlayer(userCards))))
-        dispatch(Action.Computer.init(sort(addCardsToPlayer(computerCards))));
-        roundCards = [];
+        addCardsToPlayers()
     }
 
     function passRound() {
         if (roundCards.length % 2 === 0 && roundCards.length >= 2) {
             moveRoundTo(MOVE_ROUND_TO_TRASH);
-            addCardsAfterRound()
         }
     }
 
     function computerAttack() {
-
-        // manageCard(cardToSend)
 
     }
     function computerDefence() {
@@ -192,7 +192,6 @@ function App() {
             if (!isComputerAttack) {
                 console.log('Computer defence')
                 computerDefence()
-
             }
         }
 
@@ -206,7 +205,7 @@ function App() {
             <CardGroup ownerName='Coloda' cards={coloda}/>
             <CardGroup ownerName='Trush' cards={trash}/>
             <div>Trump: {trump}</div>
-            <Round cards={roundCards} handlePass={() => moveRoundTo(MOVE_ROUND_TO_TRASH)}/>
+            <Round cards={roundCards} handlePass={passRound}/>
             {/*<Table cards={roundCards} handlePass={passRound}/>*/}
             {isComputerAttack ? "Computer attack  /" : 'User attack  /'}
             {isComputerWalk ? "Computer walk   " : 'User walk  '}

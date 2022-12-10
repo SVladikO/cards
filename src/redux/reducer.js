@@ -1,6 +1,7 @@
 import {StoreNames} from "../type";
 
 const initialState = {
+    [StoreNames.COLODA_CARDS]: [],
     [StoreNames.DESK_CARDS]: [],
     [StoreNames.USER_CARDS]: [],
     [StoreNames.TRASH_CARDS]: [],
@@ -9,6 +10,7 @@ const initialState = {
 }
 
 export const ACTION_TYPE = {
+    SET_CARDS_TO_COLODA: "SET_CARDS_TO_COLODA",
     SET_CARDS_TO_DECK: "SET_CARDS_TO_DECK",
     SET_CARDS_TO_COMPUTER: "SET_CARDS_TO_COMPUTER",
     SET_CARDS_TO_USER: "SET_CARDS_TO_USER",
@@ -32,6 +34,9 @@ export default function reducer(state = initialState, action) {
 
         case ACTION_TYPE.SET_CARDS_TO_TRASH:
             return {...state,  [StoreNames.TRASH_CARDS]: action.payload};
+
+        case ACTION_TYPE.SET_CARDS_TO_COLODA:
+            return {...state,  [StoreNames.COLODA_CARDS]: action.payload};
 
         default:
             return state;

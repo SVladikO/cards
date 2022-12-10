@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-import {TURN} from "../../constants";
+import {TURN} from "../constants";
 
 const initialState = {
     // true - computer attack, false - user attack

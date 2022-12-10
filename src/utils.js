@@ -26,17 +26,17 @@ export function findHigherTrumpCard(cards, cardToCover, trump) {
 }
 
 
-export function addCardsTo(updateArray, coloda) {
-    if (updateArray.length >= maxCardsPerRound || coloda.length === 0) {
-        return [updateArray, coloda];
+export function addCardsTo(to, from) {
+    if (to.length >= maxCardsPerRound || from.length === 0) {
+        return [to, from];
     }
 
     let result = [];
-    let canBeAdded = maxCardsPerRound - updateArray.length;
+    let canBeAdded = maxCardsPerRound - to.length;
 
     if (canBeAdded > 0) {
-        result = [...updateArray, ...coloda.slice(-canBeAdded)]
+        result = [...to, ...from.slice(-canBeAdded)]
     }
 
-    return [result, coloda.slice(0, coloda.length - canBeAdded)];
+    return [result, from.slice(0, from.length - canBeAdded)];
 }

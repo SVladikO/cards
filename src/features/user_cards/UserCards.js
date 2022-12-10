@@ -3,10 +3,10 @@ import {useSelector, useDispatch} from "react-redux";
 
 import CardGroup from "../../components/card_group";
 
-import {Action} from '../common_card_slice';
+import {Action} from '../../redux/common_card_slice';
 
 import {canCardBeAddedToRound, findHigherCard} from "../../utils";
-import {changeTurnAttack, changeTurnWalk} from "../game_details/gameDetailsSlice";
+import {changeTurnAttack, changeTurnWalk} from "../../redux/gameDetailsSlice";
 
 export function UserCards() {
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
