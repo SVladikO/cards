@@ -1,5 +1,4 @@
 export const StoreNames = {
-    DESK_CARDS: 'DESK_CARDS',
     USER_CARDS: 'USER_CARDS',
     COLODA_CARDS: 'COLODA_CARDS',
     TRASH_CARDS: 'TRASH_CARDS',

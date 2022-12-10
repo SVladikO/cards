@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {StoreNames} from "../type";
+import {StoreNames} from "./type";
 
 export const colodaCardsSlice = commonCardSlice(StoreNames.COLODA_CARDS);
 export const userCardsSlice = commonCardSlice(StoreNames.USER_CARDS);
@@ -37,7 +37,8 @@ function commonCardSlice(name) {
                 state.value.push(action.payload);
             },
             addCards: (state, action) => {
-                state.value = [...state.value, ...action.payload];
+                action.payload.forEach(i => state.value.push(i))
+                // state.value.concat(action.payload);
             },
             deleteAll: (state, action) => {
                 state.value = [];

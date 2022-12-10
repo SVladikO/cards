@@ -7,12 +7,13 @@ import {Action} from '../../redux/common_card_slice';
 
 import {canCardBeAddedToRound, findHigherCard} from "../../utils";
 import {changeTurnAttack, changeTurnWalk} from "../../redux/gameDetailsSlice";
+import {StoreNames} from "../../redux/type";
 
 export function UserCards() {
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
-    const roundCards = useSelector((state) => state.roundCards.value);
-    const userCards = useSelector((state) => state.userCards.value);
+    const roundCards = useSelector((state) => state[StoreNames.ROUND_CARDS].value);
+    const userCards = useSelector((state) => state[StoreNames.USER_CARDS].value);
     const dispatch = useDispatch();
 
     function manageCard(cardToMove) {

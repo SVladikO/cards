@@ -1,8 +1,7 @@
-import {StoreNames} from "../type";
+import {StoreNames} from "./type";
 
 const initialState = {
     [StoreNames.COLODA_CARDS]: [],
-    [StoreNames.DESK_CARDS]: [],
     [StoreNames.USER_CARDS]: [],
     [StoreNames.TRASH_CARDS]: [],
     [StoreNames.COMPUTER_CARDS]: [],
@@ -20,9 +19,6 @@ export const ACTION_TYPE = {
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
-        case ACTION_TYPE.SET_CARDS_TO_DECK:
-            return {...state, [StoreNames.DESK_CARDS]: action.payload}
-
         case ACTION_TYPE.SET_CARDS_TO_COMPUTER:
             return {...state, [StoreNames.COMPUTER_CARDS]: action.payload};
 

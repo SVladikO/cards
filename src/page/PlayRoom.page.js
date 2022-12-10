@@ -10,24 +10,22 @@ import {
 import {useInterval} from '../hooks'
 import {Table} from './PlayRoom.style';
 
-import {findHigherCard, isTrumpCard, findHigherTrumpCard, addCardsTo} from '../utils'
+import {findHigherCard, isTrumpCard, findHigherTrumpCard, prepareCardsTo} from '../utils'
 import CardGroup from '../components/card_group';
 
 
 import {suits, data} from "../data";
 import {
-    USER_LOST_ROUND,
-    COMPUTER_LOST_ROUND,
-    MOVE_ROUND_TO_TRASH,
+    SituationTypes,
     MESSAGE,
 } from '../constants'
 
 import {UserCards} from "../features/user_cards/UserCards";
 import {ComputerCards} from "../features/computer_cards/ComputerCards";
 import Round from "../components/round/Round";
+import {StoreNames} from "../redux/type";
 
 const log = console.log;
-
 
 
 function initCards() {
@@ -59,28 +57,53 @@ const getSuit = card => card.title + card.suit;
 let userCards = []
 
 let trump = getTrump();
-let trash = []
 
 function App() {
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
-    const computerCards = useSelector(state => state.computerCards.value);
-    const userCards = useSelector(state => state.userCards.value);
-    const roundCards = useSelector((state) => state.roundCards.value);
-    const coloda = useSelector((state) => state.colodaCards.value);
+    const computerCards = useSelector(state => state[StoreNames.COMPUTER_CARDS].value);
+    const userCards = useSelector(state => state[StoreNames.USER_CARDS].value);
+    const roundCards = useSelector((state) => state[StoreNames.ROUND_CARDS].value);
+    const coloda = useSelector((state) => state[StoreNames.COLODA_CARDS].value);
+    const trash = useSelector((state) => state[StoreNames.TRASH_CARDS].value);
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(Action.Coloda.init(initCards()));
     }, [])
 
-    const addCardsToPlayers = () => {
-        const [_updatedUserCards, cutedColodaFirstly] = addCardsTo(userCards, coloda)
-        const [_updatedComputerCards, cutedColodaSecondary] = addCardsTo(userCards, cutedColodaFirstly)
+    // const addCardsToUser = () => {
+    //     const [_newCards, _cutedColoda] = addCardsTo(userCards, coloda)
+    //
+    //     dispatch(Action.User.addCards(_newCards))
+    //     dispatch(Action.Coloda.init(_cutedColoda))
+    // }
 
-        dispatch(Action.User.init(sort(_updatedUserCards)))
-        dispatch(Action.Coloda.init(sort(cutedColodaSecondary)))
-        dispatch(Action.Computer.init(sort(_updatedComputerCards)));
+
+
+    const addCardsToPlayers = status => {
+        let newCardsToUser = []
+        let newCardsToComputer = []
+        let cutedColoda = []
+
+        //We use this structure because we lost cards
+        switch (status) {
+            case SituationTypes.COMPUTER_LOST_ROUND:
+                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, coloda);
+                break;
+            case SituationTypes.USER_LOST_ROUND:
+                [newCardsToComputer, cutedColoda] = prepareCardsTo(userCards, coloda);
+                break;
+            case SituationTypes.START_GAME:
+            case SituationTypes.MOVE_ROUND_TO_TRASH:
+                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, coloda);
+                [newCardsToComputer, cutedColoda] = prepareCardsTo(userCards, cutedColoda)
+                break;
+        }
+
+        dispatch(Action.User.addCards(newCardsToUser))
+        dispatch(Action.Coloda.init(cutedColoda))
+        dispatch(Action.Computer.addCards(sort(newCardsToComputer)));
     }
 
     const [showMenu, setShowMenu] = useState(true);
@@ -96,7 +119,7 @@ function App() {
         dispatch(setIsComputerTurnWalk(false)) //isComputerTurn));
 
         //Init cards.
-        addCardsToPlayers()
+        addCardsToPlayers(SituationTypes.START_GAME)
     }
 
     const getIs = () => isComputerWalk
@@ -111,7 +134,7 @@ function App() {
         dispatch(Action.Computer.init(filtered))
         dispatch(Action.Round.addCard(cardToMove))
         dispatch(changeTurnWalk())
-}
+    }
 
 
     function showEndGameMessage() {
@@ -138,41 +161,40 @@ function App() {
     }
 
     function moveRoundTo(status) {
-        alert(COMPUTER_LOST_ROUND, computerCards, roundCards)
-
         switch (status) {
-            case COMPUTER_LOST_ROUND:
-                dispatch(Action.Computer.init([...computerCards, ...roundCards]));
-                // It gives possibility to user attack in the next round.
+            case SituationTypes.COMPUTER_LOST_ROUND:
+                dispatch(Action.Computer.addCards(roundCards));
+                // It gives possibility to user attack in the next round when computer lost current.
                 dispatch(changeTurnWalk())
                 break;
-            case USER_LOST_ROUND:
-                dispatch(Action.User.init([...userCards, ...roundCards]));
+            case SituationTypes.USER_LOST_ROUND:
+                dispatch(Action.User.addCards(roundCards));
                 break;
-            case MOVE_ROUND_TO_TRASH:
-                trash = [...trash, ...roundCards];
+            case SituationTypes.MOVE_ROUND_TO_TRASH:
+                dispatch(Action.Trash.addCards(roundCards))
                 break;
         }
 
         dispatch(Action.Round.init([]))
-        addCardsToPlayers()
+        addCardsToPlayers(status)
     }
 
     function passRound() {
         if (roundCards.length % 2 === 0 && roundCards.length >= 2) {
-            moveRoundTo(MOVE_ROUND_TO_TRASH);
+            moveRoundTo(SituationTypes.MOVE_ROUND_TO_TRASH);
         }
     }
 
     function computerAttack() {
 
     }
+
     function computerDefence() {
         const cardToCover = getLastRoundCard();
         const higherCard = findHigherCard(computerCards, cardToCover)
 
         if (!higherCard) {
-           return moveRoundTo(COMPUTER_LOST_ROUND)
+            return moveRoundTo(SituationTypes.COMPUTER_LOST_ROUND)
         }
 
         manageCard(higherCard)

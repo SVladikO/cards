@@ -25,8 +25,14 @@ export function findHigherTrumpCard(cards, cardToCover, trump) {
         );
 }
 
-
-export function addCardsTo(to, from) {
+/**
+ * Calculate how many cards can be added to player.
+ *
+ * @param to
+ * @param from
+ * @return {[[cardsToAdd], [cutedColoda]]}
+ */
+export function prepareCardsTo(to, from) {
     if (to.length >= maxCardsPerRound || from.length === 0) {
         return [to, from];
     }
@@ -35,7 +41,7 @@ export function addCardsTo(to, from) {
     let canBeAdded = maxCardsPerRound - to.length;
 
     if (canBeAdded > 0) {
-        result = [...to, ...from.slice(-canBeAdded)]
+        result = from.slice(-canBeAdded)
     }
 
     return [result, from.slice(0, from.length - canBeAdded)];
