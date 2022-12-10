@@ -11,7 +11,7 @@ import {useInterval} from '../hooks'
 import {Table} from './PlayRoom.style';
 
 import {findHigherCard, isTrumpCard, findHigherTrumpCard, addCardsTo} from '../utils'
-import CardGroup from '../card_group';
+import CardGroup from '../components/card_group';
 
 
 import {suits, data} from "../data";
@@ -24,7 +24,7 @@ import {
 
 import {UserCards} from "../features/user_cards/UserCards";
 import {ComputerCards} from "../features/computer_cards/ComputerCards";
-import Round from "../round/Round";
+import Round from "../components/round/Round";
 
 const log = console.log;
 
@@ -56,7 +56,6 @@ function turnOffWarningFrom(cards, setCards) {
 
 const getSuit = card => card.title + card.suit;
 
-let roundCards = [];
 let userCards = []
 
 let trump = getTrump();
@@ -67,7 +66,7 @@ function App() {
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
     const computerCards = useSelector(state => state.computerCards.value);
-    const realRoundCards = useSelector((state) => state.roundCards.value);
+    const roundCards = useSelector((state) => state.roundCards.value);
     const dispatch = useDispatch();
 
     const addCardsToPlayer = (to) => {
@@ -95,12 +94,9 @@ function App() {
 
     const getIs = () => isComputerWalk
 
-
     function getLastRoundCard() {
-        return realRoundCards[realRoundCards.length - 1];
+        return roundCards[roundCards.length - 1];
     }
-
-
 
     function manageCard(cardToMove) {
         const filtered = computerCards.filter(card => card !== cardToMove)
@@ -135,7 +131,7 @@ function App() {
     }
 
     function moveRoundTo(status) {
-        alert(COMPUTER_LOST_ROUND)
+        alert(COMPUTER_LOST_ROUND, computerCards, roundCards)
 
         switch (status) {
             case COMPUTER_LOST_ROUND:
@@ -210,7 +206,7 @@ function App() {
             <CardGroup ownerName='Coloda' cards={coloda}/>
             <CardGroup ownerName='Trush' cards={trash}/>
             <div>Trump: {trump}</div>
-            <Round cards={realRoundCards} handlePass={() => moveRoundTo(MOVE_ROUND_TO_TRASH)}/>
+            <Round cards={roundCards} handlePass={() => moveRoundTo(MOVE_ROUND_TO_TRASH)}/>
             {/*<Table cards={roundCards} handlePass={passRound}/>*/}
             {isComputerAttack ? "Computer attack  /" : 'User attack  /'}
             {isComputerWalk ? "Computer walk   " : 'User walk  '}

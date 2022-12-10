@@ -1,7 +1,7 @@
 import React from "react";
 import {useSelector, useDispatch} from "react-redux";
 
-import CardGroup from "../../card_group";
+import CardGroup from "../../components/card_group";
 
 import {Action} from '../common_card_slice';
 

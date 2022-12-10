@@ -1,6 +1,6 @@
 import React from "react";
 import {useSelector} from "react-redux";
-import CardGroup from "../../card_group";
+import CardGroup from "../../components/card_group";
 
 export function ComputerCards() {
     const computerCards = useSelector((state) => state.computerCards.value);
