@@ -1,5 +1,15 @@
-import {Wrapper, Count, Title, Button, Button2, AttackRowWrapper, DefenceRowWrapper, Message} from './Round.style'
-
+import {
+    Wrapper,
+    Count,
+    Title,
+    BottomPart,
+    Button,
+    AttackRowWrapper,
+    DefenceRowWrapper,
+    Message
+} from './Round.style'
+import {ReactComponent as DeleteIcon} from "../../delete.svg";
+import {ReactComponent as HandIcon} from "../../hand.svg";
 import Card from "../card";
 
 function Round({cards, handlePass, handleTake, walkMessage, attackMessage}) {
@@ -15,8 +25,10 @@ function Round({cards, handlePass, handleTake, walkMessage, attackMessage}) {
             </DefenceRowWrapper>
             <Count>{cards.length}</Count>
             <Title>Round cards</Title>
-            <Button onClick={handlePass}>Pass</Button>
-            <Button2 onClick={handleTake}>Take</Button2>
+            <BottomPart>
+                <Button onClick={handlePass}>Pass <DeleteIcon/></Button>
+                <Button onClick={handleTake}>Take <HandIcon/></Button>
+            </BottomPart>
             <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
         </Wrapper>
     );

@@ -38,10 +38,22 @@ export const Title = styled.div`
   top: 0;
   left: 6px;
 `;
-export const Button = styled.button`
+export const BottomPart = styled.div`
   position: absolute;
   bottom: 0;
-  right: 56px;
+  right: 0;
+  display: flex;
+  `;
+export const Button = styled.button`
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  & > svg {
+    height: 20px;
+    width: 20px;
+  }
 `;
 
 export const Button2 = styled.button`
