@@ -13,16 +13,30 @@ export const Wrapper = styled.div`
 export const Title = styled.div`
   font-size: 20px;
   line-height: 21px;
+  
+  width: 20px;
   display: flex;
-  align-items: center;
+  justify-content: center;
+  
   position: absolute;
   left: 1px;
-  top: 1px;
+  top: 0px;
 `;
 
-export const Suit = styled.div`
+export const SmallSuit = styled.div`
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  font-size: 14px;
   position: absolute;
-  right: 4px;
-  bottom: 4px;
-  font-size: 34px;
+  left: 1px;
+  top: 17px;
+`;
+export const BigSuit = styled.div`
+  position: absolute;
+  right: 5px;
+  bottom: 7px;
+  
+  font-size: 44px;
+  line-height: 39px;
 `;
