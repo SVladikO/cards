@@ -6,6 +6,7 @@ import {
     Button,
     AttackRowWrapper,
     DefenceRowWrapper,
+    TrumpWrapper,
     Message,
     EmptyCard,
 } from './Round.style'
@@ -14,7 +15,7 @@ import {ReactComponent as HandIcon} from "../../hand.svg";
 import Card from "../card";
 import {maxCardsPerRound} from "../../constants";
 
-function Round({cards, handlePass, handleTake, isComputerAttack, walkMessage, attackMessage}) {
+function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walkMessage, attackMessage}) {
     const attackCards = cards.filter((card, index) => index % 2 === 0)
         .map(c => <Card key={c.title + c.suit} card={c}/>);
 
@@ -33,6 +34,9 @@ function Round({cards, handlePass, handleTake, isComputerAttack, walkMessage, at
             <DefenceRowWrapper>{defenceCards}</DefenceRowWrapper>
             <Count>{cards.length}</Count>
             <Title>Round cards</Title>
+            <TrumpWrapper>
+                <Card card={trumpCard}/>
+            </TrumpWrapper>
             <BottomPart>
                 {!isComputerAttack && <Button onClick={handlePass}>Pass <DeleteIcon/></Button>}
                 {isComputerAttack && <Button onClick={handleTake}>Take <HandIcon/></Button>}

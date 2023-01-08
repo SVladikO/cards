@@ -85,7 +85,7 @@ function App() {
         addCardsToPlayers(SituationTypes.START_GAME)
     }
 
-    const getFirsColodaCard = () => coloda[0];
+    const getFirsColodaCard = () => coloda.length && coloda[0];
 
     useEffect(() => {
         dispatch(Action.Coloda.init(initCards()))
@@ -185,13 +185,6 @@ function App() {
         manageCard(cardCandidate)
     }
 
-    function getRoundTrump() {
-        if (!coloda.length) return;
-
-        const lastCard = getFirsColodaCard();
-        return <Card key={lastCard.title + lastCard.suit} card={lastCard}/>
-    }
-
     function computerDefence() {
         const cardToCover = getLastRoundCard(roundCards);
         const higherCard = findHigherCard(computerCards, cardToCover, trump)
@@ -231,9 +224,8 @@ function App() {
                     attackMessage={attackMessage}
                     walkMessage={walkMessage}
                     isComputerAttack={isComputerAttack}
+                    trumpCard={getFirsColodaCard()}
                 />
-
-                <Trump>Trump: {trump} {getRoundTrump()} </Trump>
                 <UserCards />
                 <div>{message}</div>
             </Table>

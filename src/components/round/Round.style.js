@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
   height: 214px;
   border-radius: 5px;
   position: relative;
-  padding: 40px;
+  padding: 40px 60px;
 `;
 export const AttackRowWrapper = styled.div`
   display: flex;
@@ -46,6 +46,12 @@ export const Title = styled.div`
   top: 0;
   left: 6px;
 `;
+export const TrumpWrapper = styled.div`
+  border: solid 1px red;
+  position: absolute;
+  top: 100px;
+  right: 0;
+  `;
 export const BottomPart = styled.div`
   position: absolute;
   bottom: 0;
