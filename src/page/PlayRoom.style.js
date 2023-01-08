@@ -2,28 +2,33 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   position: relative;
-  
-  border: solid 1px blue;
-  height: 60px;
-  width: 240px;
-  padding: 20px;
-  
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  align-content: flex-start;
+  height: 410px;
+  padding: 10px;
 
-  background: green;
-  border: solid 1px black;
-  border-radius: 10px;
+  display: flex;
+  //flex-wrap: wrap;
+  //flex-direction: column;
+  //align-content: flex-start;
+
+  background: #389638;
+  border-radius: 20px;
   margin: 20px 0;
 
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently*/
+`;
+
+export const Table = styled.div`
+    border: solid 2px white;
+    border-radius: 20px;
+  padding: 10px;
+`;
+
+export const Trump = styled.div`
+  font-size: 20px;  
 `;
 
 export const Count = styled.div`
