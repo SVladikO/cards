@@ -5,10 +5,10 @@ export const Wrapper = styled.div`
   flex-wrap: inherit;
   flex-direction: column;
   border: solid 1px green;
-  height: 214px;
+  height: 190px;
   border-radius: 5px;
   position: relative;
-  padding: 40px 60px;
+  padding: 10px 120px 10px 10px;
 `;
 export const AttackRowWrapper = styled.div`
   display: flex;
@@ -34,12 +34,17 @@ export const EmptyCard = styled.div`
   width: 50px;
   border: solid 2px white;
   border-radius: 3px;
+  box-sizing: border-box;
 `;
 
 export const Message = styled.div`
   position: absolute;
-  top: 0;
-  right: 26px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  
+  display: flex;
+  justify-content: center;
 `;
 export const Title = styled.div`
   position: absolute;
@@ -47,10 +52,10 @@ export const Title = styled.div`
   left: 6px;
 `;
 export const TrumpWrapper = styled.div`
-  border: solid 1px red;
   position: absolute;
-  top: 100px;
+  top: 90px;
   right: 0;
+  display: flex;
   `;
 export const BottomPart = styled.div`
   position: absolute;

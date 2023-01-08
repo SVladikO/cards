@@ -11,7 +11,6 @@ function CardGroup({
     console.log('Rerender CardGroup')
     return (
         <Wrapper>
-            <Owner>{ownerName}:</Owner>
             {cards.map(c =>
                 <Card
                     key={c.title + c.suit}
@@ -20,7 +19,6 @@ function CardGroup({
                     isTrump={c.suit === trump}
                 />
             )}
-            <Count>{cards.length}</Count>
         </Wrapper>
     );
 }

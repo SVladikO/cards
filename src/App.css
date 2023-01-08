@@ -6,7 +6,6 @@ html, body, root {
 .App {
   text-align: center;
   flex-wrap: wrap;
-  border: solid 1px red;
 }
 
 .App-logo {

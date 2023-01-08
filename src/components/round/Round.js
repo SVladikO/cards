@@ -32,10 +32,9 @@ function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walk
         <Wrapper>
             <AttackRowWrapper>{attackCards}</AttackRowWrapper>
             <DefenceRowWrapper>{defenceCards}</DefenceRowWrapper>
-            <Count>{cards.length}</Count>
-            <Title>Round cards</Title>
             <TrumpWrapper>
                 <Card card={trumpCard}/>
+                <EmptyCard />
             </TrumpWrapper>
             <BottomPart>
                 {!isComputerAttack && <DeleteIcon onClick={handlePass}/>}

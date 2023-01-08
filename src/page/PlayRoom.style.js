@@ -2,9 +2,9 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   position: relative;
-  width: 900px;
+  min-width: 600px;
   height: 518px;
-  padding: 20px;
+  padding: 10px;
 
   display: flex;
   //flex-wrap: wrap;
@@ -12,7 +12,6 @@ export const Wrapper = styled.div`
   //align-content: flex-start;
 
   background: #389638;
-  border: solid 1px black;
   border-radius: 5px;
   margin: 20px 0;
 
@@ -24,7 +23,9 @@ export const Wrapper = styled.div`
 `;
 
 export const Table = styled.div`
-  margin: 0 20px;
+    border: solid 2px white;
+    border-radius: 20px;
+  padding: 10px;
 `;
 
 export const Trump = styled.div`

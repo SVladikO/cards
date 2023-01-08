@@ -6,5 +6,8 @@ import {StoreNames} from "../../redux/type";
 export function ComputerCards() {
     const computerCards = useSelector((state) => state[StoreNames.COMPUTER_CARDS].value);
 
-    return <CardGroup cards={computerCards} ownerName="Computer cards"/>;
+    return <CardGroup
+        cards={computerCards}
+        // ownerName="Computer cards"
+    />;
 }

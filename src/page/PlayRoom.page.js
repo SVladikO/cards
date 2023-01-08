@@ -211,27 +211,38 @@ function App() {
     const attackMessage = isComputerAttack ? "Computer" : 'User';
     const walkMessage = isComputerWalk ? "Computer" : 'User';
     return (
-        <Wrapper>
-            <CardGroup ownerName='Trush' cards={trash}/>
-            <Table>
-                {showMenu && <button onClick={startGame}>Start Game</button>}
-                <ComputerCards/>
+        <>
+            <Wrapper>
+                <Table>
+                    {showMenu && <button onClick={startGame}>Start Game</button>}
+                    <ComputerCards/>
 
-                <Round
-                    cards={roundCards}
-                    handlePass={passRound}
-                    handleTake={takeCards}
-                    attackMessage={attackMessage}
-                    walkMessage={walkMessage}
-                    isComputerAttack={isComputerAttack}
-                    trumpCard={getFirsColodaCard()}
-                />
-                <UserCards />
-                <div>{message}</div>
-            </Table>
-            <CardGroup ownerName='Coloda' cards={coloda}/>
+                    <Round
+                        cards={roundCards}
+                        handlePass={passRound}
+                        handleTake={takeCards}
+                        attackMessage={attackMessage}
+                        walkMessage={walkMessage}
+                        isComputerAttack={isComputerAttack}
+                        trumpCard={getFirsColodaCard()}
+                    />
+                    <UserCards/>
+                    <div>{message}</div>
+                </Table>
 
-        </Wrapper>
+
+            </Wrapper>
+            <div>
+
+                <div>ComputerCards: {computerCards.length}</div>
+                <div>UserCards: {userCards.length}</div>
+                <div>RoundCards: {roundCards.length}</div>
+                <div>TrashCards: {trash.length}</div>
+                <div>ColodaCards: {coloda.length}</div>
+                {/*<CardGroup ownerName='Trush' cards={trash}/>*/}
+                {/*<CardGroup ownerName='Coloda' cards={coloda}/>*/}
+            </div>
+        </>
     );
 }
 
