@@ -1,6 +1,7 @@
 import {
     Wrapper,
     Count,
+    CardsWrapper,
     Title,
     BottomPart,
     Button,
@@ -30,11 +31,13 @@ function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walk
 
     return (
         <Wrapper>
-            <AttackRowWrapper>{attackCards}</AttackRowWrapper>
-            <DefenceRowWrapper>{defenceCards}</DefenceRowWrapper>
+            <CardsWrapper isComputerAttack={isComputerAttack}>
+                <AttackRowWrapper>{attackCards}</AttackRowWrapper>
+                <DefenceRowWrapper>{defenceCards}</DefenceRowWrapper>
+            </CardsWrapper>
             <TrumpWrapper>
                 <Card card={trumpCard}/>
-                <EmptyCard />
+                <EmptyCard/>
             </TrumpWrapper>
             <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
             <BottomPart>

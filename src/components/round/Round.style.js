@@ -18,7 +18,7 @@ export const DefenceRowWrapper = styled.div`
   display: flex;
   position: relative;
   top: -15px;
-  left: 10px;
+  left: 20px;
   
   &>div {margin: 0 20px 0 0;}
 `;
@@ -37,6 +37,18 @@ export const EmptyCard = styled.div`
   box-sizing: border-box;
 `;
 
+export const CardsWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 160px;
+  
+  &>div:nth-child(2) {
+    position: absolute;
+    top: ${p => p.isComputerAttack ? '76px' : 0};
+  }
+  
+  `;
 export const Message = styled.div`
   position: absolute;
   bottom: 0;
