@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-wrap: inherit;
   flex-direction: column;
-  border: solid 1px white;
+  border: solid 1px green;
   height: 214px;
   border-radius: 5px;
   position: relative;

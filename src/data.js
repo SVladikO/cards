@@ -1,8 +1,8 @@
 // ♥/♡	♦/♢	♠/♤	♣/♧
 export const suits = [
     {background: 'white', color: 'red', suit: '♥'},
-    {background: 'white', color: 'orange', suit: '♦'},
-    {background: 'white', color: 'green', suit: '♣'},
+    {background: 'white', color: 'red', suit: '♦'},
+    {background: 'white', color: 'black', suit: '♣'},
     {background: 'white', color: 'black', suit: '♠'},
 ];
 

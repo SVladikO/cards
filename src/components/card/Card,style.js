@@ -7,8 +7,9 @@ export const Wrapper = styled.div`
   border: solid 1px ;
   border-radius: 3px;
   position: relative;
-  border: solid 1px ${p => p.isTrump ? '#3eff56' : 'black'};
-  color:  ${p => p.isTrump ? '#3eff56' : 'black'}
+  margin: ${p => p.isTrump ? '0 0 10px' : '0'};
+  color: ${p => p.colorSuit};
+  background: white;
 `;
 export const Title = styled.div`
   font-size: 20px;
