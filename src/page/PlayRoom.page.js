@@ -40,6 +40,14 @@ function initCards() {
 
 const sort = cards => cards.sort((f, s) => f.level - s.level);
 
+const sortTrumToEnd = (cards, trump) => {
+    const trumps = cards.filter(card => card.suit === trump)
+    const simpleCards = cards.filter(card => card.suit !== trump)
+    console.log(trumps.map(t => t.suit))
+    console.log(simpleCards.map(t => t.suit))
+
+    return [sort(simpleCards), sort(trumps)];
+}
 const generateTrump = () => suits.map(s => s.suit)[getRandomInt(4)];
 const getRandomInt = max => Math.floor(Math.random() * max);
 
@@ -162,7 +170,9 @@ function App() {
 
         // Start of attack
         if (!roundCards.length) {
-            return manageCard(computerCards[0]);
+            const [usualCards, trumpCards] = sortTrumToEnd(computerCards, trump)
+
+            return manageCard(usualCards[0] || trumpCards[0]);
         }
 
         const cardCandidate = computerCards.find(card => canCardBeAddedToRound(roundCards, card))
