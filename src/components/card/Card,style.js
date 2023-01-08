@@ -7,7 +7,8 @@ export const Wrapper = styled.div`
   border: solid 1px ;
   border-radius: 3px;
   position: relative;
-  background: ${p => p.isTrump ? 'blue' : 'white'};
+  border: solid 1px ${p => p.isTrump ? '#3eff56' : 'black'};
+  color:  ${p => p.isTrump ? '#3eff56' : 'black'}
 `;
 export const Title = styled.div`
   font-size: 20px;
@@ -17,7 +18,6 @@ export const Title = styled.div`
   position: absolute;
   left: 1px;
   top: 1px;
-  color: ${p => p.colorSuit || 'black'};
 `;
 
 export const Suit = styled.div`
@@ -25,5 +25,4 @@ export const Suit = styled.div`
   right: 4px;
   bottom: 4px;
   font-size: 34px;
-  color: ${p => p.colorSuit || 'black'};
 `;
