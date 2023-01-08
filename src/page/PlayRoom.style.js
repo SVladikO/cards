@@ -2,8 +2,7 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   position: relative;
-  min-width: 600px;
-  height: 518px;
+  height: 410px;
   padding: 10px;
 
   display: flex;
@@ -12,7 +11,7 @@ export const Wrapper = styled.div`
   //align-content: flex-start;
 
   background: #389638;
-  border-radius: 5px;
+  border-radius: 20px;
   margin: 20px 0;
 
   -webkit-touch-callout: none; /* iOS Safari */

@@ -36,11 +36,11 @@ function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walk
                 <Card card={trumpCard}/>
                 <EmptyCard />
             </TrumpWrapper>
+            <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
             <BottomPart>
                 {!isComputerAttack && <DeleteIcon onClick={handlePass}/>}
                 {isComputerAttack && <HandIcon onClick={handleTake}/>}
             </BottomPart>
-            <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
         </Wrapper>
     );
 }

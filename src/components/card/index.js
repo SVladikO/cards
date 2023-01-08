@@ -1,4 +1,4 @@
-import {Wrapper, Title, SmallSuit, BigSuit} from "./Card,style";
+import {Wrapper, Title, SmallSuit, BigSuit} from "./Card.style";
 
 function Card({card, isTrump, handleClick = () => {}}) {
     console.log(card);

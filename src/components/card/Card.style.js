@@ -11,6 +11,7 @@ export const Wrapper = styled.div`
   color: ${p => p.colorSuit};
   background: white;
 `;
+
 export const Title = styled.div`
   font-size: 20px;
   line-height: 21px;
