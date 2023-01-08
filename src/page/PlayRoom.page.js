@@ -168,17 +168,22 @@ function App() {
             return console.log('Computer cant attack without cards')
         }
 
+        const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
+
         // Start of attack
         if (!roundCards.length) {
-            const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
-
             return manageCard(usualCards[0] || trumpCards[0]);
         }
 
-        const cardCandidate = computerCards.find(card => canCardBeAddedToRound(roundCards, card))
+        let cardCandidate = usualCards.find(card => canCardBeAddedToRound(roundCards, card))
+
+        if (!cardCandidate && (coloda.length < 4 || roundCards.length > 8)) {
+            cardCandidate = trumpCards.find(card => canCardBeAddedToRound(roundCards, card))
+        }
+
         console.log('COMPUTER ATTACK. candidate', cardCandidate)
         // If nothing to add computer will pass round
-        if (!cardCandidate) {
+        if (!cardCandidate || (cardCandidate.level > 10 &&  coloda.length < 10)) {
             return passRound()
         }
 
@@ -187,7 +192,14 @@ function App() {
 
     function computerDefence() {
         const cardToCover = getLastRoundCard(roundCards);
-        const higherCard = findHigherCard(computerCards, cardToCover, trump)
+
+        const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
+
+        let higherCard = findHigherCard(usualCards, cardToCover, trump);
+
+        if (!higherCard) {
+            higherCard = findHigherCard(trumpCards, cardToCover, trump);
+        }
 
         if (!higherCard) {
             return moveRoundTo(SituationTypes.COMPUTER_LOST_ROUND)
