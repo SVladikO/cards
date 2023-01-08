@@ -23,6 +23,7 @@ import CardGroup from '../components/card_group';
 
 import {UserCards} from "../features/user_cards/UserCards";
 import {ComputerCards} from "../features/computer_cards/ComputerCards";
+import Card from "../components/card";
 
 function initCards() {
     const result = [];
@@ -40,7 +41,7 @@ function initCards() {
 
 const sort = cards => cards.sort((f, s) => f.level - s.level);
 
-const sortTrumToEnd = (cards, trump) => {
+const sortTrumpToEnd = (cards, trump) => {
     const trumps = cards.filter(card => card.suit === trump)
     const simpleCards = cards.filter(card => card.suit !== trump)
     console.log(trumps.map(t => t.suit))
@@ -48,7 +49,6 @@ const sortTrumToEnd = (cards, trump) => {
 
     return [sort(simpleCards), sort(trumps)];
 }
-const generateTrump = () => suits.map(s => s.suit)[getRandomInt(4)];
 const getRandomInt = max => Math.floor(Math.random() * max);
 
 function turnOffWarningFrom(cards, setCards) {
@@ -56,8 +56,6 @@ function turnOffWarningFrom(cards, setCards) {
         setCards(cards.map(card => ({...card, warning: false})))
     }, 400)
 }
-
-const getSuit = card => card.title + card.suit;
 
 function App() {
     const trump = useSelector(state => state.gameDetails.trump);
@@ -81,11 +79,13 @@ function App() {
         const isComputerTurn = getRandomInt(2) === 0;
         dispatch(setIsComputerTurnAttack(true)) //isComputerTurn));
         dispatch(setIsComputerTurnWalk(true)) //isComputerTurn));
-        dispatch(setTrump(generateTrump())) //isComputerTurn));
+        dispatch(setTrump(getFirsColodaCard().suit)) //isComputerTurn));
 
         //Init cards.
         addCardsToPlayers(SituationTypes.START_GAME)
     }
+
+    const getFirsColodaCard = () => coloda[0];
 
     useEffect(() => {
         dispatch(Action.Coloda.init(initCards()))
@@ -170,7 +170,7 @@ function App() {
 
         // Start of attack
         if (!roundCards.length) {
-            const [usualCards, trumpCards] = sortTrumToEnd(computerCards, trump)
+            const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
 
             return manageCard(usualCards[0] || trumpCards[0]);
         }
@@ -183,6 +183,13 @@ function App() {
         }
 
         manageCard(cardCandidate)
+    }
+
+    function getRoundTrump() {
+        if (!coloda.length) return;
+
+        const lastCard = getFirsColodaCard();
+        return <Card key={lastCard.title + lastCard.suit} card={lastCard}/>
     }
 
     function computerDefence() {
@@ -226,7 +233,7 @@ function App() {
                     isComputerAttack={isComputerAttack}
                 />
 
-                <Trump>Trump: {trump}</Trump>
+                <Trump>Trump: {trump} {getRoundTrump()} </Trump>
                 <UserCards />
                 <div>{message}</div>
             </Table>
