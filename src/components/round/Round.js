@@ -38,8 +38,8 @@ function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walk
                 <Card card={trumpCard}/>
             </TrumpWrapper>
             <BottomPart>
-                {!isComputerAttack && <Button onClick={handlePass}>Pass <DeleteIcon/></Button>}
-                {isComputerAttack && <Button onClick={handleTake}>Take <HandIcon/></Button>}
+                {!isComputerAttack && <DeleteIcon onClick={handlePass}/>}
+                {isComputerAttack && <HandIcon onClick={handleTake}/>}
             </BottomPart>
             <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
         </Wrapper>

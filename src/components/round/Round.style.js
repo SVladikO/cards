@@ -57,6 +57,11 @@ export const BottomPart = styled.div`
   bottom: 0;
   right: 0;
   display: flex;
+  & > svg {
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+  }
   `;
 export const Button = styled.button`
   font-size: 20px;
@@ -68,10 +73,4 @@ export const Button = styled.button`
     height: 20px;
     width: 20px;
   }
-`;
-
-export const Button2 = styled.button`
-  position: absolute;
-  bottom: 0;
-  right: 6px;
 `;
