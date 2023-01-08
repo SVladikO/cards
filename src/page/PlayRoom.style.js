@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
+  border: solid 10px #106601e6;
   position: relative;
   height: 410px;
   padding: 10px;
@@ -22,13 +23,11 @@ export const Wrapper = styled.div`
 `;
 
 export const Table = styled.div`
-    border: solid 2px white;
-    border-radius: 20px;
-  padding: 10px;
+  border-radius: 20px;
 `;
 
 export const Trump = styled.div`
-  font-size: 20px;  
+  font-size: 20px;
 `;
 
 export const Count = styled.div`

@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-wrap: inherit;
   flex-direction: column;
-  border: solid 1px green;
+  border: solid 2px #106601e6;
   height: 190px;
   border-radius: 5px;
   position: relative;
@@ -32,7 +32,7 @@ export const EmptyCard = styled.div`
   min-height: 75px;
   max-height: 75px;
   width: 50px;
-  border: solid 2px white;
+  border: solid 2px #3bb055c4;
   border-radius: 3px;
   box-sizing: border-box;
 `;
