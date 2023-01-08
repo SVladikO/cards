@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
   height: 214px;
   border-radius: 5px;
   position: relative;
-  padding: 20px ;
+  padding: 40px;
 `;
 export const AttackRowWrapper = styled.div`
   display: flex;
@@ -28,6 +28,14 @@ export const Count = styled.div`
   top: 0;
   right: 6px;
 `;
+export const EmptyCard = styled.div`
+  min-height: 75px;
+  max-height: 75px;
+  width: 50px;
+  border: solid 2px white;
+  border-radius: 3px;
+`;
+
 export const Message = styled.div`
   position: absolute;
   top: 0;

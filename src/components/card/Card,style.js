@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   min-height: 75px;
   max-height: 75px;
   width: 50px;
-  border: solid 1px ;
+  border: solid 0.5px black;
   border-radius: 3px;
   position: relative;
   margin: ${p => p.isTrump ? '0 0 10px' : '0'};

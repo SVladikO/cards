@@ -26,9 +26,11 @@ export const Wrapper = styled.div`
 export const Table = styled.div`
   margin: 0 20px;
 `;
+
 export const Trump = styled.div`
   font-size: 20px;  
 `;
+
 export const Count = styled.div`
   position: absolute;
   top: 0;
