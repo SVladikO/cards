@@ -6,9 +6,9 @@ export const Wrapper = styled.div`
   display: flex;
   align-items: end;
 
+  height: 76px;
   width: 480px;
   flex-wrap: wrap;
-  //height: 30px;
 
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -16,17 +16,9 @@ export const Wrapper = styled.div`
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently*/
 `;
-// export const Wrapper = styled.div``
-// export const Wrapper = styled.div``
 
-export const Count = styled.div`
+export const CardAbstractWrapper = styled.div`
   position: absolute;
   top: 0;
-  right: 6px;
-`;
-
-export const Owner = styled.div`
-  position: absolute;
-  top: 0;
-  left: 6px;
+  left: ${p => p.index * 38}px;
 `;
