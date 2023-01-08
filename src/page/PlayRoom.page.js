@@ -223,6 +223,7 @@ function App() {
                     handleTake={takeCards}
                     attackMessage={attackMessage}
                     walkMessage={walkMessage}
+                    isComputerAttack={isComputerAttack}
                 />
 
                 <Trump>Trump: {trump}</Trump>

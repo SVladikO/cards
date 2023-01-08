@@ -12,7 +12,7 @@ import {ReactComponent as DeleteIcon} from "../../delete.svg";
 import {ReactComponent as HandIcon} from "../../hand.svg";
 import Card from "../card";
 
-function Round({cards, handlePass, handleTake, walkMessage, attackMessage}) {
+function Round({cards, handlePass, handleTake, isComputerAttack, walkMessage, attackMessage}) {
     const attackCards = cards.filter((card, index) => index % 2 === 0);
     const defenceCards = cards.filter((card, index) => index % 2 === 1);
     return (
@@ -26,8 +26,8 @@ function Round({cards, handlePass, handleTake, walkMessage, attackMessage}) {
             <Count>{cards.length}</Count>
             <Title>Round cards</Title>
             <BottomPart>
-                <Button onClick={handlePass}>Pass <DeleteIcon/></Button>
-                <Button onClick={handleTake}>Take <HandIcon/></Button>
+                {!isComputerAttack && <Button onClick={handlePass}>Pass <DeleteIcon/></Button>}
+                {isComputerAttack && <Button onClick={handleTake}>Take <HandIcon/></Button>}
             </BottomPart>
             <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
         </Wrapper>
