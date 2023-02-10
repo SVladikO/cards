@@ -1,31 +1,29 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {initUserCards} from '../features/user_cards/userCardsSlice';
-import {initRoundCards, addCardToRound} from '../features/round_cards/roundCardsSlice';
+
+import {Wrapper, Table, Trump} from './PlayRoom.style';
+
 import {
     setIsComputerTurnAttack,
     setIsComputerTurnWalk,
     changeTurnAttack,
-    changeTurnWalk
-} from "../features/game_details/gameDetailsSlice";
+    changeTurnWalk,
+    setTrump,
+} from "../redux/gameDetailsSlice";
+import {useInterval} from '../hooks'
 
-import {findHigherCard, addCardsTo} from '../utils'
-import CardGroup from '../card_group';
+import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard} from '../utils'
 
 import {suits, data} from "../data";
-import {
-    USER_LOST_ROUND,
-    COMPUTER_LOST_ROUND,
-    MOVE_ROUND_TO_TRASH,
-    MESSAGE,
-} from '../constants'
+import {SituationTypes} from '../constants'
+import {StoreNames} from "../redux/type";
+import {Action} from '../redux/common_card_slice';
+import Round from "../components/round/Round";
+import CardGroup from '../components/card_group';
 
 import {UserCards} from "../features/user_cards/UserCards";
-import {RoundCards} from "../features/round_cards/RoundCards";
 import {ComputerCards} from "../features/computer_cards/ComputerCards";
-import {initComputerCards} from "../features/computer_cards/computerCardsSlice";
-
-const log = console.log;
+import Card from "../components/card";
 
 function initCards() {
     const result = [];
@@ -42,8 +40,15 @@ function initCards() {
 }
 
 const sort = cards => cards.sort((f, s) => f.level - s.level);
-const getTrump = () => suits.map(s => s.suit)[getRandomInt(4)];
-const sortCallback = (f, s) => f.level - s.level;
+
+const sortTrumpToEnd = (cards, trump) => {
+    const trumps = cards.filter(card => card.suit === trump)
+    const simpleCards = cards.filter(card => card.suit !== trump)
+    console.log(trumps.map(t => t.suit))
+    console.log(simpleCards.map(t => t.suit))
+
+    return [sort(simpleCards), sort(trumps)];
+}
 const getRandomInt = max => Math.floor(Math.random() * max);
 
 function turnOffWarningFrom(cards, setCards) {
@@ -52,39 +57,16 @@ function turnOffWarningFrom(cards, setCards) {
     }, 400)
 }
 
-
-function findHigherTrumpCard(cards, cardToCover, trump) {
-    return cards
-        ?.filter(card => card.suit === trump && !card.hide)
-        ?.sort(sortCallback)
-        ?.find(
-            card =>
-                (card.suit !== cardToCover.suit) ||
-                (card.suit === cardToCover.suit && card.level > cardToCover.level)
-        );
-}
-
-const getSuit = card => card.title + card.suit;
-
-let roundCards = [];
-let userCards = []
-
-let trump = getTrump();
-let coloda = initCards();
-let trash = []
-
 function App() {
+    const trump = useSelector(state => state.gameDetails.trump);
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
-    const computerCards = useSelector(state => state.computerCards.value);
+    const computerCards = useSelector(state => state[StoreNames.COMPUTER_CARDS].value);
+    const userCards = useSelector(state => state[StoreNames.USER_CARDS].value);
+    const roundCards = useSelector((state) => state[StoreNames.ROUND_CARDS].value);
+    const coloda = useSelector((state) => state[StoreNames.COLODA_CARDS].value);
+    const trash = useSelector((state) => state[StoreNames.TRASH_CARDS].value);
     const dispatch = useDispatch();
-
-    const addCardsToPlayer = (to) => {
-        const [_updatedCards, cutedColoda] = addCardsTo(to, coloda)
-        coloda = cutedColoda;
-
-        return _updatedCards;
-    }
 
     const [showMenu, setShowMenu] = useState(true);
     const [message, setMessage] = useState()
@@ -95,117 +77,186 @@ function App() {
 
         // Set which turn to attack
         const isComputerTurn = getRandomInt(2) === 0;
-        dispatch(setIsComputerTurnAttack(isComputerTurn));
-        dispatch(setIsComputerTurnWalk(isComputerTurn));
+        dispatch(setIsComputerTurnAttack(true)) //isComputerTurn));
+        dispatch(setIsComputerTurnWalk(true)) //isComputerTurn));
+        dispatch(setTrump(getFirsColodaCard().suit)) //isComputerTurn));
 
-        addCardsAfterRound()
-
+        //Init cards.
+        addCardsToPlayers(SituationTypes.START_GAME)
     }
 
+    const getFirsColodaCard = () => coloda.length && coloda[0];
+
     useEffect(() => {
-        const timer = window.setInterval(() => {
-            console.log('Opppa', isComputerAttack, isComputerWalk)
-            if (isComputerAttack && isComputerWalk) {
-                const cardToSend = computerCards[0];
-                manageCard(cardToSend)
-            }
-
-            // Attack
-            // Defence
-            if (!isComputerAttack && isComputerWalk) {
-                const cardToSend = computerCards[0];
-                manageCard(cardToSend)
-
-            }
-        }, 2000);
-
-
-        return () => {
-            window.clearInterval(timer);
-        };
+        dispatch(Action.Coloda.init(initCards()))
     }, [])
+
+    const addCardsToPlayers = status => {
+        let newCardsToUser = []
+        let newCardsToComputer = []
+        let cutedColoda = []
+
+        //We use this structure because we lost cards
+        switch (status) {
+            case SituationTypes.COMPUTER_LOST_ROUND:
+                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, coloda);
+                break;
+            case SituationTypes.USER_LOST_ROUND:
+                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, coloda);
+                break;
+            case SituationTypes.START_GAME:
+            case SituationTypes.MOVE_ROUND_TO_TRASH:
+                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, coloda);
+                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, cutedColoda)
+                break;
+        }
+
+        dispatch(Action.User.addCards(newCardsToUser))
+        dispatch(Action.Coloda.init(cutedColoda))
+        dispatch(Action.Computer.addCards(sort(newCardsToComputer)));
+    }
+
 
     function manageCard(cardToMove) {
         const filtered = computerCards.filter(card => card !== cardToMove)
 
-        dispatch(initComputerCards(filtered))
-        dispatch(addCardToRound(cardToMove))
+        dispatch(Action.Computer.init(filtered))
+        dispatch(Action.Round.addCard(cardToMove))
         dispatch(changeTurnWalk())
     }
 
 
-    function disableCardsHide(cards) {
-        return cards.map(c => ({...c, hide: false}))
-    }
-
-    function showEndGameMessage() {
-        const endColoda = coloda.length === 0;
-
-        if (!endColoda) {
-            return;
-        }
-
-        const endUserCards = userCards.filter(c => !c.hide).length === 0;
-        const endComputerCards = computerCards.filter(c => !c.hide).length === 0;
-
-        if (endComputerCards && endUserCards) {
-            return setMessage(MESSAGE.DRAW);
-        }
-
-        if (endComputerCards) {
-            return setMessage(MESSAGE.COMPUTER_WON)
-        }
-
-        if (endUserCards) {
-            return setMessage(MESSAGE.USER_WON)
-        }
-    }
-
     function moveRoundTo(status) {
         switch (status) {
-            case COMPUTER_LOST_ROUND:
-                dispatch(initComputerCards([...computerCards, ...roundCards]));
+            case SituationTypes.COMPUTER_LOST_ROUND:
+                dispatch(Action.Computer.addCards(roundCards));
+                // It gives possibility to user attack in the next round when computer lost current.
+                dispatch(changeTurnWalk())
                 break;
-            case USER_LOST_ROUND:
-                dispatch(initUserCards([...userCards, ...roundCards]));
+            case SituationTypes.USER_LOST_ROUND:
+                dispatch(Action.User.addCards(roundCards));
                 break;
-            case MOVE_ROUND_TO_TRASH:
-                trash = [...trash, ...roundCards];
+            case SituationTypes.MOVE_ROUND_TO_TRASH:
+                dispatch(Action.Trash.addCards(roundCards))
                 break;
         }
-    }
 
-    function addCardsAfterRound(status) {
-        dispatch(initRoundCards([]));
-        dispatch(initUserCards(sort(addCardsToPlayer(userCards))))
-        dispatch(initComputerCards(sort(addCardsToPlayer(computerCards))));
-        roundCards = [];
+        dispatch(Action.Round.init([]))
+        addCardsToPlayers(status)
     }
 
     function passRound() {
         if (roundCards.length % 2 === 0 && roundCards.length >= 2) {
-            moveRoundTo(MOVE_ROUND_TO_TRASH);
-            addCardsAfterRound()
+            moveRoundTo(SituationTypes.MOVE_ROUND_TO_TRASH);
+            dispatch(changeTurnAttack())
+            dispatch(changeTurnWalk())
         }
     }
 
+    function takeCards() {
+        if (!isComputerAttack) {
+            console.log('yOU CAN"T TAKE CARDS WHEN YOU ATTACK')
+            return;
+        }
+        moveRoundTo(SituationTypes.USER_LOST_ROUND)
+        dispatch(changeTurnWalk())
+    }
+
+    function computerAttack() {
+
+        if (!computerCards.length) {
+            return console.log('Computer cant attack without cards')
+        }
+
+        const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
+
+        // Start of attack
+        if (!roundCards.length) {
+            return manageCard(usualCards[0] || trumpCards[0]);
+        }
+
+        let cardCandidate = usualCards.find(card => canCardBeAddedToRound(roundCards, card))
+
+        if (!cardCandidate && (coloda.length < 4 || roundCards.length > 8)) {
+            cardCandidate = trumpCards.find(card => canCardBeAddedToRound(roundCards, card))
+        }
+
+        console.log('COMPUTER ATTACK. candidate', cardCandidate)
+        // If nothing to add computer will pass round
+        if (!cardCandidate || (cardCandidate.level > 10 &&  coloda.length < 10)) {
+            return passRound()
+        }
+
+        manageCard(cardCandidate)
+    }
+
+    function computerDefence() {
+        const cardToCover = getLastRoundCard(roundCards);
+
+        const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
+
+        let higherCard = findHigherCard(usualCards, cardToCover, trump);
+
+        if (!higherCard) {
+            higherCard = findHigherCard(trumpCards, cardToCover, trump);
+        }
+
+        if (!higherCard) {
+            return moveRoundTo(SituationTypes.COMPUTER_LOST_ROUND)
+        }
+
+        manageCard(higherCard)
+    }
+
+    useInterval(() => {
+        if (isComputerWalk) {
+            if (isComputerAttack) {
+                computerAttack()
+            } else {
+                console.log('Defence')
+                computerDefence()
+            }
+        }
+
+    }, 4000)
+
+    const attackMessage = isComputerAttack ? "Computer" : 'User';
+    const walkMessage = isComputerWalk ? "Computer" : 'User';
     return (
-        <div className="App">
-            {showMenu && <button onClick={startGame}>Start Game</button>}
-            <ComputerCards/>
-            {/*<CardGroup cards={computerCards}/>*/}
-            <CardGroup cards={coloda}/>
-            <CardGroup cards={trash}/>
-            {trump}
-            <RoundCards/>
-            {/*<Table cards={roundCards} handlePass={passRound}/>*/}
-            {isComputerAttack ? "CompAAA     " : 'UserAA    '}
-            {isComputerWalk ? "CompWWW   " : 'UserWWW  '}
-            <UserCards/>
-            {/*<CardGroup cards={userCards} handleClick={sendCard}/>*/}
-            <div>{message}</div>
-        </div>
+        <>
+            <Wrapper>
+                <Table>
+                    {showMenu && <button onClick={startGame}>Start Game</button>}
+                    <ComputerCards/>
+
+                    <Round
+                        cards={roundCards}
+                        handlePass={passRound}
+                        handleTake={takeCards}
+                        attackMessage={attackMessage}
+                        walkMessage={walkMessage}
+                        isComputerAttack={isComputerAttack}
+                        trumpCard={getFirsColodaCard()}
+                    />
+                    <UserCards/>
+                    <div>{message}</div>
+                </Table>
+
+
+            </Wrapper>
+            <div>
+
+                <div>ComputerCards: {computerCards.length}</div>
+                <div>UserCards: {userCards.length}</div>
+                <div>RoundCards: {roundCards.length}</div>
+                <div>TrashCards: {trash.length}</div>
+                <div>ColodaCards: {coloda.length}</div>
+                {/*<CardGroup ownerName='Trush' cards={trash}/>*/}
+                {/*<CardGroup ownerName='Coloda' cards={coloda}/>*/}
+            </div>
+        </>
     );
 }
 
 export default App;
+

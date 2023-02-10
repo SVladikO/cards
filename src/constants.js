@@ -9,9 +9,12 @@ export const CARD_STATUS = {
 export const maxRoundCards = 12;
 export const maxCardsPerRound = 6;
 
-export const USER_LOST_ROUND = "USER_LOST_ROUND";
-export const COMPUTER_LOST_ROUND = "COMPUTER_LOST_ROUND";
-export const MOVE_ROUND_TO_TRASH = "MOVE_ROUND_TO_TRASH";
+export const SituationTypes = {
+    USER_LOST_ROUND: "USER_LOST_ROUND",
+    COMPUTER_LOST_ROUND: "COMPUTER_LOST_ROUND",
+    MOVE_ROUND_TO_TRASH: "MOVE_ROUND_TO_TRASH",
+    START_GAME: "MOVE_ROUND_TO_TRASH",
+}
 export const MESSAGE = {
     USER_WON: 'User won.',
     COMPUTER_WON: 'Computer won!',
