@@ -9,16 +9,25 @@ export const  Wrapper = styled.div`
     border-radius: 5px;
     position: relative;
     padding: 10px 10px 10px;
-    margin: 10px 2px;
+    max-width: 400px;
+    margin: 0 auto;
 `;
 
+export const CardsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: self-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 260px;
+`;
 export const CardPairWrapper = styled.div`
     position: relative;
     width: 52px;
     height: 80px;
     display: flex;
     flex-wrap: wrap;
-    padding: 10px;
+    padding: 14px 32px 0 0;
   
     & > div:first-child {
 
@@ -26,41 +35,12 @@ export const CardPairWrapper = styled.div`
 
     & > div:last-child {
         position: absolute;
-        top: 10px;
-        left: 28px;
+        top: 12px;
+        left: 16px;
         transform: rotate(13deg);
     }
 `;
 
-export const AttackRowWrapper = styled.div`
-    display: flex;
-    width: 250px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-
-    & > div {
-        margin: 0 20px 0 0;
-    }
-`;
-
-
-export const DefenceRowWrapper = styled.div`
-    display: flex;
-    position: relative;
-    top: -15px;
-    left: 20px;
-
-    & > div {
-        margin: 0 20px 0 0;
-    }
-`;
-
-export const Count = styled.div`
-    position: absolute;
-    top: 0;
-    right: 6px;
-`;
 export const EmptyCard = styled.div`
   min-height: 75px;
   max-height: 75px;
@@ -70,15 +50,6 @@ export const EmptyCard = styled.div`
   box-sizing: border-box;
 `;
 
-export const CardsWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: self-start;
-    flex-direction: row;
-    flex-wrap: wrap;
-    max-width: 280px;
-    //justify-content: center;
-`;
 export const Message = styled.div`
     position: absolute;
     bottom: 0;
@@ -101,10 +72,6 @@ export const TrumpWrapper = styled.div`
     position: absolute;
     right: 0;
     bottom: 55px;
-    
-    //& > div:last-child {
-    //    background: red;
-    //}
 `;
 export const BottomPart = styled.div`
     position: absolute;

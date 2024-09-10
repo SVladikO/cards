@@ -23,6 +23,7 @@ import CardGroup from '../components/card-group/card-group';
 
 import {UserCards} from "../features/user-cards/user-cards";
 import {ComputerCards} from "../features/computer-cards/computer-cards";
+import {PrimaryButton} from "../components/button/button.style";
 
 function initCards() {
     const result = [];
@@ -223,10 +224,9 @@ function App() {
         <>
             <Wrapper className="play-room-page">
                 <Table className="table">
-                    {showMenu && <button onClick={startGame}>Start Game</button>}
-                    {!showMenu && <CardGroupsOwnerTitle>Computer cards</CardGroupsOwnerTitle>}
+                    {showMenu && <PrimaryButton onClick={startGame}>Start Game</PrimaryButton>}
+                    {!showMenu && <CardGroupsOwnerTitle>Computer</CardGroupsOwnerTitle>}
                     <ComputerCards/>
-
                     <Round
                         cards={roundCards}
                         handlePass={passRound}
@@ -245,10 +245,10 @@ function App() {
                                 !isComputerAttack &&
                                 !!roundCards.length &&
                                 roundCards.length % 2 === 0 && //computer should cover card before we let it go to trash
-                                <button onClick={passRound}>Відбій</button>
+                                <PrimaryButton onClick={passRound}>Відбій</PrimaryButton>
                             }
 
-                            {isComputerAttack && !!roundCards.length && <button onClick={takeCards}>Зняти</button>}
+                            {isComputerAttack && !!roundCards.length && <PrimaryButton onClick={takeCards}>Зняти</PrimaryButton>}
                         </div>
                     )}
                 </Table>
@@ -276,13 +276,13 @@ function ShowMessage({isComputerAttack, isComputerWalk}) {
     return (
         <div style={{height: '20px'}}>
             <div>
-                {isComputerAttack && !isComputerWalk && 'Бийся'}
+                {isComputerAttack && !isComputerWalk && 'Бийся, як лев!'}
             </div>
             <div>
-                {!isComputerAttack && !isComputerWalk && 'Ходи'}
+                {!isComputerAttack && !isComputerWalk && 'Ходи.'}
             </div>
             <div>
-                {isComputerAttack && isComputerWalk && 'Чекай'}
+                {isComputerAttack && isComputerWalk && 'Чекай, не спіши.'}
             </div>
         </div>
     )

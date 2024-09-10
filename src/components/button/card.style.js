@@ -29,16 +29,16 @@ export const SmallSuit = styled.div`
   width: 20px;
   display: flex;
   justify-content: center;
-  font-size: 16px;
+  font-size: 14px;
   position: absolute;
   left: 1px;
   top: 17px;
 `;
 export const BigSuit = styled.div`
   position: absolute;
-  right: 0;
+  right: 5px;
   bottom: 7px;
   
-  font-size: 40px;
+  font-size: 44px;
   line-height: 39px;
 `;

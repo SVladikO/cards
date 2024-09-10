@@ -23,7 +23,7 @@ function Round({cards, isComputerAttack, trumpCard, showMenu}) {
     }
 
     return (
-        <Wrapper className="round-inner-wrapper">
+        <Wrapper className="round-wrapper">
             {!showMenu && <TrumpWrapper className="trump">
                 <Card card={trumpCard}/>
                 {/*<EmptyCard/>*/}

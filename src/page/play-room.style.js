@@ -1,18 +1,14 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-    //border: solid 10px #106601e6;
     padding: 10px;
     width: 100vw;
     height: 100vh;
-    padding: 10px;
+    //padding: 10px;
 
     display: flex;
     flex-direction: column;
-
-    background: #389638;
-    border-radius: 20px;
-
+    
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Old versions of Firefox */
