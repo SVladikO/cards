@@ -54,14 +54,17 @@ function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walk
                 </CardsWrapper>
 
             </InnerWrapper>
-
-            <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
-            <BottomPart>
-                {!isComputerAttack && <DeleteIcon onClick={handlePass}/>}
-                {isComputerAttack && <HandIcon onClick={handleTake}/>}
-            </BottomPart>
+            {!showMenu && (
+                <>
+                    <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
+                    <BottomPart>
+                        {!isComputerAttack && <DeleteIcon onClick={handlePass}/>}
+                        {isComputerAttack && <HandIcon onClick={handleTake}/>}
+                    </BottomPart>
+                </>)}
         </Wrapper>
-    );
+    )
+        ;
 }
 
 export default Round;
