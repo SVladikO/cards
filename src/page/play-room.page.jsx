@@ -240,7 +240,7 @@ function App() {
                         />
                         <TableRight className={'table-right'}>
                             {!showMenu ? <Trump trumpCard={getFirsColodaCard()} cardCount={coloda.length}/> : <div/>}
-                            {trash.length ? <Trash amount={trash.length}/> : <div/>}
+                            {!showMenu ? <Trash amount={trash.length}/> : <div/>}
                         </TableRight>
 
                     </TableCenter>
