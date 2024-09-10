@@ -82,7 +82,7 @@ export const EmptyCard = styled.div`
 export const CardsWrapper = styled.div`
     //border: solid 3px red;
     display: flex;
-    gap: 10px;
+    //gap: 10px;
     flex-direction: column;
     align-items: self-start;
     flex-direction: row;
@@ -111,8 +111,8 @@ export const TrumpWrapper = styled.div`
     border: solid 1px red;
     width: 100px;
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: -40px;
+    bottom: -45px;
     
     & > div:last-child {
         //position: absolute;
