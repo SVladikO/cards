@@ -1,14 +1,18 @@
 import styled from "styled-components";
 
-export const Wrapper = styled.div`
+export const  Wrapper = styled.div`
+    position: relative;
+    padding: 0 0 40px 0;
+`;
+export const InnerWrapper = styled.div`
     display: flex;
     flex-wrap: inherit;
     flex-direction: column;
     border: solid 2px #106601e6;
-    height: 270px;
     border-radius: 5px;
     position: relative;
     padding: 10px 10px 10px;
+    margin: 10px 2px;
 `;
 
 export const CardPairWrapper = styled.div`
@@ -83,8 +87,8 @@ export const CardsWrapper = styled.div`
     align-items: self-start;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 274px;
-    height: 200px;
+    //width: 274px;
+    //height: 200px;
     justify-content: center;
 `;
 export const Message = styled.div`
@@ -102,13 +106,21 @@ export const Title = styled.div`
     left: 6px;
 `;
 export const TrumpWrapper = styled.div`
-    //position: absolute;
-    //top: 90px;
-    //right: 0;
     display: flex;
-    transform: rotate(81deg);
+    transform: rotate(-40deg);
     border: solid 1px red;
     width: 100px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    
+    & > div:last-child {
+        //position: absolute;
+        background: red;
+        //transform: rotate(-90deg);
+        //bottom: -30px;
+        //left: 0;
+    }
 `;
 export const BottomPart = styled.div`
     position: absolute;

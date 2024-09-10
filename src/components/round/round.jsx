@@ -1,5 +1,6 @@
 import {
     Wrapper,
+    InnerWrapper,
     Count,
     CardsWrapper,
     Title,
@@ -17,7 +18,7 @@ import {ReactComponent as HandIcon} from "../../hand.svg";
 import Card from "../card/card";
 import {maxCardsPerRound} from "../../constants";
 
-function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walkMessage, attackMessage}) {
+function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walkMessage, attackMessage, showMenu}) {
     const attackCards = cards.filter((card, index) => index % 2 === 0)
         .map(c => <Card key={c.title + c.suit} card={c}/>);
 
@@ -31,24 +32,28 @@ function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walk
     }
 
     return (
-        <Wrapper className="round">
-            {/*<TrumpWrapper className="trump">*/}
-            {/*    <Card card={trumpCard}/>*/}
-            {/*    <EmptyCard/>*/}
-            {/*</TrumpWrapper>*/}
-
-            <CardsWrapper className="card-wrapper" isComputerAttack={isComputerAttack}>
-                {/*<AttackRowWrapper className="attack-cards">{attackCards}</AttackRowWrapper>*/}
-                {/*<DefenceRowWrapper className="defence-cards">{defenceCards}</DefenceRowWrapper>*/}
-
-                {attackCards.map((attackCard, index) => (
-                    <CardPairWrapper className="card-pair-wrapper">
-                        <div>{attackCard}</div>
-                        <div>{defenceCards[index]}</div>
-                    </CardPairWrapper>
-                ))
+        <Wrapper className="round-wrapper">
+            <InnerWrapper className="round-inner-wrapper">
+                {!showMenu && <TrumpWrapper className="trump">
+                    <Card card={trumpCard}/>
+                    <EmptyCard/>
+                </TrumpWrapper>
                 }
-            </CardsWrapper>
+
+                <CardsWrapper className="card-wrapper" isComputerAttack={isComputerAttack}>
+                    {/*<AttackRowWrapper className="attack-cards">{attackCards}</AttackRowWrapper>*/}
+                    {/*<DefenceRowWrapper className="defence-cards">{defenceCards}</DefenceRowWrapper>*/}
+
+                    {attackCards.map((attackCard, index) => (
+                        <CardPairWrapper className="card-pair-wrapper">
+                            <div>{attackCard}</div>
+                            <div>{defenceCards[index]}</div>
+                        </CardPairWrapper>
+                    ))
+                    }
+                </CardsWrapper>
+
+            </InnerWrapper>
 
             <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
             <BottomPart>

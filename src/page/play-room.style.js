@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
   border: solid 10px #106601e6;
   position: relative;
-  height: 500px;
+  //height: 500px;
   padding: 10px;
 
   display: flex;
@@ -26,6 +26,11 @@ export const Table = styled.div`
   border-radius: 20px;
 `;
 
+export const CardGroupsOwnerTitle = styled.div`
+    font-size: 20px;
+    color: white;
+    padding: 10px 0 6px;
+    `;
 export const Trump = styled.div`
   font-size: 20px;
 `;

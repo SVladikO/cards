@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
-import {Wrapper, Table, Trump} from './play-room.style';
+import {Wrapper, Table, CardGroupsOwnerTitle} from './play-room.style';
 
 import {
     setIsComputerTurnAttack,
@@ -227,7 +227,7 @@ function App() {
             <Wrapper className="play-room-page">
                 <Table className="table">
                     {showMenu && <button onClick={startGame}>Start Game</button>}
-                    {!showMenu && <div>Computer cards</div>}
+                    {!showMenu && <CardGroupsOwnerTitle>Computer cards</CardGroupsOwnerTitle>}
                     <ComputerCards/>
 
                     <Round
@@ -238,8 +238,9 @@ function App() {
                         walkMessage={walkMessage}
                         isComputerAttack={isComputerAttack}
                         trumpCard={getFirsColodaCard()}
+                        showMenu={showMenu}
                     />
-                    {!showMenu && <div>User cards</div>}
+                    {!showMenu && <CardGroupsOwnerTitle>User cards</CardGroupsOwnerTitle>}
                     <UserCards/>
                 </Table>
 
