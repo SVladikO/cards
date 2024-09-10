@@ -16,14 +16,12 @@ export const InnerWrapper = styled.div`
 `;
 
 export const CardPairWrapper = styled.div`
-    //border: solid 2px orange;
     position: relative;
     width: 52px;
     height: 80px;
     display: flex;
     flex-wrap: wrap;
     padding: 10px;
-    //border: solid 2px red;
   
     & > div:first-child {
 
@@ -47,8 +45,6 @@ export const AttackRowWrapper = styled.div`
     & > div {
         margin: 0 20px 0 0;
     }
-
-    //border: solid 2px red;
 `;
 
 
@@ -57,8 +53,6 @@ export const DefenceRowWrapper = styled.div`
     position: relative;
     top: -15px;
     left: 20px;
-
-    //border: solid 2px orange;
 
     & > div {
         margin: 0 20px 0 0;
@@ -80,15 +74,12 @@ export const EmptyCard = styled.div`
 `;
 
 export const CardsWrapper = styled.div`
-    //border: solid 3px red;
     display: flex;
-    //gap: 10px;
     flex-direction: column;
     align-items: self-start;
     flex-direction: row;
     flex-wrap: wrap;
-    //width: 274px;
-    //height: 200px;
+    max-width: 280px;
     justify-content: center;
 `;
 export const Message = styled.div`
@@ -115,11 +106,7 @@ export const TrumpWrapper = styled.div`
     bottom: -45px;
     
     & > div:last-child {
-        //position: absolute;
         background: red;
-        //transform: rotate(-90deg);
-        //bottom: -30px;
-        //left: 0;
     }
 `;
 export const BottomPart = styled.div`
