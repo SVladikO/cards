@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
-import {Wrapper, Table, CardGroupsOwnerTitle} from './play-room.style';
+import {Wrapper, Table, TableCenter, TableRight, CardGroupsOwnerTitle} from './play-room.style';
 
 import {
     setIsComputerTurnAttack,
@@ -19,6 +19,8 @@ import {SituationTypes} from '../constants'
 import {StoreNames} from "../redux/type";
 import {Action} from '../redux/common_card_slice';
 import Round from "../components/round/round";
+import Trump from "../components/trump/trump";
+import Trash from "../components/trash/trash"
 import CardGroup from '../components/card-group/card-group';
 
 import {UserCards} from "../features/user-cards/user-cards";
@@ -227,16 +229,21 @@ function App() {
                     {showMenu && <PrimaryButton onClick={startGame}>Start Game</PrimaryButton>}
                     {!showMenu && <CardGroupsOwnerTitle>Computer</CardGroupsOwnerTitle>}
                     <ComputerCards/>
-                    <Round
-                        cards={roundCards}
-                        handlePass={passRound}
-                        handleTake={takeCards}
-                        attackMessage={attackMessage}
-                        walkMessage={walkMessage}
-                        isComputerAttack={isComputerAttack}
-                        trumpCard={getFirsColodaCard()}
-                        showMenu={showMenu}
-                    />
+                    <TableCenter className="table-center">
+                        <Round
+                            cards={roundCards}
+                            handlePass={passRound}
+                            handleTake={takeCards}
+                            attackMessage={attackMessage}
+                            walkMessage={walkMessage}
+                            isComputerAttack={isComputerAttack}
+                        />
+                        <TableRight className={'table-right'}>
+                            {!showMenu ? <Trump trumpCard={getFirsColodaCard()} cardCount={coloda.length}/> : <div/>}
+                            {trash.length ? <Trash amount={trash.length}/> : <div/>}
+                        </TableRight>
+
+                    </TableCenter>
                     {!showMenu && <ShowMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>}
                     <UserCards/>
                     {!showMenu && (
@@ -248,7 +255,8 @@ function App() {
                                 <PrimaryButton onClick={passRound}>Відбій</PrimaryButton>
                             }
 
-                            {isComputerAttack && !!roundCards.length && <PrimaryButton onClick={takeCards}>Зняти</PrimaryButton>}
+                            {isComputerAttack && !!roundCards.length &&
+                                <PrimaryButton onClick={takeCards}>Забрав</PrimaryButton>}
                         </div>
                     )}
                 </Table>
@@ -279,7 +287,7 @@ function ShowMessage({isComputerAttack, isComputerWalk}) {
                 {isComputerAttack && !isComputerWalk && 'Бийся, як лев!'}
             </div>
             <div>
-                {!isComputerAttack && !isComputerWalk && 'Ходи.'}
+                {!isComputerAttack && !isComputerWalk && 'Ваш хід.'}
             </div>
             <div>
                 {isComputerAttack && isComputerWalk && 'Чекай, не спіши.'}

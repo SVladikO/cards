@@ -2,14 +2,13 @@ import {
     Wrapper,
     CardsWrapper,
     CardPairWrapper,
-    TrumpWrapper,
-    EmptyCard,
 } from './round.style'
 
 import Card from "../card/card";
+import CardEmpty from "../card-empty/card-empty";
 import {maxCardsPerRound} from "../../constants";
 
-function Round({cards, isComputerAttack, trumpCard, showMenu}) {
+function Round({cards, isComputerAttack}) {
     const attackCards = cards.filter((card, index) => index % 2 === 0)
         .map(c => <Card key={c.title + c.suit} card={c}/>);
 
@@ -19,29 +18,20 @@ function Round({cards, isComputerAttack, trumpCard, showMenu}) {
     const emptyCards = maxCardsPerRound - attackCards.length;
 
     for (let i = 0; i < emptyCards; i++) {
-        attackCards.push(<EmptyCard/>)
+        attackCards.push(<CardEmpty/>)
     }
 
     return (
         <Wrapper className="round-wrapper">
-            {!showMenu && <TrumpWrapper className="trump">
-                <Card card={trumpCard}/>
-                {/*<EmptyCard/>*/}
-            </TrumpWrapper>
+            {attackCards.map((attackCard, index) => (
+                <CardPairWrapper className="card-pair-wrapper">
+                    <div>{attackCard}</div>
+                    <div>{defenceCards[index]}</div>
+                </CardPairWrapper>
+            ))
             }
-
-            <CardsWrapper className="card-wrapper" isComputerAttack={isComputerAttack}>
-                {attackCards.map((attackCard, index) => (
-                    <CardPairWrapper className="card-pair-wrapper">
-                        <div>{attackCard}</div>
-                        <div>{defenceCards[index]}</div>
-                    </CardPairWrapper>
-                ))
-                }
-            </CardsWrapper>
         </Wrapper>
     )
-        ;
 }
 
 export default Round;
