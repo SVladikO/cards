@@ -196,7 +196,6 @@ function App() {
         const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
 
         let higherCard = findHigherCard(usualCards, cardToCover, trump);
-debugger
         if (!higherCard) {
             higherCard = findHigherCard(trumpCards, cardToCover, trump);
         }
