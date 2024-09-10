@@ -23,7 +23,6 @@ import CardGroup from '../components/card-group/card-group';
 
 import {UserCards} from "../features/user-cards/user-cards";
 import {ComputerCards} from "../features/computer-cards/computer-cards";
-import Card from "../components/card/card";
 
 function initCards() {
     const result = [];
@@ -69,7 +68,6 @@ function App() {
     const dispatch = useDispatch();
 
     const [showMenu, setShowMenu] = useState(true);
-    const [message, setMessage] = useState()
 
     function startGame() {
         // TODO: ADD SPINNER FOR TURN
@@ -115,7 +113,6 @@ function App() {
         dispatch(Action.Coloda.init(cutedColoda))
         dispatch(Action.Computer.addCards(sort(newCardsToComputer)));
     }
-
 
     function manageCard(cardToMove) {
         const filtered = computerCards.filter(card => card !== cardToMove)
@@ -183,7 +180,7 @@ function App() {
 
         console.log('COMPUTER ATTACK. candidate', cardCandidate)
         // If nothing to add computer will pass round
-        if (!cardCandidate || (cardCandidate.level > 10 &&  coloda.length < 10)) {
+        if (!cardCandidate || (cardCandidate.level > 10 && coloda.length < 10)) {
             return passRound()
         }
 
@@ -217,11 +214,11 @@ function App() {
                 computerDefence()
             }
         }
-
     }, 4000)
 
     const attackMessage = isComputerAttack ? "Computer" : 'User';
     const walkMessage = isComputerWalk ? "Computer" : 'User';
+
     return (
         <>
             <Wrapper className="play-room-page">
@@ -240,24 +237,53 @@ function App() {
                         trumpCard={getFirsColodaCard()}
                         showMenu={showMenu}
                     />
-                    {!showMenu && <CardGroupsOwnerTitle>User cards</CardGroupsOwnerTitle>}
+                    {!showMenu && <ShowMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>}
                     <UserCards/>
+                    {!showMenu && (
+                        <div>
+                            {
+                                !isComputerAttack &&
+                                !!roundCards.length &&
+                                roundCards.length % 2 === 0 && //computer should cover card before we let it go to trash
+                                <button onClick={passRound}>Відбій</button>
+                            }
+
+                            {isComputerAttack && !!roundCards.length && <button onClick={takeCards}>Зняти</button>}
+                        </div>
+                    )}
                 </Table>
-
-
             </Wrapper>
             <div>
-
+                <div>Attack {attackMessage}/ Walk {walkMessage}</div>
                 <div>ComputerCards: {computerCards.length}</div>
                 <div>UserCards: {userCards.length}</div>
                 <div>RoundCards: {roundCards.length}</div>
                 <div>TrashCards: {trash.length}</div>
                 <div>ColodaCards: {coloda.length}</div>
-                {/*<CardGroup ownerName='Trush' cards={trash}/>*/}
-                {/*<CardGroup ownerName='Coloda' cards={coloda}/>*/}
+                <div>Trash</div>
+                <CardGroup ownerName='Trush' cards={trash}/>
+                <div>Coloda</div>
+                <CardGroup ownerName='Coloda' cards={coloda}/>
             </div>
         </>
     );
+}
+
+function ShowMessage({isComputerAttack, isComputerWalk}) {
+
+    return (
+        <div style={{height: '20px'}}>
+            <div>
+                {isComputerAttack && !isComputerWalk && 'Бийся'}
+            </div>
+            <div>
+                {!isComputerAttack && !isComputerWalk && 'Ходи'}
+            </div>
+            <div>
+                {isComputerAttack && isComputerWalk && 'Чекай'}
+            </div>
+        </div>
+    )
 }
 
 export default App;

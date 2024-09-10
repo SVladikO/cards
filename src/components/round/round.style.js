@@ -2,9 +2,6 @@ import styled from "styled-components";
 
 export const  Wrapper = styled.div`
     position: relative;
-    padding: 0 0 40px 0;
-`;
-export const InnerWrapper = styled.div`
     display: flex;
     flex-wrap: inherit;
     flex-direction: column;
@@ -80,7 +77,7 @@ export const CardsWrapper = styled.div`
     flex-direction: row;
     flex-wrap: wrap;
     max-width: 280px;
-    justify-content: center;
+    //justify-content: center;
 `;
 export const Message = styled.div`
     position: absolute;
@@ -98,16 +95,16 @@ export const Title = styled.div`
 `;
 export const TrumpWrapper = styled.div`
     display: flex;
-    transform: rotate(-40deg);
+    transform: rotate(0deg);
     border: solid 1px red;
-    width: 100px;
+    width: 50px;
     position: absolute;
-    right: -40px;
-    bottom: -45px;
+    right: 0;
+    bottom: 55px;
     
-    & > div:last-child {
-        background: red;
-    }
+    //& > div:last-child {
+    //    background: red;
+    //}
 `;
 export const BottomPart = styled.div`
     position: absolute;
