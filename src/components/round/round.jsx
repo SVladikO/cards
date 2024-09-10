@@ -5,15 +5,16 @@ import {
     Title,
     BottomPart,
     Button,
+    CardPairWrapper,
     AttackRowWrapper,
     DefenceRowWrapper,
     TrumpWrapper,
     Message,
     EmptyCard,
-} from './Round.style'
+} from './round.style'
 import {ReactComponent as DeleteIcon} from "../../delete.svg";
 import {ReactComponent as HandIcon} from "../../hand.svg";
-import Card from "../card";
+import Card from "../card/card";
 import {maxCardsPerRound} from "../../constants";
 
 function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walkMessage, attackMessage}) {
@@ -30,15 +31,25 @@ function Round({cards, handlePass, handleTake, isComputerAttack, trumpCard, walk
     }
 
     return (
-        <Wrapper>
-            <CardsWrapper isComputerAttack={isComputerAttack}>
-                <AttackRowWrapper>{attackCards}</AttackRowWrapper>
-                <DefenceRowWrapper>{defenceCards}</DefenceRowWrapper>
+        <Wrapper className="round">
+            {/*<TrumpWrapper className="trump">*/}
+            {/*    <Card card={trumpCard}/>*/}
+            {/*    <EmptyCard/>*/}
+            {/*</TrumpWrapper>*/}
+
+            <CardsWrapper className="card-wrapper" isComputerAttack={isComputerAttack}>
+                {/*<AttackRowWrapper className="attack-cards">{attackCards}</AttackRowWrapper>*/}
+                {/*<DefenceRowWrapper className="defence-cards">{defenceCards}</DefenceRowWrapper>*/}
+
+                {attackCards.map((attackCard, index) => (
+                    <CardPairWrapper className="card-pair-wrapper">
+                        <div>{attackCard}</div>
+                        <div>{defenceCards[index]}</div>
+                    </CardPairWrapper>
+                ))
+                }
             </CardsWrapper>
-            <TrumpWrapper>
-                <Card card={trumpCard}/>
-                <EmptyCard/>
-            </TrumpWrapper>
+
             <Message>Attack {attackMessage}/ Walk {walkMessage}</Message>
             <BottomPart>
                 {!isComputerAttack && <DeleteIcon onClick={handlePass}/>}

@@ -1,7 +1,7 @@
 import './App.css';
 import {Footer} from "./App.style";
 
-import PlayRoomPage from "./page/PlayRoom.page";
+import PlayRoomPage from "./page/play-room.page";
 
 function App() {
     return (

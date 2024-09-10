@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
-import {Wrapper, Table, Trump} from './PlayRoom.style';
+import {Wrapper, Table, Trump} from './play-room.style';
 
 import {
     setIsComputerTurnAttack,
@@ -18,12 +18,12 @@ import {suits, data} from "../data";
 import {SituationTypes} from '../constants'
 import {StoreNames} from "../redux/type";
 import {Action} from '../redux/common_card_slice';
-import Round from "../components/round/Round";
-import CardGroup from '../components/card_group';
+import Round from "../components/round/round";
+import CardGroup from '../components/card-group/card-group';
 
-import {UserCards} from "../features/user_cards/UserCards";
-import {ComputerCards} from "../features/computer_cards/ComputerCards";
-import Card from "../components/card";
+import {UserCards} from "../features/user-cards/user-cards";
+import {ComputerCards} from "../features/computer-cards/computer-cards";
+import Card from "../components/card/card";
 
 function initCards() {
     const result = [];
@@ -224,9 +224,10 @@ function App() {
     const walkMessage = isComputerWalk ? "Computer" : 'User';
     return (
         <>
-            <Wrapper>
-                <Table>
+            <Wrapper className="play-room-page">
+                <Table className="table">
                     {showMenu && <button onClick={startGame}>Start Game</button>}
+                    {!showMenu && <div>Computer cards</div>}
                     <ComputerCards/>
 
                     <Round
@@ -238,8 +239,8 @@ function App() {
                         isComputerAttack={isComputerAttack}
                         trumpCard={getFirsColodaCard()}
                     />
+                    {!showMenu && <div>User cards</div>}
                     <UserCards/>
-                    <div>{message}</div>
                 </Table>
 
 

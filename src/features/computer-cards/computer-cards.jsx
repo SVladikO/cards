@@ -1,6 +1,6 @@
 import React from "react";
 import {useSelector} from "react-redux";
-import CardGroup from "../../components/card_group";
+import CardGroup from "../../components/card-group/card-group";
 import {StoreNames} from "../../redux/type";
 
 export function ComputerCards() {

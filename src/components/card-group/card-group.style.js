@@ -7,7 +7,6 @@ export const Wrapper = styled.div`
   align-items: end;
 
   height: 76px;
-  width: 480px;
   flex-wrap: wrap;
 
   -webkit-touch-callout: none; /* iOS Safari */

@@ -1,6 +1,6 @@
-import {Wrapper, CardAbstractWrapper} from './CardGroup.style'
+import {Wrapper, CardAbstractWrapper} from './card-group.style'
 
-import Card from "../card";
+import Card from "../card/card";
 
 function CardGroup({
                        cards,
@@ -11,7 +11,7 @@ function CardGroup({
                    }) {
     console.log('Rerender CardGroup')
     return (
-        <Wrapper>
+        <Wrapper className="card-group">
             {cards.map((c, index) =>
                 <CardAbstractWrapper key={c.title + c.suit} index={index+1}>
                     <Card
