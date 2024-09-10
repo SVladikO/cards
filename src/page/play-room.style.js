@@ -1,25 +1,23 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-  border: solid 10px #106601e6;
-  position: relative;
-  //height: 500px;
-  padding: 10px;
+    //border: solid 10px #106601e6;
+    padding: 10px;
+    width: 100vw;
+    height: 100vh;
+    padding: 10px;
 
-  display: flex;
-  //flex-wrap: wrap;
-  //flex-direction: column;
-  //align-content: flex-start;
+    display: flex;
+    flex-direction: column;
 
-  background: #389638;
-  border-radius: 20px;
-  margin: 20px 0;
+    background: #389638;
+    border-radius: 20px;
 
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently*/
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently*/
 `;
 
 export const Table = styled.div`

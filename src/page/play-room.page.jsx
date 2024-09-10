@@ -252,19 +252,21 @@ function App() {
                         </div>
                     )}
                 </Table>
+
+                <div>
+                    <div>Attack {attackMessage}/ Walk {walkMessage}</div>
+                    <div>ComputerCards: {computerCards.length}</div>
+                    <div>UserCards: {userCards.length}</div>
+                    <div>RoundCards: {roundCards.length}</div>
+                    <div>TrashCards: {trash.length}</div>
+                    <div>ColodaCards: {coloda.length}</div>
+                    <div>Trash</div>
+                    <CardGroup ownerName='Trush' cards={trash}/>
+                    <div>Coloda</div>
+                    <CardGroup ownerName='Coloda' cards={coloda}/>
+                </div>
             </Wrapper>
-            <div>
-                <div>Attack {attackMessage}/ Walk {walkMessage}</div>
-                <div>ComputerCards: {computerCards.length}</div>
-                <div>UserCards: {userCards.length}</div>
-                <div>RoundCards: {roundCards.length}</div>
-                <div>TrashCards: {trash.length}</div>
-                <div>ColodaCards: {coloda.length}</div>
-                <div>Trash</div>
-                <CardGroup ownerName='Trush' cards={trash}/>
-                <div>Coloda</div>
-                <CardGroup ownerName='Coloda' cards={coloda}/>
-            </div>
+
         </>
     );
 }
