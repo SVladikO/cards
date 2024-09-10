@@ -165,7 +165,7 @@ function App() {
     function computerAttack() {
 
         if (!computerCards.length) {
-            return console.log('Computer cant attack without cards')
+            return console.log("Computer can't attack without cards")
         }
 
         const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
@@ -196,9 +196,14 @@ function App() {
         const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
 
         let higherCard = findHigherCard(usualCards, cardToCover, trump);
-
+debugger
         if (!higherCard) {
             higherCard = findHigherCard(trumpCards, cardToCover, trump);
+        }
+
+        //Cover usual card by trump.
+        if (!higherCard && trumpCards.length) {
+            higherCard = trumpCards[0]
         }
 
         if (!higherCard) {
