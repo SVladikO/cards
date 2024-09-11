@@ -10,8 +10,6 @@ function Card({
               }) {
     const emoji = decodeEmoji(card.emojiCode);
 
-    console.log(card);
-
     const smallSuit = useRef(null);
     const bigSuit = useRef(null);
 

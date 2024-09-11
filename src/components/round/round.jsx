@@ -1,6 +1,5 @@
 import {
     Wrapper,
-    CardsWrapper,
     CardPairWrapper,
 } from './round.style'
 
@@ -8,7 +7,7 @@ import Card from "../card/card";
 import CardEmpty from "../card-empty/card-empty";
 import {maxCardsPerRound} from "../../constants";
 
-function Round({cards, isComputerAttack}) {
+function Round({cards}) {
     const attackCards = cards.filter((card, index) => index % 2 === 0)
         .map(c => <Card key={c.title + c.suit} card={c}/>);
 

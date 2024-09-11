@@ -34,7 +34,7 @@ export const cardsData = [
 export const encodeEmoji = emoji => new TextEncoder().encode(emoji)
 export const decodeEmoji = emojiCode => new TextDecoder('utf8').decode(emojiCode)
 
-export const suitGroups = [
+export const suits = [
     [encodeEmoji('♥'),encodeEmoji('♦'),encodeEmoji('♣'),encodeEmoji('♠')],
     [encodeEmoji('♡'), encodeEmoji('♢'), encodeEmoji('♧'), encodeEmoji('♤')],
     [encodeEmoji('🍋'),encodeEmoji('🥝'),encodeEmoji('🍌'),encodeEmoji('🥥')],
@@ -46,9 +46,5 @@ export const suitGroups = [
     [encodeEmoji('🪼'), encodeEmoji('🐙'), encodeEmoji('🐡'), encodeEmoji('🦈')]
 ];
 //.map(el => el.split(''))
-
-console.log(55555555, {suitGroups} )
-
-
 // '🥕🍆🌽',
 

@@ -44,6 +44,6 @@ export const BigSuit = styled.div`
     right: 0;
     bottom: 7px;
 
-    font-size: 40px;
+    font-size: 32px;
     line-height: 39px;
 `;

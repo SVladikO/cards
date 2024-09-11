@@ -7,6 +7,9 @@ export const Wrapper = styled.div`
     flex-wrap: wrap;
     align-items: start;
     justify-content: center;
+    
+    ${p => p.isSelected 
+            ? 'background: #ffaf00' : ''};
 
     height: 76px;
 
@@ -18,5 +21,5 @@ export const Wrapper = styled.div`
 `;
 
 export const CardAbstractWrapper = styled.div`
-    width: 35px;
+    width: 45px;
 `;

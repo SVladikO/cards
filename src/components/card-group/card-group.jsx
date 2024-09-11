@@ -3,15 +3,15 @@ import {Wrapper, CardAbstractWrapper} from './card-group.style'
 import Card from "../card/card";
 
 function CardGroup({
+                       isSelected,
                        cards,
                        handleClick = () => {
                        },
                        ownerName,
                        trump
                    }) {
-    console.log('Rerender CardGroup')
     return (
-        <Wrapper className="card-group">
+        <Wrapper className="card-group" isSelected={isSelected}>
             {cards.map((c, index) =>
                 <CardAbstractWrapper key={c.title + c.suit} index={index+1}>
                     <Card

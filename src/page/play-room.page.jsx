@@ -25,7 +25,7 @@ import {useInterval} from '../hooks'
 
 import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard} from '../utils'
 
-import {generateSuits, cardsData, suitGroups} from "../utils/cards-data";
+import {generateSuits, cardsData, suits} from "../utils/cards-data";
 import {SituationTypes} from '../constants'
 import {StoreNames} from "../redux/type";
 import {Action} from '../redux/common_card_slice';
@@ -37,14 +37,14 @@ import CardGroup from '../components/card-group/card-group';
 import {UserCards} from "../features/user-cards/user-cards";
 import {ComputerCards} from "../features/computer-cards/computer-cards";
 import {PrimaryButton} from "../components/button/button.style";
+import GameMenu from "../components/menu/menu";
 
-function initCards() {
+function initCards(suitIndex) {
     const result = [];
-    const suits = generateSuits(suitGroups[2]);
-    console.log(1111111, {suits})
+    const cardSuits = generateSuits(suits[suitIndex]);
     cardsData.forEach(card =>
-        suits.forEach(suit =>
-            result.push({...card, ...suit})
+        cardSuits.forEach(cs =>
+            result.push({...card, ...cs})
         )
     )
 
@@ -58,11 +58,10 @@ const sort = cards => cards.sort((f, s) => f.level - s.level);
 const sortTrumpToEnd = (cards, trump) => {
     const trumps = cards.filter(card => card.suit === trump)
     const simpleCards = cards.filter(card => card.suit !== trump)
-    console.log(trumps.map(t => t.suit))
-    console.log(simpleCards.map(t => t.suit))
 
     return [sort(simpleCards), sort(trumps)];
 }
+
 const getRandomInt = max => Math.floor(Math.random() * max);
 
 function turnOffWarningFrom(cards, setCards) {
@@ -83,6 +82,7 @@ function App() {
     const dispatch = useDispatch();
 
     const [showMenu, setShowMenu] = useState(true);
+    const [selectedSuitIndex, setSelectedSuitIndex] = useState(0);
 
     function startGame() {
         // TODO: ADD SPINNER FOR TURN
@@ -99,10 +99,6 @@ function App() {
     }
 
     const getFirsColodaCard = () => coloda.length && coloda[0];
-
-    useEffect(() => {
-        dispatch(Action.Coloda.init(initCards()))
-    }, [])
 
     const addCardsToPlayers = status => {
         let newCardsToUser = []
@@ -167,7 +163,6 @@ function App() {
 
     function takeCards() {
         if (!isComputerAttack) {
-            console.log('yOU CAN"T TAKE CARDS WHEN YOU ATTACK')
             return;
         }
         moveRoundTo(SituationTypes.USER_LOST_ROUND)
@@ -177,7 +172,7 @@ function App() {
     function computerAttack() {
 
         if (!computerCards.length) {
-            return console.log("Computer can't attack without cards")
+            return
         }
 
         const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
@@ -193,7 +188,6 @@ function App() {
             cardCandidate = trumpCards.find(card => canCardBeAddedToRound(roundCards, card))
         }
 
-        console.log('COMPUTER ATTACK. candidate', cardCandidate)
         // If nothing to add computer will pass round
         if (!cardCandidate || (cardCandidate.level > 10 && coloda.length < 10)) {
             return passRound()
@@ -229,7 +223,6 @@ function App() {
             if (isComputerAttack) {
                 computerAttack()
             } else {
-                console.log('Defence')
                 computerDefence()
             }
         }
@@ -238,12 +231,24 @@ function App() {
     const attackMessage = isComputerAttack ? "Computer" : 'User';
     const walkMessage = isComputerWalk ? "Computer" : 'User';
 
+    function selectSuitGroup(index) {
+        dispatch(Action.Coloda.init(initCards(index)))
+        setSelectedSuitIndex(index);
+    }
+
+    if (showMenu) {
+        return <GameMenu
+            handleStartGame={startGame}
+            selectedSuitIndex={selectedSuitIndex}
+            handleSetSelectedSuit={selectSuitGroup}
+        />
+    }
+
     return (
         <>
             <Wrapper className="play-room-page">
                 <Table className="table">
-                    {showMenu && <PrimaryButton onClick={startGame}>Start Game</PrimaryButton>}
-                    {!showMenu && <CardGroupsOwnerTitle>Computer</CardGroupsOwnerTitle>}
+                    <CardGroupsOwnerTitle>Computer</CardGroupsOwnerTitle>
                     <ComputerCards/>
                     <TableCenter className="table-center">
                         <Round
@@ -260,9 +265,9 @@ function App() {
                         </TableRight>
 
                     </TableCenter>
-                    {!showMenu && <ShowMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>}
+                    <ShowMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
                     <UserCards/>
-                    {!showMenu && (
+
                         <div>
                             {
                                 !isComputerAttack &&
@@ -274,7 +279,7 @@ function App() {
                             {isComputerAttack && !!roundCards.length &&
                                 <PrimaryButton onClick={takeCards}>Забрав</PrimaryButton>}
                         </div>
-                    )}
+
                 </Table>
 
                 <div>
@@ -289,6 +294,7 @@ function App() {
                     <div>Coloda</div>
                     <CardGroup ownerName='Coloda' cards={coloda}/>
                 </div>
+
             </Wrapper>
 
         </>
