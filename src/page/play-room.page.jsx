@@ -1,5 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
+//🤭 🙂 🥳 🤓 🥰 коли знімаю я
+//коли я підкидаю
+//🤨🤔😬🧐 першу карту
+//🤕 😬 другу карту
+//😳 🫣 третю карту
+//😮 четверту карту
+//😱 пяту карту
+//🤯 шосту карту
+//коли чекає мій хід
+//🙂 🥱 😴коли довго думаю
+
 
 import {Wrapper, Table, TableCenter, TableRight, CardGroupsOwnerTitle} from './play-room.style';
 
@@ -14,7 +25,7 @@ import {useInterval} from '../hooks'
 
 import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard} from '../utils'
 
-import {suits, data} from "../data";
+import {generateSuits, cardsData, suitGroups} from "../utils/cards-data";
 import {SituationTypes} from '../constants'
 import {StoreNames} from "../redux/type";
 import {Action} from '../redux/common_card_slice';
@@ -29,14 +40,15 @@ import {PrimaryButton} from "../components/button/button.style";
 
 function initCards() {
     const result = [];
-
-    data.forEach(card =>
+    const suits = generateSuits(suitGroups[2]);
+    console.log(1111111, {suits})
+    cardsData.forEach(card =>
         suits.forEach(suit =>
             result.push({...card, ...suit})
         )
     )
 
-    // Mix data array
+    // Mix cardsData array
     result.sort(() => Math.random() - 0.5);
     return result;
 }

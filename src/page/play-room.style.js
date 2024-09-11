@@ -24,8 +24,9 @@ export const TableCenter = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 500px;
+    max-width: 450px;
     margin: 0 auto;
+    border: solid 2px #106601e6;
 `;
 export const TableRight = styled.div`
     display: flex;

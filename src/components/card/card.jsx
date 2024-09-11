@@ -1,7 +1,26 @@
+import {useRef, useEffect} from 'react';
+
 import {Wrapper, Title, SmallSuit, BigSuit} from "./card.style";
 
-function Card({card, isTrump, handleClick = () => {}}) {
+import {decodeEmoji} from '../../utils/cards-data';
+
+function Card({
+                  card, isTrump, handleClick = () => {
+    }
+              }) {
+    const emoji = decodeEmoji(card.emojiCode);
+
     console.log(card);
+
+    const smallSuit = useRef(null);
+    const bigSuit = useRef(null);
+
+    useEffect(() => {
+        smallSuit.textContent = emoji;
+        bigSuit.textContent = emoji;
+
+    }, [card])
+
     return (
         <Wrapper
             className='card'
@@ -11,8 +30,8 @@ function Card({card, isTrump, handleClick = () => {}}) {
             isTrump={isTrump}
         >
             <Title>{card.title}</Title>
-            <SmallSuit>{card.suit}</SmallSuit>
-            <BigSuit colorSuit={card.color}>{card.suit}</BigSuit>
+            <SmallSuit ref={smallSuit}>{emoji}</SmallSuit>
+            <BigSuit ref={bigSuit} colorSuit={card.color}>{emoji}</BigSuit>
         </Wrapper>
     );
 }
