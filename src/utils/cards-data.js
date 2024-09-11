@@ -35,15 +35,15 @@ export const encodeEmoji = emoji => new TextEncoder().encode(emoji)
 export const decodeEmoji = emojiCode => new TextDecoder('utf8').decode(emojiCode)
 
 export const suits = [
-    [encodeEmoji('♥'),encodeEmoji('♦'),encodeEmoji('♣'),encodeEmoji('♠')],
-    [encodeEmoji('♡'), encodeEmoji('♢'), encodeEmoji('♧'), encodeEmoji('♤')],
-    [encodeEmoji('🍋'),encodeEmoji('🥝'),encodeEmoji('🍌'),encodeEmoji('🥥')],
-    [encodeEmoji('🍊'), encodeEmoji('🍐'), encodeEmoji('🍇'), encodeEmoji('🍒')], //
-    [encodeEmoji('🍓'), encodeEmoji('🫐'), encodeEmoji('🍏'), encodeEmoji('🍎')],
-    [encodeEmoji('🌶️'), encodeEmoji('🫑'), encodeEmoji('🍅'), encodeEmoji('🥒')],
-    [encodeEmoji('🥓'), encodeEmoji('🧅'), encodeEmoji('🥔'), encodeEmoji('🍞')],
+    [encodeEmoji('♥'), encodeEmoji('♦'), encodeEmoji('♣'), encodeEmoji('♠')],
+    [encodeEmoji('🍓'), encodeEmoji('🍒'), encodeEmoji('🍐'), encodeEmoji('🍏')],
+    [ encodeEmoji('🌶️'), encodeEmoji('🍅'), encodeEmoji('🫑'), encodeEmoji('🥒')],
+    [encodeEmoji('🍋'), encodeEmoji('🥝'), encodeEmoji('🍑'), encodeEmoji('🥥')],
+    [encodeEmoji('🍊'), encodeEmoji('🫐'), encodeEmoji('🍇'), encodeEmoji('🍎')], //
+    [encodeEmoji('🌶️'), encodeEmoji('🫑'), encodeEmoji('🥬'), encodeEmoji('🥔')],
     [encodeEmoji('🍼'), encodeEmoji('🥃'), encodeEmoji('🍷'), encodeEmoji('🧃')],
-    [encodeEmoji('🪼'), encodeEmoji('🐙'), encodeEmoji('🐡'), encodeEmoji('🦈')]
+    [encodeEmoji('🪼'), encodeEmoji('🦀'), encodeEmoji('🐡'), encodeEmoji('🦈')],
+    [encodeEmoji('♡'), encodeEmoji('♢'), encodeEmoji('♧'), encodeEmoji('♤')],
 ];
 //.map(el => el.split(''))
 // '🥕🍆🌽',
