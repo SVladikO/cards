@@ -5,6 +5,7 @@ import {Wrapper, SuitWrapper} from './menu.style';
 import {cardsData, generateSuits, suits} from "../../utils/cards-data";
 import CardGroup from "../card-group/card-group";
 import {PrimaryButton} from "../button/button.style";
+import {GameName, GameDescription} from '../text/text.style';
 
 export default function GameMenu({handleStartGame, selectedSuitIndex, handleSetSelectedSuit}) {
     const card6 = cardsData[0]; // card 6
@@ -20,7 +21,12 @@ export default function GameMenu({handleStartGame, selectedSuitIndex, handleSetS
 
     return (
         <Wrapper>
-            <div>Обери масть</div>
+            <GameName>Дурень</GameName>
+            <GameDescription>Карткова гра онлайн.
+                <br />
+                Грайте різними мастями.</GameDescription>
+            <br/>
+            <br/>
             <SuitWrapper>
                 {cardGroups.map((cards, index) =>
                     <div key={index} onClick={() => handleSetSelectedSuit(index)}>

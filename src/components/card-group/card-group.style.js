@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
     justify-content: center;
     
     ${p => p.isSelected 
-            ? 'background: #ffaf00' : ''};
+            ? 'background: #4d6400;' : ''};
 
     height: 76px;
 
