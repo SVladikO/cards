@@ -7,10 +7,10 @@
 export function generateSuits(suitGroup) {
 
     return [
-        {background: 'white', color: 'black', suit: 1, emojiCode: suitGroup[0]},
-        {background: 'white', color: 'black', suit: 2, emojiCode: suitGroup[1]},
-        {background: 'white', color: 'black', suit: 3, emojiCode: suitGroup[2]},
-        {background: 'white', color: 'black', suit: 4, emojiCode: suitGroup[3]},
+        {background: 'white', color: 'black', suit: 'first', emojiCode: suitGroup[0]},
+        {background: 'white', color: 'black', suit: 'second', emojiCode: suitGroup[1]},
+        {background: 'white', color: 'black', suit: 'third', emojiCode: suitGroup[2]},
+        {background: 'white', color: 'black', suit: 'forth', emojiCode: suitGroup[3]},
     ];
 }
 
