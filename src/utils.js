@@ -14,7 +14,6 @@ export function findHigherCard(cardsInHand, cardToCover, trump) {
     );
 }
 
-
 const sortCallback = (f, s) => f.level - s.level;
 
 export const getTrumpCards = (cards, trump) => cards.filter(card => card.suit === trump);

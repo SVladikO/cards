@@ -23,7 +23,7 @@ import {
 } from "../redux/gameDetailsSlice";
 import {useInterval} from '../hooks'
 
-import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard} from '../utils'
+import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard, findHigherTrumpCard} from '../utils'
 
 import {generateSuits, cardsData, suits} from "../utils/cards-data";
 import {SituationTypes} from '../constants'
@@ -33,6 +33,7 @@ import Round from "../components/round/round";
 import Trump from "../components/trump/trump";
 import Trash from "../components/trash/trash"
 import CardGroup from '../components/card-group/card-group';
+import WalkMessage from '../components/walk-message/walk-message'
 
 import {UserCards} from "../features/user-cards/user-cards";
 import {ComputerCards} from "../features/computer-cards/computer-cards";
@@ -203,7 +204,7 @@ function App() {
 
         let higherCard = findHigherCard(usualCards, cardToCover, trump);
         if (!higherCard) {
-            higherCard = findHigherCard(trumpCards, cardToCover, trump);
+            higherCard = findHigherTrumpCard(trumpCards, cardToCover, trump);
         }
 
         //Cover usual card by trump.
@@ -255,8 +256,6 @@ function App() {
                             cards={roundCards}
                             handlePass={passRound}
                             handleTake={takeCards}
-                            attackMessage={attackMessage}
-                            walkMessage={walkMessage}
                             isComputerAttack={isComputerAttack}
                         />
                         <TableRight className={'table-right'}>
@@ -265,7 +264,7 @@ function App() {
                         </TableRight>
 
                     </TableCenter>
-                    <ShowMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
+                    <WalkMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
                     <UserCards/>
 
                         <div>
@@ -301,22 +300,6 @@ function App() {
     );
 }
 
-function ShowMessage({isComputerAttack, isComputerWalk}) {
-
-    return (
-        <div style={{height: '20px'}}>
-            <div>
-                {isComputerAttack && !isComputerWalk && 'Бийся, як лев!'}
-            </div>
-            <div>
-                {!isComputerAttack && !isComputerWalk && 'Ваш хід.'}
-            </div>
-            <div>
-                {isComputerAttack && isComputerWalk && 'Чекай, не спіши.'}
-            </div>
-        </div>
-    )
-}
 
 export default App;
 

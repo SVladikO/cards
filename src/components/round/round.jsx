@@ -23,7 +23,7 @@ function Round({cards}) {
     return (
         <Wrapper className="round-wrapper">
             {attackCards.map((attackCard, index) => (
-                <CardPairWrapper className="card-pair-wrapper">
+                <CardPairWrapper className="card-pair-wrapper" key={index}>
                     <div>{attackCard}</div>
                     <div>{defenceCards[index]}</div>
                 </CardPairWrapper>
