@@ -32,8 +32,8 @@ import {Action} from '../redux/common_card_slice';
 import Round from "../components/round/round";
 import Trump from "../components/trump/trump";
 import Trash from "../components/trash/trash"
-import CardGroup from '../components/card-group/card-group';
 import WalkMessage from '../components/walk-message/walk-message'
+import DevInfo from "../components/dev-info/dev-info";
 
 import {UserCards} from "../features/user-cards/user-cards";
 import {ComputerCards} from "../features/computer-cards/computer-cards";
@@ -134,7 +134,6 @@ function App() {
         dispatch(changeTurnWalk())
     }
 
-
     function moveRoundTo(status) {
         switch (status) {
             case SituationTypes.COMPUTER_LOST_ROUND:
@@ -229,9 +228,6 @@ function App() {
         }
     }, 4000)
 
-    const attackMessage = isComputerAttack ? "Computer" : 'User';
-    const walkMessage = isComputerWalk ? "Computer" : 'User';
-
     function selectSuitGroup(index) {
         dispatch(Action.Coloda.init(initCards(index)))
         setSelectedSuitIndex(index);
@@ -246,57 +242,49 @@ function App() {
     }
 
     return (
-        <>
-            <Wrapper className="play-room-page">
-                <Table className="table">
-                    <CardGroupsOwnerTitle>Computer</CardGroupsOwnerTitle>
-                    <ComputerCards/>
-                    <TableCenter className="table-center">
-                        <Round
-                            cards={roundCards}
-                            handlePass={passRound}
-                            handleTake={takeCards}
-                            isComputerAttack={isComputerAttack}
-                        />
-                        <TableRight className={'table-right'}>
-                            {!showMenu ? <Trump trumpCard={getFirsColodaCard()} cardCount={coloda.length}/> : <div/>}
-                            {!showMenu ? <Trash amount={trash.length}/> : <div/>}
-                        </TableRight>
+        <Wrapper className="play-room-page">
+            <Table className="table">
+                <CardGroupsOwnerTitle>Computer</CardGroupsOwnerTitle>
+                <ComputerCards/>
+                <TableCenter className="table-center">
+                    <Round
+                        cards={roundCards}
+                        handlePass={passRound}
+                        handleTake={takeCards}
+                        isComputerAttack={isComputerAttack}
+                    />
+                    <TableRight className={'table-right'}>
+                        {!showMenu ? <Trump trumpCard={getFirsColodaCard()} cardCount={coloda.length}/> : <div/>}
+                        {!showMenu ? <Trash amount={trash.length}/> : <div/>}
+                    </TableRight>
 
-                    </TableCenter>
-                    <WalkMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
-                    <UserCards/>
-
-                        <div>
-                            {
-                                !isComputerAttack &&
-                                !!roundCards.length &&
-                                roundCards.length % 2 === 0 && //computer should cover card before we let it go to trash
-                                <PrimaryButton onClick={passRound}>Відбій</PrimaryButton>
-                            }
-
-                            {isComputerAttack && !!roundCards.length &&
-                                <PrimaryButton onClick={takeCards}>Забрав</PrimaryButton>}
-                        </div>
-
-                </Table>
+                </TableCenter>
+                <WalkMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
+                <UserCards/>
 
                 <div>
-                    <div>Attack {attackMessage}/ Walk {walkMessage}</div>
-                    <div>ComputerCards: {computerCards.length}</div>
-                    <div>UserCards: {userCards.length}</div>
-                    <div>RoundCards: {roundCards.length}</div>
-                    <div>TrashCards: {trash.length}</div>
-                    <div>ColodaCards: {coloda.length}</div>
-                    <div>Trash</div>
-                    <CardGroup ownerName='Trush' cards={trash}/>
-                    <div>Coloda</div>
-                    <CardGroup ownerName='Coloda' cards={coloda}/>
+                    {
+                        !isComputerAttack &&
+                        !!roundCards.length &&
+                        roundCards.length % 2 === 0 && //computer should cover card before we let it go to trash
+                        <PrimaryButton onClick={passRound}>Відбій</PrimaryButton>
+                    }
+
+                    {isComputerAttack && !!roundCards.length &&
+                        <PrimaryButton onClick={takeCards}>Забрав</PrimaryButton>}
                 </div>
 
-            </Wrapper>
-
-        </>
+            </Table>
+            <DevInfo
+                isComputerAttack={isComputerAttack}
+                isComputerWalk={isComputerWalk}
+                trash={trash}
+                coloda={coloda}
+                roundCards={roundCards}
+                userCards={userCards}
+                computerCards={computerCards}
+            />
+        </Wrapper>
     );
 }
 
