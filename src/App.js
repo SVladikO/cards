@@ -1,12 +1,14 @@
 import './App.css';
-import {Footer} from "./App.style";
+import {PAGE_ROUTES} from './route.config';
+import {createBrowserRouter, RouterProvider, } from "react-router-dom";
 
-import PlayRoomPage from "./page/play-room.page";
+const router = createBrowserRouter(PAGE_ROUTES);
 
 function App() {
     return (
         <div className="App">
-            <PlayRoomPage />
+
+            <RouterProvider router={router}/>
         </div>
     );
 }

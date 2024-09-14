@@ -1,13 +1,13 @@
 import React from "react";
 
-import {Wrapper, SuitWrapper} from './menu.style';
+import {Wrapper, SuitWrapper} from './menu.page.style';
 
 import {cardsData, generateSuits, suits} from "../../utils/cards-data";
-import CardGroup from "../card-group/card-group";
-import {PrimaryButton} from "../button/button.style";
-import {GameName, GameDescription} from '../text/text.style';
+import CardGroup from "../../components/card-group/card-group";
+import {PrimaryButton} from "../../components/button/button.style";
+import {GameName, GameDescription} from '../../components/text/text.style';
 
-export default function GameMenu({handleStartGame, selectedSuitIndex, handleSetSelectedSuit}) {
+export default function DurakMenu({handleStartGame, selectedSuitIndex, handleSetSelectedSuit}) {
     const card6 = cardsData[0]; // card 6
 
     const suitGroups = suits.map(sg => generateSuits(sg))

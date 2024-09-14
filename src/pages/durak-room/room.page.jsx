@@ -11,8 +11,7 @@ import {useDispatch, useSelector} from "react-redux";
 //коли чекає мій хід
 //🙂 🥱 😴коли довго думаю
 
-
-import {Wrapper, Table, TableCenter, TableRight, CardGroupsOwnerTitle} from './play-room.style';
+import {Wrapper, Table, TableCenter, TableRight, CardGroupsOwnerTitle} from './room.style';
 
 import {
     setIsComputerTurnAttack,
@@ -20,25 +19,24 @@ import {
     changeTurnAttack,
     changeTurnWalk,
     setTrump,
-} from "../redux/gameDetailsSlice";
-import {useInterval} from '../hooks'
+} from "../../redux/gameDetailsSlice";
+import {useInterval} from '../../hooks'
 
-import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard, findHigherTrumpCard} from '../utils'
+import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard, findHigherTrumpCard} from '../../utils'
 
-import {generateSuits, cardsData, suits} from "../utils/cards-data";
-import {SituationTypes} from '../constants'
-import {StoreNames} from "../redux/type";
-import {Action} from '../redux/common_card_slice';
-import Round from "../components/round/round";
-import Trump from "../components/trump/trump";
-import Trash from "../components/trash/trash"
-import WalkMessage from '../components/walk-message/walk-message'
-import DevInfo from "../components/dev-info/dev-info";
+import {generateSuits, cardsData, suits} from "../../utils/cards-data";
+import {SituationTypes} from '../../constants'
+import {StoreNames} from "../../redux/type";
+import {Action} from '../../redux/common_card_slice';
+import Round from "../../components/round/round";
+import Trump from "../../components/trump/trump";
+import Trash from "../../components/trash/trash"
+import WalkMessage from '../../components/walk-message/walk-message'
+import DevInfo from "../../components/dev-info/dev-info";
 
-import {UserCards} from "../features/user-cards/user-cards";
-import {PrimaryButton} from "../components/button/button.style";
-import GameMenu from "../components/menu/menu";
-import CardGroup from '../components/card-group/card-group'
+import {UserCards} from "../../features/user-cards/user-cards";
+import {PrimaryButton} from "../../components/button/button.style";
+import CardGroup from '../../components/card-group/card-group'
 
 function initCards(suitIndex) {
     const result = [];
@@ -219,6 +217,14 @@ function App() {
     }
 
     useInterval(() => {
+        if (!coloda.length && userCards.length) {
+            return alert('User won')
+        }
+
+        if (!coloda.length && computerCards.length) {
+            return alert('Computer won')
+        }
+
         if (isComputerWalk) {
             if (isComputerAttack) {
                 computerAttack()
@@ -233,13 +239,13 @@ function App() {
         setSelectedSuitIndex(index);
     }
 
-    if (showMenu) {
-        return <GameMenu
-            handleStartGame={startGame}
-            selectedSuitIndex={selectedSuitIndex}
-            handleSetSelectedSuit={selectSuitGroup}
-        />
-    }
+    // if (showMenu) {
+    //     return <GameMenu
+    //         handleStartGame={startGame}
+    //         selectedSuitIndex={selectedSuitIndex}
+    //         handleSetSelectedSuit={selectSuitGroup}
+    //     />
+    // }
 
     //For dev porpose we need some dev instruments to test some cases
     function handleDeleteComputerCard(index) {
