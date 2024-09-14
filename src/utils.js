@@ -42,21 +42,21 @@ export const getLastRoundCard = roundCards => roundCards[roundCards.length - 1];
 /**
  * Calculate how many cards can be added to player.
  *
- * @param to
- * @param from
+ * @param toCards Computer or user cards
+ * @param fromCards coloda only
  * @return {[[cardsToAdd], [cutedColoda]]}
  */
-export function prepareCardsTo(to, from) {
-    if (to.length >= maxCardsPerRound || from.length === 0) {
-        return [[], from];
+export function prepareCardsTo(toCards, fromCards) {
+    if (toCards.length >= maxCardsPerRound || fromCards.length === 0) {
+        return [[], fromCards];
     }
 
     let result = [];
-    let canBeAdded = maxCardsPerRound - to.length;
+    let canBeAdded = maxCardsPerRound - toCards.length;
 
     if (canBeAdded > 0) {
-        result = from.slice(-canBeAdded)
+        result = fromCards.slice(-canBeAdded)
     }
 
-    return [result, from.slice(0, from.length - canBeAdded)];
+    return [result, fromCards.slice(0, fromCards.length - canBeAdded)];
 }

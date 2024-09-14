@@ -36,9 +36,9 @@ import WalkMessage from '../components/walk-message/walk-message'
 import DevInfo from "../components/dev-info/dev-info";
 
 import {UserCards} from "../features/user-cards/user-cards";
-import {ComputerCards} from "../features/computer-cards/computer-cards";
 import {PrimaryButton} from "../components/button/button.style";
 import GameMenu from "../components/menu/menu";
+import CardGroup from '../components/card-group/card-group'
 
 function initCards(suitIndex) {
     const result = [];
@@ -121,7 +121,7 @@ function App() {
                 break;
         }
 
-        dispatch(Action.User.addCards(newCardsToUser))
+        dispatch(Action.User.addCards(sort(newCardsToUser)))
         dispatch(Action.Coloda.init(cutedColoda))
         dispatch(Action.Computer.addCards(sort(newCardsToComputer)));
     }
@@ -241,11 +241,21 @@ function App() {
         />
     }
 
+    //For dev porpose we need some dev instruments to test some cases
+    function handleDeleteComputerCard(index) {
+        const filteredComputerCards = computerCards.filter((c, i) => i !== index);
+        const excludedCard = computerCards.find((c, i) => i === index);
+        dispatch(Action.Computer.init(sort(filteredComputerCards)));
+        dispatch(Action.Coloda.addCard(excludedCard));
+    }
+
     return (
         <Wrapper className="play-room-page">
             <Table className="table">
+
                 <CardGroupsOwnerTitle>Computer</CardGroupsOwnerTitle>
-                <ComputerCards/>
+                <CardGroup cards={computerCards} handleDeleteComputerCard={handleDeleteComputerCard}/>
+
                 <TableCenter className="table-center">
                     <Round
                         cards={roundCards}
@@ -261,7 +271,6 @@ function App() {
                 </TableCenter>
                 <WalkMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
                 <UserCards/>
-
                 <div>
                     {
                         !isComputerAttack &&

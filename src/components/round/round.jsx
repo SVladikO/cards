@@ -8,10 +8,12 @@ import CardEmpty from "../card-empty/card-empty";
 import {maxCardsPerRound} from "../../constants";
 
 function Round({cards}) {
-    const attackCards = cards.filter((card, index) => index % 2 === 0)
+    const attackCards = cards
+        .filter((card, index) => index % 2 === 0)
         .map(c => <Card key={c.title + c.suit} card={c}/>);
 
-    const defenceCards = cards.filter((card, index) => index % 2 === 1)
+    const defenceCards = cards
+        .filter((card, index) => index % 2 === 1)
         .map(c => <Card key={c.title + c.suit} card={c}/>);
 
     const emptyCards = maxCardsPerRound - attackCards.length;

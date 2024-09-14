@@ -5,15 +5,17 @@ import Card from "../card/card";
 function CardGroup({
                        isSelected,
                        cards,
-                       handleClick = () => {
-                       },
-                       ownerName,
-                       trump
+                       handleClick = () => {},
+                       trump,
+                       handleDeleteComputerCard,
+                       handleAddCardToComputer,
                    }) {
     return (
         <Wrapper className="card-group" isSelected={isSelected}>
             {cards.map((c, index) =>
-                <CardAbstractWrapper key={c.title + c.suit} index={index+1}>
+                <CardAbstractWrapper key={c.title + c.suit} index={index + 1}>
+                    {handleDeleteComputerCard && <button onClick={() => handleDeleteComputerCard(index)}>-</button>}
+                    {handleAddCardToComputer && <button onClick={() => handleAddCardToComputer(index)}>+</button>}
                     <Card
                         card={c}
                         handleClick={handleClick(c)}
