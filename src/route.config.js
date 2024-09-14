@@ -1,6 +1,9 @@
 import MainMenuPage from "./pages/main-menu/main-menu.page";
+
 import DurakMenuPage from "./pages/durak-menu/menu.page";
 import DurakRoomPage from "./pages/durak-room/room.page";
+
+import PockerMenuPage from './pages/pocker-menu/pocker.page';
 
 export const ROUTE_LINK = {
     MAIN_PAGE: '/',
@@ -36,17 +39,17 @@ export const PAGE_ROUTES = [
         element: <div>durak-end-game!</div>,
     },
     //Durak pages end
-
+    {
+        showInMainMenu: true,
+        name: 'Покер',
+        path: ROUTE_LINK.POCKER_MAIN_PAGE,
+        element: <PockerMenuPage />,
+    },
     {
         showInMainMenu: true,
         name: 'Пасянс',
         path: ROUTE_LINK.PASIANS_MAIN_PAGE,
         element: <div>Pasians page!</div>,
     },
-    {
-        showInMainMenu: true,
-        name: 'Покер',
-        path: ROUTE_LINK.POCKER_MAIN_PAGE,
-        element: <div>Poker page!</div>,
-    },
+
 ];

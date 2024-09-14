@@ -38,7 +38,7 @@ import {UserCards} from "../../features/user-cards/user-cards";
 import {PrimaryButton} from "../../components/button/button.style";
 import CardGroup from '../../components/card-group/card-group'
 
-function initCards(suitIndex) {
+function prepareCards(suitIndex) {
     const result = [];
     const cardSuits = generateSuits(suits[suitIndex]);
     cardsData.forEach(card =>
@@ -73,31 +73,41 @@ function App() {
     const trump = useSelector(state => state.gameDetails.trump);
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
+
     const computerCards = useSelector(state => state[StoreNames.COMPUTER_CARDS].value);
     const userCards = useSelector(state => state[StoreNames.USER_CARDS].value);
     const roundCards = useSelector((state) => state[StoreNames.ROUND_CARDS].value);
-    const coloda = useSelector((state) => state[StoreNames.COLODA_CARDS].value);
-    const trash = useSelector((state) => state[StoreNames.TRASH_CARDS].value);
+    const colodaCards = useSelector((state) => state[StoreNames.COLODA_CARDS].value);
+    const trashCards = useSelector((state) => state[StoreNames.TRASH_CARDS].value);
     const dispatch = useDispatch();
 
-    const [showMenu, setShowMenu] = useState(true);
-    const [selectedSuitIndex, setSelectedSuitIndex] = useState(0);
+    useEffect(() => {
+        dispatch(Action.Coloda.init(prepareCards(0)))
+        console.log('init cards')
+    }, [])
+
+    useEffect(() => {
+        if (!colodaCards.length) {
+            return
+        }
+        console.log('startGame(')
+        startGame()
+    }, [colodaCards])
 
     function startGame() {
-        // TODO: ADD SPINNER FOR TURN
-        setShowMenu(false);
+
 
         // Set which turn to attack
         const isComputerTurn = getRandomInt(2) === 0;
-        dispatch(setIsComputerTurnAttack(true)) //isComputerTurn));
-        dispatch(setIsComputerTurnWalk(true)) //isComputerTurn));
+        dispatch(setIsComputerTurnAttack(isComputerTurn));
+        dispatch(setIsComputerTurnWalk(isComputerTurn));
         dispatch(setTrump(getFirsColodaCard().suit)) //isComputerTurn));
 
         //Init cards.
         addCardsToPlayers(SituationTypes.START_GAME)
     }
 
-    const getFirsColodaCard = () => coloda.length && coloda[0];
+    const getFirsColodaCard = () => colodaCards.length && colodaCards[0];
 
     const addCardsToPlayers = status => {
         let newCardsToUser = []
@@ -107,14 +117,14 @@ function App() {
         //We use this structure because we lost cards
         switch (status) {
             case SituationTypes.COMPUTER_LOST_ROUND:
-                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, coloda);
+                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, colodaCards);
                 break;
             case SituationTypes.USER_LOST_ROUND:
-                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, coloda);
+                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, colodaCards);
                 break;
             case SituationTypes.START_GAME:
             case SituationTypes.MOVE_ROUND_TO_TRASH:
-                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, coloda);
+                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, colodaCards);
                 [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, cutedColoda)
                 break;
         }
@@ -182,12 +192,12 @@ function App() {
 
         let cardCandidate = usualCards.find(card => canCardBeAddedToRound(roundCards, card))
 
-        if (!cardCandidate && (coloda.length < 4 || roundCards.length > 8)) {
+        if (!cardCandidate && (colodaCards.length < 4 || roundCards.length > 8)) {
             cardCandidate = trumpCards.find(card => canCardBeAddedToRound(roundCards, card))
         }
 
         // If nothing to add computer will pass round
-        if (!cardCandidate || (cardCandidate.level > 10 && coloda.length < 10)) {
+        if (!cardCandidate || (cardCandidate.level > 10 && colodaCards.length < 10)) {
             return passRound()
         }
 
@@ -217,11 +227,12 @@ function App() {
     }
 
     useInterval(() => {
-        if (!coloda.length && userCards.length) {
+        console.log('useInterval')
+        if (!colodaCards.length && userCards.length) {
             return alert('User won')
         }
 
-        if (!coloda.length && computerCards.length) {
+        if (!colodaCards.length && computerCards.length) {
             return alert('Computer won')
         }
 
@@ -234,19 +245,6 @@ function App() {
         }
     }, 4000)
 
-    function selectSuitGroup(index) {
-        dispatch(Action.Coloda.init(initCards(index)))
-        setSelectedSuitIndex(index);
-    }
-
-    // if (showMenu) {
-    //     return <GameMenu
-    //         handleStartGame={startGame}
-    //         selectedSuitIndex={selectedSuitIndex}
-    //         handleSetSelectedSuit={selectSuitGroup}
-    //     />
-    // }
-
     //For dev porpose we need some dev instruments to test some cases
     function handleDeleteComputerCard(index) {
         const filteredComputerCards = computerCards.filter((c, i) => i !== index);
@@ -254,6 +252,17 @@ function App() {
         dispatch(Action.Computer.init(sort(filteredComputerCards)));
         dispatch(Action.Coloda.addCard(excludedCard));
     }
+
+    console.log(11111, {
+        trump,
+        isComputerAttack,
+        isComputerWalk,
+        computerCards,
+        userCards,
+        roundCards,
+        colodaCards,
+        trashCards
+    })
 
     return (
         <Wrapper className="play-room-page">
@@ -270,10 +279,9 @@ function App() {
                         isComputerAttack={isComputerAttack}
                     />
                     <TableRight className={'table-right'}>
-                        {!showMenu ? <Trump trumpCard={getFirsColodaCard()} cardCount={coloda.length}/> : <div/>}
-                        {!showMenu ? <Trash amount={trash.length}/> : <div/>}
+                        <Trump trumpCard={getFirsColodaCard()} cardCount={colodaCards.length}/>
+                        <Trash amount={trashCards.length}/>
                     </TableRight>
-
                 </TableCenter>
                 <WalkMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
                 <UserCards/>
@@ -293,8 +301,8 @@ function App() {
             <DevInfo
                 isComputerAttack={isComputerAttack}
                 isComputerWalk={isComputerWalk}
-                trash={trash}
-                coloda={coloda}
+                trash={trashCards}
+                coloda={colodaCards}
                 roundCards={roundCards}
                 userCards={userCards}
                 computerCards={computerCards}

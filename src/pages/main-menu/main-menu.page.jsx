@@ -1,16 +1,25 @@
-import {Wrapper} from "./main-menu.page.style";
+import {Wrapper, MenuWrapper, SuitWrapper} from "./main-menu.page.style";
 
 import {PAGE_ROUTES} from '../../route.config';
+
 import GameName from "../../components/game-name/game-name";
+import CardGroup from "../../components/card-group/card-group";
+import {GameDescription} from '../../components/text/text.style';
+
+import {cardsData, generateSuits, suits} from "../../utils/cards-data";
 
 export default function MainMenuPage() {
     return (
         <Wrapper>
-            {
-                PAGE_ROUTES
-                    .filter(g => g.showInMainMenu)
-                    .map(game => <GameName key={game.path} {...game} />)
-            }
+            <GameDescription>Список доступних ігор</GameDescription>
+            <MenuWrapper>
+                {
+                    PAGE_ROUTES
+                        .filter(g => g.showInMainMenu)
+                        .map(game => <GameName key={game.path} {...game} />)
+                }
+            </MenuWrapper>
         </Wrapper>
     )
 }
+

@@ -9,7 +9,7 @@ export default function WalkMessage({isComputerAttack, isComputerWalk}) {
                 {!isComputerAttack && !isComputerWalk && 'Ваш хід.'}
             </div>
             <div>
-                {isComputerAttack && isComputerWalk && 'Чекай, не спіши.'}
+                {isComputerAttack && isComputerWalk && 'Ходить компютер.'}
             </div>
         </div>
     )
