@@ -16,5 +16,10 @@ export const GameDescription = styled.div`
     height: 30px;
     color: black;
 `;
-export const MessageInstruction = styled.div``;
+export const WalkMessage = styled.div`
+    font-size: 24px;
+    padding: 10px;
+    height: 30px;
+    color: black;
+`;
 

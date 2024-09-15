@@ -31,15 +31,8 @@ export const TableCenter = styled.div`
 export const TableRight = styled.div`
     display: flex;
     flex-direction: column;
-    //justify-content: space-between;
-
 `;
 
-export const CardGroupsOwnerTitle = styled.div`
-    font-size: 20px;
-    color: white;
-    padding: 10px 0 6px;
-`;
 export const Trump = styled.div`
     font-size: 20px;
 `;

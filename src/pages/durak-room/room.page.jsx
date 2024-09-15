@@ -1,17 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-//🤭 🙂 🥳 🤓 🥰 коли знімаю я
-//коли я підкидаю
-//🤨🤔😬🧐 першу карту
-//🤕 😬 другу карту
-//😳 🫣 третю карту
-//😮 четверту карту
-//😱 пяту карту
-//🤯 шосту карту
-//коли чекає мій хід
-//🙂 🥱 😴коли довго думаю
 
-import {Wrapper, Table, TableCenter, TableRight, CardGroupsOwnerTitle} from './room.style';
+
+import {Wrapper, Table, TableCenter, TableRight} from './room.style';
 
 import {
     setIsComputerTurnAttack,
@@ -20,23 +11,24 @@ import {
     changeTurnWalk,
     setTrump,
 } from "../../redux/gameDetailsSlice";
+import {UserCards} from "../../features/user-cards/user-cards";
 import {useInterval} from '../../hooks'
 
+import {generateSuits, cardsData, suits} from "../../utils/cards-data";
 import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard, findHigherTrumpCard} from '../../utils'
 
-import {generateSuits, cardsData, suits} from "../../utils/cards-data";
-import {SituationTypes} from '../../constants'
 import {StoreNames} from "../../redux/type";
 import {Action} from '../../redux/common_card_slice';
+
+import {SituationTypes} from '../../constants'
 import Round from "../../components/round/round";
 import Trump from "../../components/trump/trump";
 import Trash from "../../components/trash/trash"
-import WalkMessage from '../../components/walk-message/walk-message'
+import Player from '../../components/player/player';
 import DevInfo from "../../components/dev-info/dev-info";
-
-import {UserCards} from "../../features/user-cards/user-cards";
-import {PrimaryButton} from "../../components/button/button.style";
+import WalkMessage from '../../components/walk-message/walk-message'
 import CardGroup from '../../components/card-group/card-group'
+import {PrimaryButton} from "../../components/button/button.style";
 
 function prepareCards(suitIndex) {
     const result = [];
@@ -267,8 +259,7 @@ function App() {
     return (
         <Wrapper className="play-room-page">
             <Table className="table">
-
-                <CardGroupsOwnerTitle>Computer</CardGroupsOwnerTitle>
+                {<Player isWalk={isComputerWalk} owner="Computer" />}
                 <CardGroup cards={computerCards} handleDeleteComputerCard={handleDeleteComputerCard}/>
 
                 <TableCenter className="table-center">
@@ -284,6 +275,7 @@ function App() {
                     </TableRight>
                 </TableCenter>
                 <WalkMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
+                {/*{<Player isWalk={!isComputerWalk} owner="User" />}*/}
                 <UserCards/>
                 <div>
                     {
@@ -298,6 +290,10 @@ function App() {
                 </div>
 
             </Table>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
             <DevInfo
                 isComputerAttack={isComputerAttack}
                 isComputerWalk={isComputerWalk}

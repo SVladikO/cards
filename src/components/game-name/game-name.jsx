@@ -1,5 +1,4 @@
 import {Wrapper} from './game-name.style';
-import app from "../../App";
 
 export default function GameName({path, name}) {
     return (

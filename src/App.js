@@ -12,6 +12,10 @@ function App() {
         <div className="App">
             <RouterProvider router={router}/>
             <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
             {
                 document.location.pathname !== ROUTE_LINK.MAIN_PAGE
                 && <a href={'/'}>
