@@ -8,7 +8,9 @@ export const CardEmpty = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: black;
+  color: #3bb055c4;
   font-size: 24px;
+  
+  ${p => p.isSelected && `color: black; border-color: black`};
   
 `;

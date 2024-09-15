@@ -1,6 +1,9 @@
-import './App.css';
-import {PAGE_ROUTES, ROUTE_LINK} from './route.config';
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
+
+import './App.css';
+
+import {PAGE_ROUTES, ROUTE_LINK} from './route.config';
+import {SecondaryButton} from './components/button/button.style';
 
 const router = createBrowserRouter(PAGE_ROUTES);
 
@@ -11,7 +14,11 @@ function App() {
             <br/>
             {
                 document.location.pathname !== ROUTE_LINK.MAIN_PAGE
-                && <a href={'/'}>Обрати іншу гру</a>
+                && <a href={'/'}>
+                    <SecondaryButton>
+                        Обрати іншу гру
+                    </SecondaryButton>
+                </a>
             }
         </div>
     );

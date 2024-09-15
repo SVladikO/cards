@@ -43,6 +43,18 @@ export default function DevInfo({
                 cards={coloda}
                 handleAddCardToComputer={handleAddCardToComputer}
             />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
         </div>
     )
 }

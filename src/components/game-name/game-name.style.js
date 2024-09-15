@@ -9,4 +9,5 @@ export const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     color: black;
+    font-size: 24px;
 `;

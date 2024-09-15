@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
     padding: 10px;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     //padding: 10px;
 
     display: flex;

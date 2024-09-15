@@ -26,7 +26,7 @@ export const PAGE_ROUTES = [
     //Durak pages start
     {
         showInMainMenu: true,
-        name: 'Дурак',
+        name: 'DURAK',
         path: ROUTE_LINK.DURAK_MENU_PAGE,
         element: <DurakMenuPage />,
     },
@@ -41,13 +41,13 @@ export const PAGE_ROUTES = [
     //Durak pages end
     {
         showInMainMenu: true,
-        name: 'Покер',
+        name: 'POCKER',
         path: ROUTE_LINK.POCKER_MAIN_PAGE,
         element: <PockerMenuPage />,
     },
     {
         showInMainMenu: true,
-        name: 'Пасянс',
+        name: 'PASIANS',
         path: ROUTE_LINK.PASIANS_MAIN_PAGE,
         element: <div>Pasians page!</div>,
     },

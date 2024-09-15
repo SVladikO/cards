@@ -1,7 +1,7 @@
 import {SuitWrapper} from "./suit-presentation.style";
 
-import {GameDescription} from "../text/text.style";
-import CardGroup from "../card-group/card-group";
+import {GameDescription} from "../../components/text/text.style";
+import CardGroup from "../../components/card-group/card-group";
 import {cardsData, generateSuits, suits} from "../../utils/cards-data";
 
 export default function SuitsPresentation() {
