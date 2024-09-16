@@ -4,8 +4,7 @@
  * @param [string] suitGroup
  * @returns {[{color: string, background: string, suit: *},{color: string, background: string, suit: *},{color: string, background: string, suit: *},{color: string, background: string, suit: *}]}
  */
-export function generateSuits(suitGroup) {
-
+export function generateSuitsFor(suitGroup) {
     return [
         {background: 'white', color: 'black', suit: 'first', emojiCode: suitGroup[0]},
         {background: 'white', color: 'black', suit: 'second', emojiCode: suitGroup[1]},
@@ -14,7 +13,7 @@ export function generateSuits(suitGroup) {
     ];
 }
 
-export const cardsData = [
+export const hierarchyCards = [
     // {level: 1, title: 1},
     // {level: 2, title: 2},
     // {level: 3, title: 3},
@@ -45,6 +44,4 @@ export const suits = [
     [encodeEmoji('🪼'), encodeEmoji('🦀'), encodeEmoji('🐡'), encodeEmoji('🦈')],
     [encodeEmoji('♡'), encodeEmoji('♢'), encodeEmoji('♧'), encodeEmoji('♤')],
 ];
-//.map(el => el.split(''))
-// '🥕🍆🌽',
 

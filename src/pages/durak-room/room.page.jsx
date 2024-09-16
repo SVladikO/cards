@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 
-
 import {Wrapper, Table, TableCenter, TableRight} from './room.style';
 
 import {
@@ -11,11 +10,11 @@ import {
     changeTurnWalk,
     setTrump,
 } from "../../redux/gameDetailsSlice";
-import {UserCards} from "../../features/user-cards/user-cards";
-import {useInterval} from '../../hooks'
 
-import {generateSuits, cardsData, suits} from "../../utils/cards-data";
-import {findHigherCard, prepareCardsTo, canCardBeAddedToRound, getLastRoundCard, findHigherTrumpCard} from '../../utils'
+import {UserCards} from "../../features/user-cards/user-cards";
+import ComputerCards from "../../features/computer-cards/computer-cards"
+
+import {prepareCardsTo, generateCards, getRandomInt, sortByLevel} from '../../utils/durak-utils';
 
 import {StoreNames} from "../../redux/type";
 import {Action} from '../../redux/common_card_slice';
@@ -26,48 +25,10 @@ import CardMover from "../../components/card-mover/card-mover";
 import Round from "../../components/round/round";
 import Trump from "../../components/trump/trump";
 import Trash from "../../components/trash/trash"
-import Player from '../../components/player/player';
 import DevInfo from "../../components/dev-info/dev-info";
 import WalkMessage from '../../components/walk-message/walk-message'
-import CardGroup from '../../components/card-group/card-group'
-import {PrimaryButton} from "../../components/button/button.style";
-
-function prepareCards(suitIndex) {
-    const result = [];
-    const cardSuits = generateSuits(suits[suitIndex]);
-    cardsData.forEach(card =>
-        cardSuits.forEach(cs =>
-            result.push({...card, ...cs})
-        )
-    )
-
-    // Mix cardsData array
-    result.sort(() => Math.random() - 0.5);
-    return result;
-}
-
-const sort = cards => cards.sort((f, s) => f.level - s.level);
-
-const sortTrumpToEnd = (cards, trump) => {
-    const trumps = cards.filter(card => card.suit === trump)
-    const simpleCards = cards.filter(card => card.suit !== trump)
-
-    return [sort(simpleCards), sort(trumps)];
-}
-
-const getRandomInt = max => Math.floor(Math.random() * max);
-
-function turnOffWarningFrom(cards, setCards) {
-    setTimeout(() => {
-        setCards(cards.map(card => ({...card, warning: false})))
-    }, 400)
-}
 
 function App() {
-    const trump = useSelector(state => state.gameDetails.trump);
-    const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
-    const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
-
     const computerCards = useSelector(state => state[StoreNames.COMPUTER_CARDS].value);
     const userCards = useSelector(state => state[StoreNames.USER_CARDS].value);
     const roundCards = useSelector((state) => state[StoreNames.ROUND_CARDS].value);
@@ -75,31 +36,27 @@ function App() {
     const trashCards = useSelector((state) => state[StoreNames.TRASH_CARDS].value);
     const dispatch = useDispatch();
 
-    const [moveCard, setMoveCard] = useState();
+    const [cardsMove, setCardsMove] = useState([]);
 
     const handleSetMoveCard = card => {
-        setMoveCard(card)
+        setCardsMove([...cardsMove, card])
         setTimeout(() => {
-            setMoveCard(null);
+            const filteredCards = cardsMove.filter(cm => cm.suit !== card.suit && cm.title !== card.title)
+            setCardsMove(filteredCards);
         }, 1000)
     }
 
     useEffect(() => {
-        dispatch(Action.Coloda.init(prepareCards(0)))
-        console.log('init cards')
+        dispatch(Action.Coloda.init(generateCards(0)))
     }, [])
 
     useEffect(() => {
-        if (!colodaCards.length) {
-            return
+        if (colodaCards.length) {
+            startGame()
         }
-        console.log('startGame(')
-        startGame()
     }, [colodaCards])
 
     function startGame() {
-
-
         // Set which turn to attack
         const isComputerTurn = getRandomInt(2) === 0;
         dispatch(setIsComputerTurnAttack(isComputerTurn));
@@ -132,17 +89,9 @@ function App() {
                 break;
         }
 
-        dispatch(Action.User.addCards(sort(newCardsToUser)))
+        dispatch(Action.User.addCards(sortByLevel(newCardsToUser)))
         dispatch(Action.Coloda.init(cutedColoda))
-        dispatch(Action.Computer.addCards(sort(newCardsToComputer)));
-    }
-
-    function manageCard(cardToMove) {
-        const filtered = computerCards.filter(card => card !== cardToMove)
-
-        dispatch(Action.Computer.init(filtered))
-        dispatch(Action.Round.addCard(cardToMove))
-        dispatch(changeTurnWalk())
+        dispatch(Action.Computer.addCards(sortByLevel(newCardsToComputer)));
     }
 
     function moveRoundTo(status) {
@@ -172,152 +121,28 @@ function App() {
         }
     }
 
-    function takeCards() {
-        if (!isComputerAttack) {
-            return;
-        }
-        moveRoundTo(SituationTypes.USER_LOST_ROUND)
-        dispatch(changeTurnWalk())
-    }
-
-    function computerAttack() {
-
-        if (!computerCards.length) {
-            return
-        }
-
-        const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
-
-        // Start of attack
-        if (!roundCards.length) {
-            return manageCard(usualCards[0] || trumpCards[0]);
-        }
-
-        let cardCandidate = usualCards.find(card => canCardBeAddedToRound(roundCards, card))
-
-        if (!cardCandidate && (colodaCards.length < 4 || roundCards.length > 8)) {
-            cardCandidate = trumpCards.find(card => canCardBeAddedToRound(roundCards, card))
-        }
-
-        // If nothing to add computer will pass round
-        if (!cardCandidate || (cardCandidate.level > 10 && colodaCards.length < 10)) {
-            return passRound()
-        }
-
-        manageCard(cardCandidate)
-    }
-
-    function computerDefence() {
-        const cardToCover = getLastRoundCard(roundCards);
-
-        const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
-
-        let higherCard = findHigherCard(usualCards, cardToCover, trump);
-        if (!higherCard) {
-            higherCard = findHigherTrumpCard(trumpCards, cardToCover, trump);
-        }
-
-        //Cover usual card by trump.
-        if (!higherCard && trumpCards.length) {
-            higherCard = trumpCards[0]
-        }
-
-        if (!higherCard) {
-            return moveRoundTo(SituationTypes.COMPUTER_LOST_ROUND)
-        }
-
-        manageCard(higherCard)
-    }
-
-    useInterval(() => {
-        console.log('useInterval')
-        if (!colodaCards.length && userCards.length) {
-            return alert('User won')
-        }
-
-        if (!colodaCards.length && computerCards.length) {
-            return alert('Computer won')
-        }
-
-        if (isComputerWalk) {
-            if (isComputerAttack) {
-                computerAttack()
-            } else {
-                computerDefence()
-            }
-        }
-    }, 4000)
-
-    //For dev porpose we need some dev instruments to test some cases
-    function handleDeleteComputerCard(index) {
-        const filteredComputerCards = computerCards.filter((c, i) => i !== index);
-        const excludedCard = computerCards.find((c, i) => i === index);
-        dispatch(Action.Computer.init(sort(filteredComputerCards)));
-        dispatch(Action.Coloda.addCard(excludedCard));
-    }
-
-    console.log(11111, {
-        trump,
-        isComputerAttack,
-        isComputerWalk,
-        computerCards,
-        userCards,
-        roundCards,
-        colodaCards,
-        trashCards
-    })
-
     return (
         <Wrapper className="play-room-page">
+            <ComputerCards passRound={passRound}/>
             <Table className="table">
-                {<Player isWalk={isComputerWalk} owner="Computer"/>}
-                <CardGroup cards={computerCards} handleDeleteComputerCard={handleDeleteComputerCard}/>
-                <WalkMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
+                <WalkMessage/>
                 <TableCenter className="table-center">
-                    <Round
-                        cards={roundCards}
-                        handlePass={passRound}
-                        handleTake={takeCards}
-                        isComputerAttack={isComputerAttack}
-                    />
+                    <Round cards={roundCards}/>
                     <TableRight className={'table-right'}>
                         <Trump trumpCard={getFirsColodaCard()} cardCount={colodaCards.length}/>
                         <Trash amount={trashCards.length}/>
                     </TableRight>
                 </TableCenter>
                 {/*{<Player isWalk={!isComputerWalk} owner="User" />}*/}
-                <UserCards handleSetMoveCard={handleSetMoveCard}/>
-
-                {moveCard && <CardMover moveCard={moveCard} />}
-
-                <div>
-                    {
-                        !isComputerAttack &&
-                        !!roundCards.length &&
-                        roundCards.length % 2 === 0 && //computer should cover card before we let it go to trash
-                        <PrimaryButton onClick={passRound}>Відбій</PrimaryButton>
-                    }
-
-                    {isComputerAttack && !!roundCards.length &&
-                        <PrimaryButton onClick={takeCards}>Забрав</PrimaryButton>}
-                </div>
-
+                <UserCards handleSetMoveCard={handleSetMoveCard} passRound={passRound}/>
+                {cardsMove &&
+                    cardsMove.map(cm => <CardMover key={cm.title + cm.suit} moveCard={cm}/>)
+                }
             </Table>
-            <DevInfo
-                isComputerAttack={isComputerAttack}
-                isComputerWalk={isComputerWalk}
-                trash={trashCards}
-                coloda={colodaCards}
-                roundCards={roundCards}
-                userCards={userCards}
-                computerCards={computerCards}
-            />
-
-
+            <DevInfo/>
         </Wrapper>
     );
 }
-
 
 export default App;
 

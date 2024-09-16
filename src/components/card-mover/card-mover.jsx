@@ -1,7 +1,7 @@
 import {Wrapper} from "./card-mover.style";
 import Card from '../card/card';
 
-export default function CardMover({moveCard, children}) {
+export default function CardMover({moveCard}) {
     return (
         <Wrapper
             fromLeft={moveCard.fromLeft}

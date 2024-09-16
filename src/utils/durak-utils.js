@@ -1,4 +1,41 @@
-import {maxCardsPerRound} from "./constants";
+import {maxCardsPerRound} from "../constants";
+import {hierarchyCards, generateSuitsFor, suits} from "./cards-data";
+
+export function generateCards(suitIndex) {
+    const result = [];
+    const cardSuits = generateSuitsFor(suits[suitIndex]);
+    hierarchyCards.forEach(card =>
+        cardSuits.forEach(cs =>
+            result.push({...card, ...cs})
+        )
+    )
+
+    // Mix cards
+    result.sort(() => Math.random() - 0.5);
+    return result;
+}
+
+export function sortByLevel(cards) {
+    return cards.sort((f, s) => f.level - s.level);
+}
+
+export const sortTrumpToEnd = (cards, trump) => {
+    const trumps = cards.filter(card => card.suit === trump)
+    const simpleCards = cards.filter(card => card.suit !== trump)
+
+    return [sortByLevel(simpleCards), sortByLevel(trumps)];
+}
+
+export function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+export function turnOffWarningFrom(cards, setCards) {
+    setTimeout(() => {
+        setCards(cards.map(card => ({...card, warning: false})))
+    }, 400)
+}
+
 
 export const canCardBeAddedToRound = (roundCards = [], candidateToAdd = {}) => roundCards?.find(card => card.level === candidateToAdd.level)
 

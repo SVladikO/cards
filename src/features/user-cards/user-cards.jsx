@@ -2,14 +2,15 @@ import React from "react";
 import {useSelector, useDispatch} from "react-redux";
 
 import CardGroup from "../../components/card-group/card-group";
+import {PrimaryButton} from '../../components/button/button.style';
 
 import {Action} from '../../redux/common_card_slice';
 
-import {canCardBeAddedToRound, getLastRoundCard, isFirstHigherCard, isTrump} from "../../utils";
+import {canCardBeAddedToRound, getLastRoundCard, isFirstHigherCard, isTrump} from "../../utils/durak-utils";
 import {changeTurnAttack, changeTurnWalk} from "../../redux/gameDetailsSlice";
 import {StoreNames} from "../../redux/type";
 
-export function UserCards({handleSetMoveCard}) {
+export function UserCards({handleSetMoveCard, passRound}) {
     const trump = useSelector(state => state.gameDetails.trump);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
@@ -27,15 +28,18 @@ export function UserCards({handleSetMoveCard}) {
         dispatch(changeTurnWalk())
     }
 
-    function handleCarClick(clickedCard) {
+    function handleCardClick(clickedCard) {
         return event => {
             if (isComputerWalk) {
                 alert('Computer walk.')
                 return;
             }
+            const fromLeft = event?.clientX;
+            const fromTop = event?.clientY;
 
-            const _clickedCardXY = {...clickedCard, fromLeft: event.clientX, fromTop: event.clientY}
+            const _clickedCardXY = {...clickedCard, fromLeft, fromTop}
             console.log(444444444444, {event, _clickedCardXY})
+
             // User put first card on a table when his turn
             if (!roundCards.length) {
                 manageCard(clickedCard, _clickedCardXY)
@@ -75,10 +79,34 @@ export function UserCards({handleSetMoveCard}) {
         }
     }
 
-    return <CardGroup
-        cards={userCards}
-        handleCarClick={handleCarClick}
-        // ownerName="User cards"
-        trump={trump}
-    />;
+     function takeCards() {
+        if (!isComputerAttack) {
+            return;
+        }
+        moveRoundTo(SituationTypes.USER_LOST_ROUND)
+        dispatch(changeTurnWalk())
+    }
+
+    return (
+        <>
+            <CardGroup
+                cards={userCards}
+                handleCardClick={handleCardClick}
+                // ownerName="User cards"
+                trump={trump}
+            />
+
+            <div>
+                {
+                    !isComputerAttack &&
+                    !!roundCards.length &&
+                    roundCards.length % 2 === 0 && //computer should cover card before we let it go to trash
+                    <PrimaryButton onClick={passRound}>Відбій</PrimaryButton>
+                }
+
+                {isComputerAttack && !!roundCards.length &&
+                    <PrimaryButton onClick={takeCards}>Забрав</PrimaryButton>}
+            </div>
+        </>
+    )
 }

@@ -2,11 +2,12 @@ import {SuitWrapper} from "./suit-presentation.style";
 
 import {GameDescription} from "../../components/text/text.style";
 import CardGroup from "../../components/card-group/card-group";
-import {cardsData, generateSuits, suits} from "../../utils/cards-data";
+import {hierarchyCards, suits} from "../../utils/cards-data";
+import {generateCards} from '../../utils/durak-utils';
 
 export default function SuitsPresentation() {
-    const card6 = cardsData[0]; // card 6
-    const suitGroups = suits.map(sg => generateSuits(sg))
+    const card6 = hierarchyCards[0]; // card 6
+    const suitGroups = suits.map(sg => generateCards(sg))
     const cardGroups = suitGroups.map(suits => {
         const result = [];
         suits.forEach(suit =>

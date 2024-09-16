@@ -6,8 +6,6 @@ import GameName from "../../components/game-name/game-name";
 import CardGroup from "../../components/card-group/card-group";
 import {GameDescription} from '../../components/text/text.style';
 
-import {cardsData, generateSuits, suits} from "../../utils/cards-data";
-
 export default function MainMenuPage() {
     return (
         <Wrapper>

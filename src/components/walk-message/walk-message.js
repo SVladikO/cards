@@ -1,6 +1,9 @@
 import {Wrapper, Message} from "./walk-message.style";
+import {useSelector} from "react-redux";
 
-export default function WalkMessage({isComputerAttack, isComputerWalk}) {
+export default function WalkMessage() {
+    const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
+    const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
 
     return (
         <Wrapper>
