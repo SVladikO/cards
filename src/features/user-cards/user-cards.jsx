@@ -9,7 +9,7 @@ import {canCardBeAddedToRound, getLastRoundCard, isFirstHigherCard, isTrump} fro
 import {changeTurnAttack, changeTurnWalk} from "../../redux/gameDetailsSlice";
 import {StoreNames} from "../../redux/type";
 
-export function UserCards() {
+export function UserCards({handleSetMoveCard}) {
     const trump = useSelector(state => state.gameDetails.trump);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
@@ -18,26 +18,29 @@ export function UserCards() {
 
     const dispatch = useDispatch();
 
-    function manageCard(cardToMove) {
+    function manageCard(cardToMove, _clickedCardXY) {
+        handleSetMoveCard(_clickedCardXY)
+
         const filteredUserCards = userCards.filter(card => card !== cardToMove)
         dispatch(Action.User.init(filteredUserCards))
         dispatch(Action.Round.addCard(cardToMove))
         dispatch(changeTurnWalk())
     }
 
-    function sendCard(clickedCard) {
-        return () => {
+    function handleCarClick(clickedCard) {
+        return event => {
             if (isComputerWalk) {
                 alert('Computer walk.')
                 return;
             }
 
+            const _clickedCardXY = {...clickedCard, fromLeft: event.clientX, fromTop: event.clientY}
+            console.log(444444444444, {event, _clickedCardXY})
             // User put first card on a table when his turn
             if (!roundCards.length) {
-                manageCard(clickedCard)
+                manageCard(clickedCard, _clickedCardXY)
                 return;
             }
-
 
             //User defence logic
             if (isComputerAttack) {
@@ -58,7 +61,7 @@ export function UserCards() {
                         isFirstHigherCard(clickedCard, cardToBit)
                     )
                 ) {
-                    return manageCard(clickedCard)
+                    return manageCard(clickedCard, _clickedCardXY)
                 }
 
                 //clickedCard isn't higher and isn't trump
@@ -67,14 +70,14 @@ export function UserCards() {
 
             //User attack
             if (!isComputerAttack && canCardBeAddedToRound(roundCards, clickedCard)) {
-                return manageCard(clickedCard)
+                return manageCard(clickedCard, _clickedCardXY)
             }
         }
     }
 
     return <CardGroup
         cards={userCards}
-        handleClick={sendCard}
+        handleCarClick={handleCarClick}
         // ownerName="User cards"
         trump={trump}
     />;

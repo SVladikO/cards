@@ -21,6 +21,8 @@ import {StoreNames} from "../../redux/type";
 import {Action} from '../../redux/common_card_slice';
 
 import {SituationTypes} from '../../constants'
+
+import CardMover from "../../components/card-mover/card-mover";
 import Round from "../../components/round/round";
 import Trump from "../../components/trump/trump";
 import Trash from "../../components/trash/trash"
@@ -72,6 +74,15 @@ function App() {
     const colodaCards = useSelector((state) => state[StoreNames.COLODA_CARDS].value);
     const trashCards = useSelector((state) => state[StoreNames.TRASH_CARDS].value);
     const dispatch = useDispatch();
+
+    const [moveCard, setMoveCard] = useState();
+
+    const handleSetMoveCard = card => {
+        setMoveCard(card)
+        setTimeout(() => {
+            setMoveCard(null);
+        }, 1000)
+    }
 
     useEffect(() => {
         dispatch(Action.Coloda.init(prepareCards(0)))
@@ -259,9 +270,9 @@ function App() {
     return (
         <Wrapper className="play-room-page">
             <Table className="table">
-                {<Player isWalk={isComputerWalk} owner="Computer" />}
+                {<Player isWalk={isComputerWalk} owner="Computer"/>}
                 <CardGroup cards={computerCards} handleDeleteComputerCard={handleDeleteComputerCard}/>
-
+                <WalkMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
                 <TableCenter className="table-center">
                     <Round
                         cards={roundCards}
@@ -274,9 +285,11 @@ function App() {
                         <Trash amount={trashCards.length}/>
                     </TableRight>
                 </TableCenter>
-                <WalkMessage isComputerAttack={isComputerAttack} isComputerWalk={isComputerWalk}/>
                 {/*{<Player isWalk={!isComputerWalk} owner="User" />}*/}
-                <UserCards/>
+                <UserCards handleSetMoveCard={handleSetMoveCard}/>
+
+                {moveCard && <CardMover moveCard={moveCard} />}
+
                 <div>
                     {
                         !isComputerAttack &&
@@ -290,10 +303,6 @@ function App() {
                 </div>
 
             </Table>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
             <DevInfo
                 isComputerAttack={isComputerAttack}
                 isComputerWalk={isComputerWalk}
@@ -303,6 +312,8 @@ function App() {
                 userCards={userCards}
                 computerCards={computerCards}
             />
+
+
         </Wrapper>
     );
 }

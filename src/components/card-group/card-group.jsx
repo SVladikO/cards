@@ -5,7 +5,7 @@ import Card from "../card/card";
 function CardGroup({
                        isSelected,
                        cards,
-                       handleClick = () => {},
+                       handleCarClick = () => {},
                        trump,
                        handleDeleteComputerCard,
                        handleAddCardToComputer,
@@ -18,7 +18,7 @@ function CardGroup({
                     {handleAddCardToComputer && <button onClick={() => handleAddCardToComputer(index)}>+</button>}
                     <Card
                         card={c}
-                        handleClick={handleClick(c)}
+                        handleClick={handleCarClick(c)}
                         isTrump={c.suit === trump}
                     />
                 </CardAbstractWrapper>

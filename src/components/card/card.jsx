@@ -4,10 +4,7 @@ import {Wrapper, Title, SmallSuit, BigSuit} from "./card.style";
 
 import {decodeEmoji} from '../../utils/cards-data';
 
-function Card({
-                  card, isTrump, handleClick = () => {
-    }
-              }) {
+function Card({card, isTrump, handleClick = () => {}}) {
     const emoji = decodeEmoji(card.emojiCode);
 
     const smallSuit = useRef(null);
