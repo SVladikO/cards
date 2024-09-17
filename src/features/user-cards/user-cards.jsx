@@ -1,6 +1,8 @@
 import React from "react";
 import {useSelector, useDispatch} from "react-redux";
 
+import {SituationTypes} from '../../constants'
+
 import CardGroup from "../../components/card-group/card-group";
 import {PrimaryButton} from '../../components/button/button.style';
 
@@ -10,7 +12,7 @@ import {canCardBeAddedToRound, getLastRoundCard, isFirstHigherCard, isTrump} fro
 import {changeTurnAttack, changeTurnWalk} from "../../redux/gameDetailsSlice";
 import {StoreNames} from "../../redux/type";
 
-export function UserCards({handleSetMoveCard, passRound}) {
+export function UserCards({handleSetMoveCard, passRound, moveRoundTo}) {
     const trump = useSelector(state => state.gameDetails.trump);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);

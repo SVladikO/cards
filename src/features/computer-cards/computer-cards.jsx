@@ -1,13 +1,14 @@
 import {useInterval} from '../../hooks'
 import {useDispatch, useSelector} from "react-redux";
 
-import CardGroup from "../../components/card-group/card-group";
-import Player from '../../components/player/player'
-import {changeTurnWalk} from "../../redux/gameDetailsSlice";
-import {StoreNames} from "../../redux/type";
 import {Action} from '../../redux/common_card_slice';
+import {StoreNames} from "../../redux/type";
+import {changeTurnWalk} from "../../redux/gameDetailsSlice";
 
-import {sortTrumpToEnd, getLastRoundCard, findHigherCard, canCardBeAddedToRound} from '../../utils/durak-utils';
+import Player from '../../components/player/player';
+import CardGroup from "../../components/card-group/card-group";
+
+import {sortTrumpToEnd, getLastRoundCard, findHigherCard, findHigherTrumpCard, canCardBeAddedToRound} from '../../utils/durak-utils';
 
 export default function ComputerCards({passRound}) {
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);

@@ -14,19 +14,19 @@ import {
 import {UserCards} from "../../features/user-cards/user-cards";
 import ComputerCards from "../../features/computer-cards/computer-cards"
 
-import {prepareCardsTo, generateCards, getRandomInt, sortByLevel} from '../../utils/durak-utils';
-
 import {StoreNames} from "../../redux/type";
 import {Action} from '../../redux/common_card_slice';
 
 import {SituationTypes} from '../../constants'
 
-import CardMover from "../../components/card-mover/card-mover";
 import Round from "../../components/round/round";
 import Trump from "../../components/trump/trump";
 import Trash from "../../components/trash/trash"
 import DevInfo from "../../components/dev-info/dev-info";
+import CardMover from "../../components/card-mover/card-mover";
 import WalkMessage from '../../components/walk-message/walk-message'
+
+import {prepareCardsTo, generateCards, getRandomInt, sortByLevel} from '../../utils/durak-utils';
 
 function App() {
     const computerCards = useSelector(state => state[StoreNames.COMPUTER_CARDS].value);
@@ -37,14 +37,6 @@ function App() {
     const dispatch = useDispatch();
 
     const [cardsMove, setCardsMove] = useState([]);
-
-    const handleSetMoveCard = card => {
-        setCardsMove([...cardsMove, card])
-        setTimeout(() => {
-            const filteredCards = cardsMove.filter(cm => cm.suit !== card.suit && cm.title !== card.title)
-            setCardsMove(filteredCards);
-        }, 1000)
-    }
 
     useEffect(() => {
         dispatch(Action.Coloda.init(generateCards(0)))
@@ -69,29 +61,12 @@ function App() {
 
     const getFirsColodaCard = () => colodaCards.length && colodaCards[0];
 
-    const addCardsToPlayers = status => {
-        let newCardsToUser = []
-        let newCardsToComputer = []
-        let cutedColoda = []
-
-        //We use this structure because we lost cards
-        switch (status) {
-            case SituationTypes.COMPUTER_LOST_ROUND:
-                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, colodaCards);
-                break;
-            case SituationTypes.USER_LOST_ROUND:
-                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, colodaCards);
-                break;
-            case SituationTypes.START_GAME:
-            case SituationTypes.MOVE_ROUND_TO_TRASH:
-                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, colodaCards);
-                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, cutedColoda)
-                break;
+    function passRound() {
+        if (roundCards.length % 2 === 0 && roundCards.length >= 2) {
+            moveRoundTo(SituationTypes.MOVE_ROUND_TO_TRASH);
+            dispatch(changeTurnAttack())
+            dispatch(changeTurnWalk())
         }
-
-        dispatch(Action.User.addCards(sortByLevel(newCardsToUser)))
-        dispatch(Action.Coloda.init(cutedColoda))
-        dispatch(Action.Computer.addCards(sortByLevel(newCardsToComputer)));
     }
 
     function moveRoundTo(status) {
@@ -113,12 +88,42 @@ function App() {
         addCardsToPlayers(status)
     }
 
-    function passRound() {
-        if (roundCards.length % 2 === 0 && roundCards.length >= 2) {
-            moveRoundTo(SituationTypes.MOVE_ROUND_TO_TRASH);
-            dispatch(changeTurnAttack())
-            dispatch(changeTurnWalk())
+
+    const addCardsToPlayers = status => {
+        let newCardsToUser = []
+        let newCardsToComputer = []
+        let cutedColoda = []
+
+        //We use this structure because we lost cards
+        switch (status) {
+            case SituationTypes.COMPUTER_LOST_ROUND:
+                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, colodaCards);
+                //Computer will take cards from table
+                break;
+            case SituationTypes.USER_LOST_ROUND:
+                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, colodaCards);
+                //User will take cards from table
+                break;
+            case SituationTypes.START_GAME:
+            case SituationTypes.MOVE_ROUND_TO_TRASH:
+                [newCardsToUser, cutedColoda] = prepareCardsTo(userCards, colodaCards);
+                [newCardsToComputer, cutedColoda] = prepareCardsTo(computerCards, cutedColoda)
+                break;
         }
+
+        dispatch(Action.User.addCards(sortByLevel(newCardsToUser)))
+        dispatch(Action.Coloda.init(cutedColoda))
+        dispatch(Action.Computer.addCards(sortByLevel(newCardsToComputer)));
+    }
+
+    const handleSetMoveCard = card => {
+        setCardsMove([...cardsMove, card])
+
+        //Here we delete move card after some time.
+        setTimeout(() => {
+            const filteredCards = cardsMove.filter(cm => cm.suit !== card.suit && cm.title !== card.title)
+            setCardsMove(filteredCards);
+        }, 1000)
     }
 
     return (
@@ -134,7 +139,7 @@ function App() {
                     </TableRight>
                 </TableCenter>
                 {/*{<Player isWalk={!isComputerWalk} owner="User" />}*/}
-                <UserCards handleSetMoveCard={handleSetMoveCard} passRound={passRound}/>
+                <UserCards handleSetMoveCard={handleSetMoveCard} passRound={passRound} moveRoundTo={moveRoundTo}/>
                 {cardsMove &&
                     cardsMove.map(cm => <CardMover key={cm.title + cm.suit} moveCard={cm}/>)
                 }
