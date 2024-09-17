@@ -7,9 +7,10 @@ function CardGroup({
                        cards,
                        handleCardClick = () => {},
                        trump,
+                       isEnabledWalk,
                    }) {
     return (
-        <Wrapper className="card-group" isSelected={isSelected}>
+        <Wrapper className="card-group" isSelected={isSelected} isEnabledWalk={isEnabledWalk}>
             {cards.map((c, index) =>
                 <CardAbstractWrapper key={c.title + c.suit} index={index + 1}>
                     <Card

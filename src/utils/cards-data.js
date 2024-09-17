@@ -1,17 +1,17 @@
-// ♥/♡	♦/♢	♠/♤	♣/♧
-/**
- *
- * @param [string] suitGroup
- * @returns {[{color: string, background: string, suit: *},{color: string, background: string, suit: *},{color: string, background: string, suit: *},{color: string, background: string, suit: *}]}
- */
-export function generateSuitsFor(suitGroup) {
-    return [
-        {background: 'white', color: 'black', suit: 'first', emojiCode: suitGroup[0]},
-        {background: 'white', color: 'black', suit: 'second', emojiCode: suitGroup[1]},
-        {background: 'white', color: 'black', suit: 'third', emojiCode: suitGroup[2]},
-        {background: 'white', color: 'black', suit: 'forth', emojiCode: suitGroup[3]},
-    ];
-}
+export const encodeEmoji = emoji => new TextEncoder().encode(emoji)
+export const decodeEmoji = emojiCode => new TextDecoder('utf8').decode(emojiCode)
+
+export const suits = [
+    [encodeEmoji('♥'), encodeEmoji('♦'), encodeEmoji('♣'), encodeEmoji('♠')],
+    [encodeEmoji('🍓'), encodeEmoji('🍒'), encodeEmoji('🍐'), encodeEmoji('🍏')],
+    [encodeEmoji('🌶️'), encodeEmoji('🍅'), encodeEmoji('🫑'), encodeEmoji('🥒')],
+    [encodeEmoji('🍋'), encodeEmoji('🥝'), encodeEmoji('🍑'), encodeEmoji('🥥')],
+    [encodeEmoji('🍊'), encodeEmoji('🫐'), encodeEmoji('🍇'), encodeEmoji('🍎')], //
+    [encodeEmoji('🌶️'), encodeEmoji('🫑'), encodeEmoji('🥬'), encodeEmoji('🥔')],
+    [encodeEmoji('🍼'), encodeEmoji('🥃'), encodeEmoji('🍷'), encodeEmoji('🧃')],
+    [encodeEmoji('🪼'), encodeEmoji('🦀'), encodeEmoji('🐡'), encodeEmoji('🦈')],
+    [encodeEmoji('♡'), encodeEmoji('♢'), encodeEmoji('♧'), encodeEmoji('♤')],
+];
 
 export const hierarchyCards = [
     // {level: 1, title: 1},
@@ -30,18 +30,25 @@ export const hierarchyCards = [
     {level: 14, title: 'T'},
 ];
 
-export const encodeEmoji = emoji => new TextEncoder().encode(emoji)
-export const decodeEmoji = emojiCode => new TextDecoder('utf8').decode(emojiCode)
+// Transformation
+// [string, ...] > [object, ...] > [[{}], ...]
+export const cardGroups = suits
+        .map(suits => (
+            [
+                {background: 'white', color: 'red', suit: 'first', emojiCode: suits[0]},
+                {background: 'white', color: 'red', suit: 'second', emojiCode: suits[1]},
+                {background: 'white', color: 'black', suit: 'third', emojiCode: suits[2]},
+                {background: 'white', color: 'black', suit: 'forth', emojiCode: suits[3]},
+            ]
+        ))
+        .map(suits => {
 
-export const suits = [
-    [encodeEmoji('♥'), encodeEmoji('♦'), encodeEmoji('♣'), encodeEmoji('♠')],
-    [encodeEmoji('🍓'), encodeEmoji('🍒'), encodeEmoji('🍐'), encodeEmoji('🍏')],
-    [ encodeEmoji('🌶️'), encodeEmoji('🍅'), encodeEmoji('🫑'), encodeEmoji('🥒')],
-    [encodeEmoji('🍋'), encodeEmoji('🥝'), encodeEmoji('🍑'), encodeEmoji('🥥')],
-    [encodeEmoji('🍊'), encodeEmoji('🫐'), encodeEmoji('🍇'), encodeEmoji('🍎')], //
-    [encodeEmoji('🌶️'), encodeEmoji('🫑'), encodeEmoji('🥬'), encodeEmoji('🥔')],
-    [encodeEmoji('🍼'), encodeEmoji('🥃'), encodeEmoji('🍷'), encodeEmoji('🧃')],
-    [encodeEmoji('🪼'), encodeEmoji('🦀'), encodeEmoji('🐡'), encodeEmoji('🦈')],
-    [encodeEmoji('♡'), encodeEmoji('♢'), encodeEmoji('♧'), encodeEmoji('♤')],
-];
-
+                const result = []
+                hierarchyCards.forEach(hierarchyCard => {
+                    suits.forEach(suit => {
+                        result.push({...suit, ...hierarchyCard})
+                    })
+                })
+                return result;
+            }
+        )

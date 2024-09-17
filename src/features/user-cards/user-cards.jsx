@@ -96,6 +96,7 @@ export function UserCards({handleSetMoveCard, passRound, moveRoundTo}) {
                 handleCardClick={handleCardClick}
                 // ownerName="User cards"
                 trump={trump}
+                isEnabledWalk={!isComputerWalk}
             />
 
             <div>

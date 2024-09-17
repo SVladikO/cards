@@ -1,7 +1,7 @@
 import {Wrapper} from './players-amount.style';
 
-import {GameDescription} from '../../components/text/text.style';
 import CardEmpty from '../../components/card-empty/card-empty';
+import {GameDescription} from '../../components/text/text.style';
 
 export default function PlayersAmount() {
     return (

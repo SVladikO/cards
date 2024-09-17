@@ -26,7 +26,9 @@ import DevInfo from "../../components/dev-info/dev-info";
 import CardMover from "../../components/card-mover/card-mover";
 import WalkMessage from '../../components/walk-message/walk-message'
 
-import {prepareCardsTo, generateCards, getRandomInt, sortByLevel} from '../../utils/durak-utils';
+import {cardGroups} from '../../utils/cards-data';
+
+import {prepareCardsTo, getRandomInt, sortByLevel} from '../../utils/durak-utils';
 
 function App() {
     const computerCards = useSelector(state => state[StoreNames.COMPUTER_CARDS].value);
@@ -39,7 +41,7 @@ function App() {
     const [cardsMove, setCardsMove] = useState([]);
 
     useEffect(() => {
-        dispatch(Action.Coloda.init(generateCards(0)))
+        dispatch(Action.Coloda.init(cardGroups[0]))
     }, [])
 
     useEffect(() => {
@@ -128,7 +130,7 @@ function App() {
 
     return (
         <Wrapper className="play-room-page">
-            <ComputerCards passRound={passRound}/>
+            <ComputerCards passRound={passRound} moveRoundTo={moveRoundTo}/>
             <Table className="table">
                 <WalkMessage/>
                 <TableCenter className="table-center">

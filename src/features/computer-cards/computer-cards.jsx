@@ -5,12 +5,14 @@ import {Action} from '../../redux/common_card_slice';
 import {StoreNames} from "../../redux/type";
 import {changeTurnWalk} from "../../redux/gameDetailsSlice";
 
+import {SituationTypes} from '../../constants'
+
 import Player from '../../components/player/player';
 import CardGroup from "../../components/card-group/card-group";
 
 import {sortTrumpToEnd, getLastRoundCard, findHigherCard, findHigherTrumpCard, canCardBeAddedToRound} from '../../utils/durak-utils';
 
-export default function ComputerCards({passRound}) {
+export default function ComputerCards({passRound, moveRoundTo}) {
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
     const isComputerWalk = useSelector(state => state.gameDetails.isComputerWalk);
 
@@ -99,7 +101,7 @@ export default function ComputerCards({passRound}) {
     return (
         <>
             {<Player isWalk={isComputerWalk} owner="Computer"/>}
-            <CardGroup cards={computerCards} />
+            <CardGroup cards={computerCards} isEnabledWalk={isComputerWalk}/>
         </>
     )
 }
