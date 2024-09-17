@@ -35,6 +35,7 @@ export default function ComputerCards({passRound, moveRoundTo}) {
         if (!computerCards.length) {
             return
         }
+
         const cardCandidate = getLowerCard(roundCards, computerCards, trump);
 
         // If nothing to add computer will pass round

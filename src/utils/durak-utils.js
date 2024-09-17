@@ -36,7 +36,7 @@ export const getHigherCard = (roundCards, computerCards, trump) => {
     if (isTrump(cardToCover, trump)) {
         return _findHigherCard(trumpCards, cardToCover)
     }
-    debugger
+
     return  _findHigherCard(usualCards, cardToCover) || (trumpCards && trumpCards.length && trumpCards[0]) || null;
 }
 
