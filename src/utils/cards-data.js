@@ -52,3 +52,5 @@ export const cardGroups = suits
                 return result;
             }
         )
+
+console.log(123456, {cardGroups})

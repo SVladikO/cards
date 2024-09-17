@@ -28,7 +28,7 @@ import WalkMessage from '../../components/walk-message/walk-message'
 
 import {cardGroups} from '../../utils/cards-data';
 
-import {prepareCardsTo, getRandomInt, sortByLevel} from '../../utils/durak-utils';
+import {prepareCardsTo, getRandomInt, sortCardsByLevel} from '../../utils/durak-utils';
 
 function App() {
     const computerCards = useSelector(state => state[StoreNames.COMPUTER_CARDS].value);
@@ -113,9 +113,9 @@ function App() {
                 break;
         }
 
-        dispatch(Action.User.addCards(sortByLevel(newCardsToUser)))
+        dispatch(Action.User.addCards(sortCardsByLevel(newCardsToUser)))
         dispatch(Action.Coloda.init(cutedColoda))
-        dispatch(Action.Computer.addCards(sortByLevel(newCardsToComputer)));
+        dispatch(Action.Computer.addCards(sortCardsByLevel(newCardsToComputer)));
     }
 
     const handleSetMoveCard = card => {

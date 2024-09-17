@@ -10,7 +10,7 @@ import {SituationTypes} from '../../constants'
 import Player from '../../components/player/player';
 import CardGroup from "../../components/card-group/card-group";
 
-import {sortTrumpToEnd, getLastRoundCard, findHigherCard, findHigherTrumpCard, canCardBeAddedToRound} from '../../utils/durak-utils';
+import {getHigherCard, getLowerCard} from '../../utils/durak-utils';
 
 export default function ComputerCards({passRound, moveRoundTo}) {
     const isComputerAttack = useSelector(state => state.gameDetails.isComputerAttack);
@@ -35,22 +35,10 @@ export default function ComputerCards({passRound, moveRoundTo}) {
         if (!computerCards.length) {
             return
         }
-
-        const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
-
-        // Start of attack
-        if (!roundCards.length) {
-            return manageCard(usualCards[0] || trumpCards[0]);
-        }
-
-        let cardCandidate = usualCards.find(card => canCardBeAddedToRound(roundCards, card))
-
-        if (!cardCandidate && (colodaCards.length < 4 || roundCards.length > 8)) {
-            cardCandidate = trumpCards.find(card => canCardBeAddedToRound(roundCards, card))
-        }
+        const cardCandidate = getLowerCard(roundCards, computerCards, trump);
 
         // If nothing to add computer will pass round
-        if (!cardCandidate || (cardCandidate.level > 10 && colodaCards.length < 10)) {
+        if (!cardCandidate) {
             return passRound()
         }
 
@@ -58,19 +46,7 @@ export default function ComputerCards({passRound, moveRoundTo}) {
     }
 
     function computerDefence() {
-        const cardToCover = getLastRoundCard(roundCards);
-
-        const [usualCards, trumpCards] = sortTrumpToEnd(computerCards, trump)
-
-        let higherCard = findHigherCard(usualCards, cardToCover, trump);
-        if (!higherCard) {
-            higherCard = findHigherTrumpCard(trumpCards, cardToCover, trump);
-        }
-
-        //Cover usual card by trump.
-        if (!higherCard && trumpCards.length) {
-            higherCard = trumpCards[0]
-        }
+        let higherCard = getHigherCard(roundCards, computerCards, trump);
 
         if (!higherCard) {
             return moveRoundTo(SituationTypes.COMPUTER_LOST_ROUND)
@@ -80,15 +56,6 @@ export default function ComputerCards({passRound, moveRoundTo}) {
     }
 
     useInterval(() => {
-        console.log('useInterval')
-        if (!colodaCards.length && userCards.length) {
-            return alert('User won')
-        }
-
-        if (!colodaCards.length && computerCards.length) {
-            return alert('Computer won')
-        }
-
         if (isComputerWalk) {
             if (isComputerAttack) {
                 computerAttack()
