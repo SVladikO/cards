@@ -132,7 +132,6 @@ function App() {
         <Wrapper className="play-room-page">
             <ComputerCards passRound={passRound} moveRoundTo={moveRoundTo}/>
             <Table className="table">
-                <WalkMessage/>
                 <TableCenter className="table-center">
                     <Round cards={roundCards}/>
                     <TableRight className={'table-right'}>
@@ -142,6 +141,7 @@ function App() {
                 </TableCenter>
                 {/*{<Player isWalk={!isComputerWalk} owner="User" />}*/}
                 <UserCards handleSetMoveCard={handleSetMoveCard} passRound={passRound} moveRoundTo={moveRoundTo}/>
+                <WalkMessage/>
                 {cardsMove &&
                     cardsMove.map(cm => <CardMover key={cm.title + cm.suit} moveCard={cm}/>)
                 }

@@ -67,8 +67,9 @@ export default function ComputerCards({passRound, moveRoundTo}) {
 
     return (
         <>
-            {<Player isWalk={isComputerWalk} owner="Computer"/>}
-            <CardGroup cards={computerCards} isEnabledWalk={isComputerWalk}/>
+            <CardGroup cards={computerCards} isEnabledWalk={isComputerWalk}>
+                <Player isWalk={isComputerWalk} owner=""/>
+            </CardGroup>
         </>
     )
 }
