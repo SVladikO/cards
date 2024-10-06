@@ -7,7 +7,7 @@ export default function WalkMessage() {
 
     return (
         <Wrapper>
-            {isComputerAttack && !isComputerWalk && <Message>Бийся, як лев!</Message>}
+            {isComputerAttack && !isComputerWalk && <Message>Відбивайся!</Message>}
             {!isComputerAttack && !isComputerWalk && <Message>Ваш хід.</Message>}
             {isComputerAttack && isComputerWalk && <Message> Ходить компютер.</Message>}
         </Wrapper>
