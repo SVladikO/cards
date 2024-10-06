@@ -36,19 +36,23 @@ export function UserCards({handleSetMoveCard, passRound, moveRoundTo}) {
                 alert('Computer walk.')
                 return;
             }
+
             const fromLeft = event?.clientX;
             const fromTop = event?.clientY;
+
+            const toLeft = 0;
+            const toTop = 0;
 
             const _clickedCardXY = {...clickedCard, fromLeft, fromTop}
             console.log(444444444444, {event, _clickedCardXY})
 
-            // User put first card on a table when his turn
+            // It's first card from user everything is simple
             if (!roundCards.length) {
                 manageCard(clickedCard, _clickedCardXY)
                 return;
             }
 
-            //User defence logic
+            //if user defence
             if (isComputerAttack) {
                 // We take last card from round and check "Does user have higher card?"
                 let cardToBit = getLastRoundCard(roundCards);

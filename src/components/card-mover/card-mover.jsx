@@ -6,8 +6,8 @@ export default function CardMover({moveCard}) {
         <Wrapper
             fromLeft={moveCard.fromLeft}
             fromTop={moveCard.fromTop}
-            toLeft={0}
-            toTop={0}
+            toLeft={moveCard.toLeft || 0}
+            toTop={moveCard.toTop || 0}
         >
             <Card card={moveCard} />
         </Wrapper>

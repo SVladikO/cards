@@ -25,7 +25,7 @@ function Card({card, isTrump, handleClick = emptyFunc}) {
 
     return (
         <Wrapper
-            className='card'
+            className={`card ${card.title}-${card.suit}`}
             onClick={handleClick}
             background={card.background}
             colorSuit={card.color}
