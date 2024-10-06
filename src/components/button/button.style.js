@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const PrimaryButton = styled.button`
     font-size: 22px;
     padding: 5px 15px;
-    background: #68eb4d;
+    background: ${p => p.isDisabled ? 'grey': '#68eb4d'};
 
     &:hover {
         background: #2be102;

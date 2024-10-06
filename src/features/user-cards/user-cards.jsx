@@ -1,6 +1,8 @@
 import React from "react";
 import {useSelector, useDispatch} from "react-redux";
 
+import {ButtonWrapper} from './user-cards.style';
+
 import {SituationTypes} from '../../constants'
 
 import CardGroup from "../../components/card-group/card-group";
@@ -85,7 +87,7 @@ export function UserCards({handleSetMoveCard, passRound, moveRoundTo}) {
         }
     }
 
-     function takeCards() {
+    function takeCards() {
         if (!isComputerAttack) {
             return;
         }
@@ -93,6 +95,11 @@ export function UserCards({handleSetMoveCard, passRound, moveRoundTo}) {
         dispatch(changeTurnWalk())
     }
 
+    const is1 = !isComputerAttack &&
+        !!roundCards.length &&
+        roundCards.length % 2 === 0; //computer should cover card before we let it go to trash
+
+    const is2 = isComputerAttack && !!roundCards.length;
     return (
         <>
             <CardGroup
@@ -103,17 +110,10 @@ export function UserCards({handleSetMoveCard, passRound, moveRoundTo}) {
                 isEnabledWalk={!isComputerWalk}
             />
 
-            <div>
-                {
-                    !isComputerAttack &&
-                    !!roundCards.length &&
-                    roundCards.length % 2 === 0 && //computer should cover card before we let it go to trash
-                    <PrimaryButton onClick={passRound}>Відбій</PrimaryButton>
-                }
-
-                {isComputerAttack && !!roundCards.length &&
-                    <PrimaryButton onClick={takeCards}>Забрав</PrimaryButton>}
-            </div>
+            <ButtonWrapper>
+                <PrimaryButton isDisabled={!is1} onClick={passRound}>Відбій</PrimaryButton>
+                <PrimaryButton isDisabled={!is2} onClick={takeCards}>Забрав</PrimaryButton>
+            </ButtonWrapper>
         </>
     )
 }
